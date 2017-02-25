@@ -71,12 +71,12 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-inverse.o : $(USER_DIR)/inverse.cpp $(USER_DIR)/inverse.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/inverse.cpp
+matrix.o : $(USER_DIR)/matrix.cpp $(USER_DIR)/matrix.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/matrix.cpp
 
 test.o : $(USER_DIR)/test.cpp \
-         $(USER_DIR)/inverse.h $(GTEST_HEADERS)
+         $(USER_DIR)/matrix.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/test.cpp
 
-inverse : inverse.o test.o gtest_main.a
+inverse : matrix.o test.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
