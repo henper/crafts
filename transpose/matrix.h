@@ -13,7 +13,7 @@ struct Matrix
            int rows,
            int cols);
 
-    void inverse(void);
+    void transpose(void);
     void print();
 };
 

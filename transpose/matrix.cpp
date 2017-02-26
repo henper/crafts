@@ -36,7 +36,7 @@ void Matrix::print()
     std::printf("\n");
 }
 
-void Matrix::inverse()
+void Matrix::transpose() 
 {
     // the last row is correct already(?)
     for(int row = 0; row < this->rows -1; row++)

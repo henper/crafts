@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "matrix.h"
 
-TEST(inverseTest, smallMatrix)
+TEST(transposeTest, smallMatrix)
 {
 	int origin[][3] =
 	{
@@ -21,7 +21,7 @@ TEST(inverseTest, smallMatrix)
     Matrix B = Matrix(&expect[0][0], 3, 3);
     B.print();
     
-    A->inverse();
+    A->transpose();
     A->print();
 
 	EXPECT_EQ(*A, B);
@@ -29,7 +29,7 @@ TEST(inverseTest, smallMatrix)
     free(A);
 }
 
-TEST(inverseTest, slightlyLargerMatrix)
+TEST(transposeTest, slightlyLargerMatrix)
 {
 	int origin[][4] =
 	{
@@ -51,7 +51,7 @@ TEST(inverseTest, slightlyLargerMatrix)
     Matrix B = Matrix(&expect[0][0], 4, 4);
     B.print();
     
-    A.inverse();
+    A.transpose();
     A.print();
 
 	EXPECT_EQ(A, B);
