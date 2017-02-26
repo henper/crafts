@@ -75,7 +75,12 @@ matrix.o : $(USER_DIR)/matrix.cpp $(USER_DIR)/matrix.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/matrix.cpp
 
 test.o : $(USER_DIR)/test.cpp \
-         $(USER_DIR)/matrix.h $(GTEST_HEADERS)
+         $(USER_DIR)/matrix.h \
+         $(USER_DIR)/smallRectangle.h \
+         $(USER_DIR)/smallRectangleTrans.h \
+         $(USER_DIR)/smallSquare.h \
+         $(USER_DIR)/smallSquareTrans.h \
+         $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/test.cpp
 
 transpose : matrix.o test.o gtest_main.a

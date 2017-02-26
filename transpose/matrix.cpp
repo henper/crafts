@@ -38,10 +38,11 @@ void Matrix::print()
 
 void Matrix::transpose() 
 {
-    // the last row is correct already(?)
+    this->swap(rows, cols);
+    // When we get to it, the last row will already be correct
     for(int row = 0; row < this->rows -1; row++)
     {
-        // first column always correct
+        // first column always correct when we get to it
         for(int col = 1; col < this->cols; col++)
         {
             int offset = col * ((this->rows - 1) - row);
@@ -71,5 +72,5 @@ void Matrix::swap(int &a, int &b)
 
 int  Matrix::idx(int row, int col)
 {
-    return col + row*this->rows;
+    return col + row*this->cols;
 }
