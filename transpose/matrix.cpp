@@ -2,6 +2,8 @@
 #include <cstring>
 #include <cstdio>
 
+/* Public stuff */
+
 Matrix::Matrix(int* entry,
                int  rows,
                int  cols)
@@ -38,19 +40,24 @@ void Matrix::print()
 
 void Matrix::transpose() 
 {
-    this->swap(rows, cols);
+    swap(rows, cols);
+
     // When we get to it, the last row will already be correct
-    for(int row = 0; row < this->rows -1; row++)
+    for(int row = 0; row < rows -1; row++)
     {
-        // first column always correct when we get to it
-        for(int col = 1; col < this->cols; col++)
+        // First column always correct when we get to it
+        for(int col = 1; col < cols; col++)
         {
-            int pills = col * ((this->rows - 1) - row);
-            poopingPacman(&this->entry[idx(row, col)],
-                          pills);
+            // At this point we're at an element that's not yet where it should be
+            int pills = col * ((rows - 1) - row); // this is how far away the value I want is
+
+            // Designate the value as the current 'PacMan' and it will eat its way over here
+            poopingPacman(&entry[idx(row, col)], pills);
         }
     }
 }
+
+/* Private parts */
 
 /* Move a value in an array from an offset
  * to the top of the pile, whilst shifting
