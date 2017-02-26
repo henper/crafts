@@ -45,8 +45,9 @@ void Matrix::transpose()
         // first column always correct when we get to it
         for(int col = 1; col < this->cols; col++)
         {
-            int offset = col * ((this->rows - 1) - row);
-            shift(&this->entry[idx(row, col)], offset);
+            int pills = col * ((this->rows - 1) - row);
+            poopingPacman(&this->entry[idx(row, col)],
+                          pills);
         }
     }
 }
@@ -55,9 +56,9 @@ void Matrix::transpose()
  * to the top of the pile, whilst shifting
  * all the values in between down one step
  */
-void Matrix::shift(int *target, int fromOffset)
+void Matrix::poopingPacman(int *target, int pills)
 {
-    for(int i = fromOffset; i > 0; i--)
+    for(int i = pills; i > 0; i--)
     {
         swap(target[i-1], target[i]);
     }
@@ -65,9 +66,10 @@ void Matrix::shift(int *target, int fromOffset)
 
 void Matrix::swap(int &a, int &b)
 {
-    int c = a;
-    a = b;
-    b = c;
+    // Look Ma' -no hands!
+    a = a xor b;
+    b = a xor b;
+    a = a xor b;
 }
 
 int  Matrix::idx(int row, int col)

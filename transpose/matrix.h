@@ -4,7 +4,7 @@ struct Matrix
     int rows, cols;
     int* entry;
     
-    void shift(int *a, int steps);
+    void poopingPacman(int *a, int pills);
     void swap(int &a, int &b);
     int  idx(int row, int col);
 
