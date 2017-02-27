@@ -1,3 +1,15 @@
+/**
+    SW-CoP, matrix.cpp
+
+    Distributed on GitHub:
+    https://github.com/henper/crafts
+
+    Purpose: memory efficient
+             matrix operation
+
+    @author Henrik L. Persson
+*/
+
 #include "matrix.h"
 #include <cstring>
 #include <cstdio>
