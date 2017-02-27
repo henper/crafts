@@ -16,6 +16,7 @@ TEST(transposeTest, smallSquare)
                            rows, cols);
 
     A->transpose();
+    //A->print();
     printf("A %d by %d matrix took %d swaps to transpose.\n",
            cols, rows, A->numSwaps);
 

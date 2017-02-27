@@ -3,8 +3,12 @@ struct Matrix
 {
     int* entry;
     
-    void poopingPacman(int *a, int pills);
-    void swap(int &a, int &b);
+    static void  poopingPacman(int *a, int pills);
+    static void  swap(int &a, int &b);
+    static void* threadEntryPoint(void*);
+    
+    void singleThreadedTranspose();
+    void multiThreadedTranspose();
     int  idx(int row, int col);
 
   public:
@@ -14,7 +18,7 @@ struct Matrix
            int rows,
            int cols);
 
-    void transpose(void);
+    void transpose(bool threaded = false);
     void print();
 };
 

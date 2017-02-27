@@ -1,6 +1,9 @@
 % Generate test matrices for inlines transpose Gtest
 
 smallSquare = randi(100, 50);
+%smallSquare = [  1, 2, 3 ; ...
+%                 4, 5, 6 ; ...
+%                 7, 8, 9 ];
 prettyPrint(smallSquare , 'smallSquare');
 prettyPrint(smallSquare', 'smallSquareTrans');
 

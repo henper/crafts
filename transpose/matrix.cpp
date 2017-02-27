@@ -13,6 +13,9 @@
 #include "matrix.h"
 #include <cstring>
 #include <cstdio>
+#include <pthread.h>
+
+void multiThreadedTranspose(void* instance);
 
 /* Public stuff */
 
@@ -51,26 +54,17 @@ void Matrix::print()
     std::printf("\n");
 }
 
-void Matrix::transpose() 
+void Matrix::transpose(bool threaded) 
 {
-    // Reset the bean-counter
-    numSwaps = 0;
-    
     swap(rows, cols); // This is pretty much all there is to transposing...
+    
+    numSwaps = 0; // Reset the bean-counter
 
-    // When we get to it, the last row will already be correct
-    for(int row = 0; row < rows -1; row++)
-    {
-        // First column always correct when we get to it
-        for(int col = 1; col < cols; col++)
-        {
-            // At this point we're at an element that's not yet where it should be
-            int pills = col * ((rows - 1) - row); // this is how far away the value I want is
+    if( threaded )
+        multiThreadedTranspose();
+    else
+        singleThreadedTranspose();
 
-            // Designate the value as the current 'PacMan' and it will eat its way over here
-            poopingPacman(&entry[idx(row, col)], pills);
-        }
-    }
 }
 
 /* Private parts */
@@ -93,11 +87,74 @@ void Matrix::swap(int &a, int &b)
     a = a xor b;
     b = a xor b;
     a = a xor b;
-    
-    numSwaps++;
 }
 
 int  Matrix::idx(int row, int col)
 {
     return col + row*this->cols;
+}
+
+void Matrix::singleThreadedTranspose()
+{
+    // When we get to it, the last row will already be correct
+    for(int row = 0; row < rows -1; row++)
+    {
+        // First column always correct when we get to it
+        for(int col = 1; col < cols; col++)
+        {
+            // At this point we're at an element that's not yet where it should be
+            int pills = col * ((rows - 1) - row); // this is how far away the value I want is
+            numSwaps += pills;
+            // Designate the value as the current 'PacMan' and it will eat its way over here
+            poopingPacman(&entry[idx(row, col)], pills);
+        }
+    }
+}
+
+struct threadParams
+{
+    int* target;
+    int  pills;
+};
+
+void Matrix::multiThreadedTranspose()
+{
+    static const int numThreads = 2;
+    struct threadParams params[numThreads];
+    pthread_t refs[numThreads];
+    
+    for(int row = 0; row < rows -1; row++)
+    {
+        for(int col = 1; col < cols + numThreads - 1; col += numThreads)
+        {
+            for(int thread = 0; thread < numThreads; thread++)
+            {
+                int myCol = col + thread;
+                if(myCol < cols)
+                {
+                    params[thread].target = &entry[idx(row, myCol)];
+                    params[thread].pills  = myCol * ((rows - 1) - row);
+                    numSwaps += params[thread].pills;
+                    
+                    pthread_create(&refs[thread],
+                                   NULL,
+                                   threadEntryPoint,
+                                   &params[thread]);
+                }
+            }
+            for(int thread = 0; thread < numThreads; thread++)
+            {
+                pthread_join(refs[thread], NULL);
+            }
+        }
+    }
+}
+
+void* Matrix::threadEntryPoint(void* params)
+{
+    struct threadParams* thread = (struct threadParams*)params;
+    
+    poopingPacman(thread->target, thread->pills);
+    
+    return NULL;
 }
