@@ -23,6 +23,7 @@ Matrix::Matrix(int* entry,
     this->entry = entry;
     this->rows = rows;
     this->cols = cols;
+    numSwaps = 0;
 }
 
 bool operator==(const Matrix& lhs, const Matrix& rhs)
@@ -52,7 +53,10 @@ void Matrix::print()
 
 void Matrix::transpose() 
 {
-    swap(rows, cols);
+    // Reset the bean-counter
+    numSwaps = 0;
+    
+    swap(rows, cols); // This is pretty much all there is to transposing...
 
     // When we get to it, the last row will already be correct
     for(int row = 0; row < rows -1; row++)
@@ -89,6 +93,8 @@ void Matrix::swap(int &a, int &b)
     a = a xor b;
     b = a xor b;
     a = a xor b;
+    
+    numSwaps++;
 }
 
 int  Matrix::idx(int row, int col)

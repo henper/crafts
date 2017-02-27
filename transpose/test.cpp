@@ -16,6 +16,8 @@ TEST(transposeTest, smallSquare)
                            rows, cols);
 
     A->transpose();
+    printf("A %d by %d matrix took %d swaps to transpose.\n",
+           cols, rows, A->numSwaps);
 
 	EXPECT_EQ(*A, *B);
 
@@ -41,10 +43,11 @@ TEST(transposeTest, smallRectangle)
                            rows, cols);
 
     A->transpose();
+    printf("A %d by %d matrix took %d swaps to transpose.\n",
+           cols, rows, A->numSwaps);
 
 	EXPECT_EQ(*A, *B);
 
     free(A);
     free(B);
 }
-
