@@ -85,3 +85,6 @@ test.o : $(USER_DIR)/test.cpp \
 
 transpose : matrix.o test.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+visrep : visrep.o matrix.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ -lpthread -lGL -lGLU -lglut
