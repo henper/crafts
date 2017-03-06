@@ -93,7 +93,7 @@ bool vboSupported, vboUsed;
 // of 36 vertices (6 sides * 2 tris * 3 vertices = 36 vertices). And, each
 // vertex is 3 components (x,y,z) of floats, therefore, the size of vertex
 // array is 108 floats (36 * 3 = 108).
-GLfloat vertices[]  = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      // v0-v1-v2 (front)
+/*GLfloat vertices[]  = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      // v0-v1-v2 (front)
                        -1,-1, 1,   1,-1, 1,   1, 1, 1,      // v2-v3-v0
 
                         1, 1, 1,   1,-1, 1,   1,-1,-1,      // v0-v3-v4 (right)
@@ -110,25 +110,6 @@ GLfloat vertices[]  = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      // v0-v1-v2 (front)
 
                         1,-1,-1,  -1,-1,-1,  -1, 1,-1,      // v4-v7-v6 (back)
                        -1, 1,-1,   1, 1,-1,   1,-1,-1 };    // v6-v5-v4
-
-// normal array
-GLfloat normals[]   = { 0, 0, 1,   0, 0, 1,   0, 0, 1,      // v0-v1-v2 (front)
-                        0, 0, 1,   0, 0, 1,   0, 0, 1,      // v2-v3-v0
-
-                        1, 0, 0,   1, 0, 0,   1, 0, 0,      // v0-v3-v4 (right)
-                        1, 0, 0,   1, 0, 0,   1, 0, 0,      // v4-v5-v0
-
-                        0, 1, 0,   0, 1, 0,   0, 1, 0,      // v0-v5-v6 (top)
-                        0, 1, 0,   0, 1, 0,   0, 1, 0,      // v6-v1-v0
-
-                       -1, 0, 0,  -1, 0, 0,  -1, 0, 0,      // v1-v6-v7 (left)
-                       -1, 0, 0,  -1, 0, 0,  -1, 0, 0,      // v7-v2-v1
-
-                        0,-1, 0,   0,-1, 0,   0,-1, 0,      // v7-v4-v3 (bottom)
-                        0,-1, 0,   0,-1, 0,   0,-1, 0,      // v3-v2-v7
-
-                        0, 0,-1,   0, 0,-1,   0, 0,-1,      // v4-v7-v6 (back)
-                        0, 0,-1,   0, 0,-1,   0, 0,-1 };    // v6-v5-v4
 
 // color array
 GLfloat colors[]    = { 1, 1, 1,   1, 1, 0,   1, 0, 0,      // v0-v1-v2 (front)
@@ -148,34 +129,9 @@ GLfloat colors[]    = { 1, 1, 1,   1, 1, 0,   1, 0, 0,      // v0-v1-v2 (front)
 
                         0, 0, 1,   0, 0, 0,   0, 1, 0,      // v4-v7-v6 (back)
                         0, 1, 0,   0, 1, 1,   0, 0, 1 };    // v6-v5-v4
-
-
-
-// function pointers for VBO Extension
-// Windows needs to get function pointers from ICD OpenGL drivers,
-// because opengl32.dll does not support extensions higher than v1.1.
-#ifdef _WIN32
-PFNGLGENBUFFERSARBPROC            pglGenBuffersARB = 0;             // VBO Name Generation Procedure
-PFNGLBINDBUFFERARBPROC            pglBindBufferARB = 0;             // VBO Bind Procedure
-PFNGLBUFFERDATAARBPROC            pglBufferDataARB = 0;             // VBO Data Loading Procedure
-PFNGLBUFFERSUBDATAARBPROC         pglBufferSubDataARB = 0;          // VBO Sub Data Loading Procedure
-PFNGLDELETEBUFFERSARBPROC         pglDeleteBuffersARB = 0;          // VBO Deletion Procedure
-PFNGLGETBUFFERPARAMETERIVARBPROC  pglGetBufferParameterivARB = 0;   // return various parameters of VBO
-PFNGLMAPBUFFERARBPROC             pglMapBufferARB = 0;              // map VBO procedure
-PFNGLUNMAPBUFFERARBPROC           pglUnmapBufferARB = 0;            // unmap VBO procedure
-
-#define glGenBuffersARB           pglGenBuffersARB
-#define glBindBufferARB           pglBindBufferARB
-#define glBufferDataARB           pglBufferDataARB
-#define glBufferSubDataARB        pglBufferSubDataARB
-#define glDeleteBuffersARB        pglDeleteBuffersARB
-#define glGetBufferParameterivARB pglGetBufferParameterivARB
-#define glMapBufferARB            pglMapBufferARB
-#define glUnmapBufferARB          pglUnmapBufferARB
-
-#endif
-
-
+*/
+#include "vertices.h"
+#include "colors.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
@@ -194,16 +150,15 @@ int main(int argc, char **argv)
     if(vboSupported)
     {
         // create vertex buffer objects, you need to delete them when program exits
-        // Try to put both vertex coords array, vertex normal array and vertex color in the same buffer object.
+        // Try to put both vertex coords array and vertex color in the same buffer object.
         // glBufferDataARB with NULL pointer reserves only memory space.
         // Copy actual data with 2 calls of glBufferSubDataARB, one for vertex coords and one for normals.
         // target flag is GL_ARRAY_BUFFER_ARB, and usage flag is GL_STATIC_DRAW_ARB
         glGenBuffersARB(1, &vboId);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals)+sizeof(colors), 0, GL_STATIC_DRAW_ARB);
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(vertices), vertices);                             // copy vertices starting from 0 offest
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices), sizeof(normals), normals);                // copy normals after vertices
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals), sizeof(colors), colors);  // copy colours after normals
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(colors), 0, GL_STATIC_DRAW_ARB);
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(vertices), vertices);             // copy vertices starting from 0 offest
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices), sizeof(colors), colors);  // copy colours after vertices
     }
 
     // the last GLUT call (LOOP)
@@ -543,6 +498,8 @@ void displayCB()
     glRotatef(cameraAngleX, 1, 0, 0);   // pitch
     glRotatef(cameraAngleY, 0, 1, 0);   // heading
 
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     if(vboUsed) // draw cube using VBO
     {
         // bind VBOs with IDs and set the buffer offsets of the bound VBOs
@@ -551,20 +508,17 @@ void displayCB()
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
 
         // enable vertex arrays
-        glEnableClientState(GL_NORMAL_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
 
         // before draw, specify vertex and index arrays with their offsets
-        glNormalPointer(GL_FLOAT, 0, (void*)sizeof(vertices));
-        glColorPointer(3, GL_FLOAT, 0, (void*)(sizeof(vertices)+sizeof(normals)));
-        glVertexPointer(3, GL_FLOAT, 0, 0);
+        glColorPointer(3, GL_FLOAT, 0, (void*)(sizeof(vertices)));
+        glVertexPointer(2, GL_FLOAT, 0, 0);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_QUADS, 0, 4*16);
 
         glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
         glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
 
         // it is good idea to release VBOs with ID 0 after use.
         // Once bound with 0, all pointers in gl*Pointer() behave as real
@@ -576,20 +530,17 @@ void displayCB()
     // notice that only difference between VBO and VA is binding buffers and offsets
     {
         // enable vertex arrays
-        glEnableClientState(GL_NORMAL_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
 
         // before draw, specify vertex arrays
-        glNormalPointer(GL_FLOAT, 0, normals);
         glColorPointer(3, GL_FLOAT, 0, colors);
-        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glVertexPointer(2, GL_FLOAT, 0, vertices);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_QUADS, 0, 4*16);
 
         glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
         glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
     }
 
     // draw info messages

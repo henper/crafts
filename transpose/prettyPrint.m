@@ -26,6 +26,8 @@ elseif isa(M, 'int16')
     fprintf(fh,'static const int16_t %s', dataName);
 elseif isa(M, 'double')
     fprintf(fh,'static int %s', dataName);
+elseif isa(M, 'single')
+    fprintf(fh,'float %s', dataName);
 else
     fclose(fh);
     error('Unexpected type!')
@@ -104,6 +106,8 @@ function printType (fh, val)
         fprintf(fh, '0x%04X, ', val);
     elseif isa(val, 'double')
         fprintf(fh, '%4d, ', val)
+    elseif isa(val, 'single')
+        fprintf(fh, '%f, ', val)
     end
 end
             
