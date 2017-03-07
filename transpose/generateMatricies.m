@@ -11,14 +11,11 @@ smallRectangle = randi(100, [25, 100]);
 prettyPrint(smallRectangle , 'smallRectangle');
 prettyPrint(smallRectangle', 'smallRectangleTrans');
 
-% Generate matrices of vertexes and colours for transpose visrep
+% Generate matrices of vertices and colours for transpose visrep
 width = height = 16;
 y = x = linspace(-1, 1, width+1); % square matrix
 
 vertices = zeros(width*height,4*2); % each vertex consists of a quad of xy-values
-
-r = g = b = linspace(0, 1, width*height);
-colours   = jet(width*height*4);   % r-g-b values for each quad
 
 for i = 1:width
   for j = 1:height
@@ -27,5 +24,12 @@ for i = 1:width
   end
 end
 
+%rotate the vertices matrix to put the origin at the top left (instead of bottom left)
+vertices = reshape(vertices, width, height, 4*2);
+vertices = rot90(vertices, -1); % -90 degrees
+vertices = reshape(vertices, width*height, 4*2);
+
 prettyPrint(single(vertices), 'vertices');
+
+colours   = jet(width*height*4);   % r-g-b values for each quad
 prettyPrint(single(colours), 'colors');
