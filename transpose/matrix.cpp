@@ -51,11 +51,8 @@ void Matrix::print()
     std::printf("\n");
 }
 
-void Matrix::transpose() 
-{
-    // Reset the bean-counter
-    numSwaps = 0;
-    
+int Matrix::transpose() 
+{    
     static int row = 0;
     static int col = 1;
     static int pills = col * ((rows - 1) - row); // this is how far away the value I want is
@@ -92,6 +89,8 @@ void Matrix::transpose()
             pills = col * ((rows - 1) - row);
         }
     }
+
+    return numSwaps;
 }
 
 /* Private parts */

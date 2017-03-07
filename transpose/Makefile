@@ -86,7 +86,7 @@ test.o : $(USER_DIR)/test.cpp \
 transpose : matrix.o test.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-visrep.o : $(USER_DIR)/test.cpp \
+visrep.o : $(USER_DIR)/visrep.cc \
            $(USER_DIR)/matrix.h \
            $(USER_DIR)/colors.h \
            $(USER_DIR)/vertices.h \

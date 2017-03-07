@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <cmath>
+#include <cstdio>
 #include "matrix.h"
 
 #include "vertices.h"
@@ -8,10 +9,28 @@
 Matrix* A;
 int dim;
 
+void type(char* str)
+{
+  glPushMatrix();
+  glTranslatef(-1.0, -1.0, 0.0);
+  float scale = 1/(6*152.38);
+  glScalef(scale, scale, scale);
+  for( char* p = str; *p; p++)
+  {
+      glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
+  }
+  glPopMatrix();
+}
+
 //Drawing funciton
 void draw(void)
 {
-  A->transpose();
+  // iterative transpose
+  int swaps = A->transpose();
+
+  // prep swap counter string
+  char str[20];
+  std::sprintf(str, "SWAPS: %10d", swaps);
 
   glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer with current clearing color
 
@@ -27,6 +46,8 @@ void draw(void)
 
   glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
   glDisableClientState(GL_COLOR_ARRAY);
+
+  type(str);
  
   //Draw order
   glFlush();
