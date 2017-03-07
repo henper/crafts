@@ -12,7 +12,7 @@ prettyPrint(smallRectangle , 'smallRectangle');
 prettyPrint(smallRectangle', 'smallRectangleTrans');
 
 % Generate matrices of vertexes and colours for transpose visrep
-width = height = 4;
+width = height = 16;
 y = x = linspace(-1, 1, width+1); % square matrix
 
 vertices = zeros(width*height,4*2); % each vertex consists of a quad of xy-values

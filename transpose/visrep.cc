@@ -1,10 +1,12 @@
 #include <GL/glut.h>
+#include <cmath>
 #include "matrix.h"
 
 #include "vertices.h"
 #include "colors.h"
 
 Matrix* A;
+int dim;
 
 //Drawing funciton
 void draw(void)
@@ -21,7 +23,7 @@ void draw(void)
   glColorPointer(3, GL_FLOAT, 0, colors);
   glVertexPointer(2, GL_FLOAT, 0, vertices);
 
-  glDrawArrays(GL_QUADS, 0, 4*16); //FIXME: hardcoded matrix size
+  glDrawArrays(GL_QUADS, 0, 4*dim*dim);
 
   glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
   glDisableClientState(GL_COLOR_ARRAY);
@@ -39,7 +41,8 @@ void timerCB(int millisec)
 //Main program
 int main(int argc, char **argv)
 {
-  A = new Matrix((quadRgb*)&colors, 4, 4); //FIXME: hardcoded matrix size
+  dim = sqrt(sizeof(colors)/sizeof(colors[0])/4);
+  A = new Matrix((quadRgb*)&colors, dim, dim);
 
   glutInit(&argc, argv);
   //Simple buffer
@@ -47,7 +50,7 @@ int main(int argc, char **argv)
   glutInitWindowPosition(50,50);
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
-  glutTimerFunc(33, timerCB, 33);                 // redraw only every given millisec
+  glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
   //Call to the drawing function
   glutDisplayFunc(draw);
   //Background color
