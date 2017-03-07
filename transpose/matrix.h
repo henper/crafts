@@ -1,16 +1,18 @@
+#include "rgb.h"
 
 struct Matrix
 {
-    int* entry;
+    quadRgb* entry;
     
-    void poopingPacman(int *a, int pills);
+    void poopingPacman(quadRgb *a, int pills);
+    void swap(quadRgb &a, quadRgb &b);
     void swap(int &a, int &b);
     int  idx(int row, int col);
 
   public:
     int rows, cols, numSwaps;
     
-    Matrix(int* entry,
+    Matrix(quadRgb* entry,
            int rows,
            int cols);
 

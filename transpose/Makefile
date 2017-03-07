@@ -71,7 +71,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-matrix.o : $(USER_DIR)/matrix.cpp $(USER_DIR)/matrix.h $(GTEST_HEADERS)
+matrix.o : $(USER_DIR)/matrix.cpp $(USER_DIR)/matrix.h rgb.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/matrix.cpp
 
 test.o : $(USER_DIR)/test.cpp \
@@ -86,5 +86,5 @@ test.o : $(USER_DIR)/test.cpp \
 transpose : matrix.o test.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-visrep : visrep.o matrix.o colors.h vertices.h
+visrep : visrep.o matrix.o colors.h vertices.h rgb.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ -lpthread -lGL -lGLU -lglut
