@@ -12,7 +12,8 @@ Depends on Symbolic Python: http://www.sympy.org/en/index.html
 
 transpose
 ------------------------------------------------------------------------
-Depends on GoogleTest: https://github.com/google/googletest
+Depends on: GoogleTest: https://github.com/google/googletest and
+OpenGL and GLUT: http://kiwwito.com/installing-opengl-glut-libraries-in-ubuntu/
 
 How-To:
 Generate test vectors with Matlab or Octave by running the script
