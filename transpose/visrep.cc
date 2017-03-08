@@ -26,7 +26,7 @@ void type(char* str)
 void draw(void)
 {
   // iterative transpose
-  int swaps = A->sqrTranspose();
+  int swaps = A->cyclesTranspose();
 
   // prep swap counter string
   char str[20];

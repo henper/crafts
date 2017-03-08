@@ -9,6 +9,10 @@ struct Matrix
     void swap(int &a, int &b);
     int  idx(int row, int col);
 
+    // helpers for cycles transpose
+    int calcNextIndex(int inputIndex);
+    bool* swapped;
+
   public:
     int rows, cols, numSwaps;
     
@@ -18,6 +22,7 @@ struct Matrix
 
     int  transpose(void);
     int  sqrTranspose(void);
+    int  cyclesTranspose();
     void print();
 };
 

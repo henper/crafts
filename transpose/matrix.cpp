@@ -24,6 +24,9 @@ Matrix::Matrix(quadRgb* entry,
     this->rows = rows;
     this->cols = cols;
     numSwaps = 0;
+
+    // for cycles
+    swapped = new bool[rows*cols];
 }
 
 bool operator==(const Matrix& lhs, const Matrix& rhs)
@@ -114,6 +117,38 @@ int Matrix::sqrTranspose()
     return numSwaps;
 }
 
+int Matrix::cyclesTranspose()
+{
+    static int startIndex = 1;
+    static int currentIndex = 1;
+    static bool allDone = false;
+
+    if( !allDone )
+    {
+        int nextIndex = calcNextIndex(currentIndex);
+        if( nextIndex != startIndex && nextIndex != currentIndex )
+        {
+            printf("%d to %d, ", currentIndex, nextIndex);
+            swap(entry[nextIndex], entry[currentIndex]);
+            swapped[nextIndex] = true;
+            currentIndex = nextIndex;
+        }
+        else
+        {
+            printf("to %d, switching cycle\n", nextIndex);
+            swapped[startIndex] = false;
+            startIndex++;
+            while (swapped[startIndex] && startIndex < rows * cols)
+              startIndex++;
+            currentIndex = startIndex;
+            if (startIndex == rows * cols)
+              allDone = true;
+        }
+    }
+
+    return numSwaps;
+}
+
 /* Private parts */
 
 /* Move a value in an array from an offset
@@ -154,4 +189,13 @@ void Matrix::swap(quadRgb &a, quadRgb &b)
 int  Matrix::idx(int row, int col)
 {
     return col + row*this->cols;
+}
+
+int Matrix::calcNextIndex(int inputIndex)
+{
+  if (inputIndex < (rows * cols - 1))
+  {
+    return (inputIndex * rows) % (rows * cols - 1);
+  }
+  return inputIndex;
 }
