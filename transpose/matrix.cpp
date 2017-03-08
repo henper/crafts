@@ -93,6 +93,27 @@ int Matrix::transpose()
     return numSwaps;
 }
 
+int Matrix::sqrTranspose()
+{
+    static int width = 0;
+    static int diag = width + 1;
+
+    if( width < rows - 1)
+    {
+        if(diag < rows)
+        {
+            swap(entry[idx(width, diag)], entry[idx( diag, width)]);
+            diag++;
+        }
+        else
+        {
+            width++;
+            diag = width + 1;
+        }
+    }
+    return numSwaps;
+}
+
 /* Private parts */
 
 /* Move a value in an array from an offset

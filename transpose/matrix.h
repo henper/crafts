@@ -17,6 +17,7 @@ struct Matrix
            int cols);
 
     int  transpose(void);
+    int  sqrTranspose(void);
     void print();
 };
 
