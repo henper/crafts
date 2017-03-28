@@ -31,21 +31,39 @@ def getNumRelations() :
 		numRelations += len(scoreboard[horse])
 	return numRelations
 
+def findUnrelatedHorses( horseList ) :
+	unrelated = ['', '' ,'' ,'']
+	found = 0;
+	for horse in names :
+		if horse not in horseList :
+			unrelated[found] = horse
+			found += 1
+			if found == len(unrelated) :
+				return unrelated
+	#print('short race with only ' + str(found))
+	return unrelated[0:found]
+
+def race( heat ) :
+	global numRaces
+	numRaces += 1
+	race = zip([horseTimes[heat[i]] for i in range(0, len(heat))], heat)
+	race.sort()
+	return zip(*race)[1] # return a sorted tuple of the horses in the race 
+
+def resultToScoreboard( result ) :
+	global scoreboard
+	for position in range(len(result)) :
+		for faster in range(0, position) :
+			scoreboard[result[position]][result[faster]] = True
+		for slower in range(position+1, len(result)) :
+			scoreboard[result[position]][result[slower]] = False
+
 # Horrible hack for creating a heats of 5, where the last horse in each heat also competes in the next one
 heats = [[names[i] for i in range(j, j+5)] for j in range(0,len(names)-4,4)] #FIXME superflous horses glued!
 
 # Qualifying races!
-for heat in heats :
-	race = zip([horseTimes[heat[i]] for i in range(0, len(heat))], heat)
-	race.sort()
- 	numRaces += 1
-
-	# Create the first entries in the scoreboard
-	for position in range(5) :
-		for faster in range(0, position) :
-			scoreboard[race[position][1]][race[faster][1]] = True
-		for slower in range(position+1, 5) :
-			scoreboard[race[position][1]][race[slower][1]] = False
+for heat in heats :	
+	resultToScoreboard(race(heat))
 
 print(getNumRelations())
 
@@ -56,7 +74,20 @@ print(getNumRelations())
 updateScoreboard()
 updateScoreboard() # with the updated scoreboard run it again for even more relations (third time is not the charm, twice is enough!)
 
-#while len(names) * len(names) < getNumRelations() : # the scoreboard is not complete, need to run more races 
+relationshipGoal = len(names) * (len(names) - 1)
+while getNumRelations() < relationshipGoal : # the scoreboard is not complete, need to run more races 
 	
+	for horse in scoreboard :	
+		if( len(scoreboard[horse]) < len(names) - 1 ) : # find the first horse which has an incomplete scoreboard
+			relations = scoreboard[horse].keys()
+			relations.append(horse)
+			final = findUnrelatedHorses( relations )
+			final.append(horse)
+			result = race(final)
+			#print('New ranking: ' + str(result))
+			resultToScoreboard(race(final))
+			break
+	updateScoreboard()
+	#print(getNumRelations())
 
-print(numRaces)
+print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
