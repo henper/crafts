@@ -58,14 +58,21 @@ def resultToScoreboard( result ) :
 		for slower in range(position+1, len(result)) :
 			scoreboard[result[position]][result[slower]] = False
 
-# Horrible hack for creating a heats of 5, where the last horse in each heat also competes in the next one
+def ranking() :
+	ranking = range(len(scoreboard))
+	timeTbl = range(len(ranking))
+	for horse in scoreboard :
+		ranking[ sum(scoreboard[horse].values()) ] = horse
+	for rank in range(len(ranking)) :
+		timeTbl[rank] = horseTimes[ranking[rank]];
+	return timeTbl
+
+# Horrible hack for creating heats of 5, where the last horse in each heat also competes in the next one
 heats = [[names[i] for i in range(j, j+5)] for j in range(0,len(names)-4,4)] #FIXME superflous horses glued!
 
 # Qualifying races!
 for heat in heats :	
 	resultToScoreboard(race(heat))
-
-print(getNumRelations())
 
 # We now have a starting point where each horse has 4 or 8 relations
 # (the horses that ran in two heats have twice the relations)
@@ -91,3 +98,4 @@ while getNumRelations() < relationshipGoal : # the scoreboard is not complete, n
 	#print(getNumRelations())
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
+print(str(ranking()))
