@@ -5,13 +5,16 @@ from collections import defaultdict
 
 numRaces = 0
 
+# Generate times for horses (no 2 horses are alike) with 2-digit times (for easy printing)
+#times = [random.choice([i for i in xrange(10, 99)]) for r in xrange(len(names))]
+times = [107,47,102,64,50,100,28,91,27,5,22,114,23,42,13,3,93,8,92,79,53,83,63,7,15,66,105,57,14,65,58,113,112,1,62,103,120,72,111,51,9,36,119,99,30,20,25,84,16,116,98,18,37,108,10,80,101,35,75,39,109,17,38,117,60,46,85,31,41,12,29,26,74,77,21,4,70,61,88,44,49,94,122,2,97,73,69,71,86,45,96,104,89,68,40,6,87,115,54,123,125,90,32,118,52,11,33,106,95,76,19,82,56,121,55,34,24,43,124,81,48,110,78,67,59]
+
 # Create a list of names to use as dictionary keys
-fh = open('horses.txt')
+fh = open('moreHorses.txt')
 lines = fh.readlines()
+lines = lines[0:len(times)-1]
 names = [line.rstrip() for line in lines]
 
-# Generate times for horses (no 2 horses are alike) with 2-digit times (for easy printing)
-times = [random.choice([i for i in xrange(10, 99)]) for r in xrange(len(names))]
 
 # Initate the dictionaries
 horseTimes = dict(zip(names, times))
@@ -91,7 +94,7 @@ while getNumRelations() < relationshipGoal : # the scoreboard is not complete, n
 			final = findUnrelatedHorses( relations )
 			final.append(horse)
 			result = race(final)
-			#print('New ranking: ' + str(result))
+			print('New ranking: ' + str(result))
 			resultToScoreboard(race(final))
 			break
 	updateScoreboard()
