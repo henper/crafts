@@ -15,7 +15,7 @@ fh = codecs.open('moreHorses.txt', encoding='utf-8')
 lines = fh.readlines()
 lines = lines[0:len(times)-1]
 names = [line.rstrip() for line in lines]
-
+horses = set(names)
 
 # Initate the dictionaries
 horseTimes = dict(zip(names, times))
@@ -30,10 +30,7 @@ def updateScoreboard() :
           scoreboard[horse][inception[0]] = inception[1]
 
 def getNumRelations() :
-  numRelations = 0
-  for horse in scoreboard :
-    numRelations += len(scoreboard[horse])
-  return numRelations
+  return sum([len(scoreboard[horse]) for horse in scoreboard])
 
 def findUnrelatedHorses( horseList ) :
   unrelated = ['', '' ,'' ,'']
@@ -72,33 +69,49 @@ def ranking() :
   return timeTbl
 
 def printRaceResults( result ) :
-	for horse in result :
-		print()
+  mystr = ''
+  for horse in result :
+    mystr = mystr + str(horseTimes[horse]) + ' '
+  print(mystr)
+
+def mostConnectedIn( horseList ) : #but not completely connected
+    # Sort the horses according to their connections
+  connections = [(len(scoreboard[horse]), horse) for horse in horseList]
+  connections.sort()
+  connections.reverse()
+
+  # Find the most connected, but not complete horse
+  for horseTuple in connections :
+    if horseTuple[0] < len(horses) :
+      return horseTuple[1]
+      break
+  print(str(horseList) + 'only have completed connections')
+  return None
+
+def mostConnectedAndUnrelatedIn( horseSet ) :
+  goldenBoy = mostConnectedIn(horseSet)
+  goldenBoyRelations = set(scoreboard[goldenBoy].keys())
+  unrelated = (horses - set([goldenBoy])) - goldenBoyRelations
+  return (goldenBoy, unrelated)
 
 relationshipGoal = len(names) * (len(names) - 1)
 while getNumRelations() < relationshipGoal : # the scoreboard is not complete, need to run more races 
   
-  # Sort the horses according to their connections
-  connections = [(len(scoreboard[horse]), horse) for horse in names]
-  connections.sort()
-
-  # Find the most connected, but not complete horse
-  for horseTuple in reversed(connections) :
-  	if horseTuple[0] < len(names) :
-  		mostConnectedNotCompleteHorse = horseTuple[1]
-  		break
+  intersection = horses
+  lineup = ['', '', '', '', '']
+  for position in range(len(lineup)) :
+    lineup[position], intersection = mostConnectedAndUnrelatedIn(intersection)
 
   # Race the most connected horse against the 4 least connected
 
-  result = race([connections[0][1],
-                 connections[1][1],
-                 connections[2][1],
-                 connections[3][1],
-                 mostConnectedNotCompleteHorse])
+  result = race(lineup)
+  printRaceResults(result)
   resultToScoreboard(result)
   updateScoreboard()
   print(getNumRelations())
 
+  #break
+
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
-print(str(ranking()))
+#print(str(ranking()))
