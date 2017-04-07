@@ -60,19 +60,15 @@ def resultToScoreboard( result ) :
       scoreboard[result[position]][result[slower]] = False
 
 def ranking() :
-  ranking = range(len(scoreboard))
-  timeTbl = range(len(ranking))
-  for horse in scoreboard :
-    ranking[ sum(scoreboard[horse].values()) ] = horse
-  for rank in range(len(ranking)) :
-    timeTbl[rank] = horseTimes[ranking[rank]];
-  return timeTbl
+  rankings = list()
+  for horse in horses :
+    rankings = rankings + [ sum(scoreboard[horse].values()) ]
+  rankings.sort()
+  return rankings
 
 def printRaceResults( result ) :
-  mystr = ''
   for horse in result :
-    mystr = mystr + str(horseTimes[horse]) + ' '
-  print(mystr)
+    print(horse + ': ' + str(horseTimes[horse]))
 
 def mostConnectedIn( horseList ) : #but not completely connected
     # Sort the horses according to their connections
@@ -82,16 +78,16 @@ def mostConnectedIn( horseList ) : #but not completely connected
 
   # Find the most connected, but not complete horse
   for horseTuple in connections :
-    if horseTuple[0] < len(horses) :
+    if horseTuple[0] < len(horses) - 1 :
       return horseTuple[1]
       break
-  print(str(horseList) + 'only have completed connections')
+  #print(str(horseList) + 'only have completed connections')
   return None
 
 def mostConnectedAndUnrelatedIn( horseSet ) :
   goldenBoy = mostConnectedIn(horseSet)
   goldenBoyRelations = set(scoreboard[goldenBoy].keys())
-  unrelated = (horses - set([goldenBoy])) - goldenBoyRelations
+  unrelated = (horseSet - set([goldenBoy])) - goldenBoyRelations
   return (goldenBoy, unrelated)
 
 relationshipGoal = len(names) * (len(names) - 1)
@@ -101,11 +97,14 @@ while getNumRelations() < relationshipGoal : # the scoreboard is not complete, n
   lineup = ['', '', '', '', '']
   for position in range(len(lineup)) :
     lineup[position], intersection = mostConnectedAndUnrelatedIn(intersection)
+    if lineup[position] == None :
+      del(lineup[position:])
+      break
 
   # Race the most connected horse against the 4 least connected
 
   result = race(lineup)
-  printRaceResults(result)
+  #printRaceResults(result)
   resultToScoreboard(result)
   updateScoreboard()
   print(getNumRelations())
@@ -114,4 +113,4 @@ while getNumRelations() < relationshipGoal : # the scoreboard is not complete, n
 
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
-#print(str(ranking()))
+print(str(ranking()))
