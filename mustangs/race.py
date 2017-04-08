@@ -2,6 +2,7 @@
 
 #import random
 from collections import defaultdict
+import matplotlib.pyplot as plt
 import codecs
 
 numRaces = 0
@@ -91,7 +92,16 @@ def mostConnectedAndUnrelatedIn( horseSet ) :
   return (goldenBoy, unrelated)
 
 relationshipGoal = len(names) * (len(names) - 1)
-while getNumRelations() < relationshipGoal : # the scoreboard is not complete, need to run more races 
+
+# plot stuff
+plt.xkcd() #heh, should install comic-sans humor font
+#plt.axis([0, 230, 0, relationshipGoal]) #will autoscale without
+plt.xlabel('five-horse races')
+plt.ylabel('horse relations')
+plt.ion() # interactive mode on
+
+numRelations = 0;
+while numRelations < relationshipGoal : # the scoreboard is not complete, need to run more races 
   
   intersection = horses
   lineup = ['', '', '', '', '']
@@ -107,9 +117,11 @@ while getNumRelations() < relationshipGoal : # the scoreboard is not complete, n
   #printRaceResults(result)
   resultToScoreboard(result)
   updateScoreboard()
-  print(getNumRelations())
+  numRelations = getNumRelations()
 
-  #break
+  # more plot stuff
+  plt.scatter(numRaces, numRelations)
+  plt.pause(0.01)
 
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
