@@ -14,7 +14,7 @@ times = [107,47,102,64,50,100,28,91,27,5,22,114,23,42,13,3,93,8,92,79,53,83,63,7
 # Create a list of names to use as dictionary keys
 fh = codecs.open('moreHorses.txt', encoding='utf-8')
 lines = fh.readlines()
-lines = lines[0:len(times)-1]
+lines = lines[0:len(times)]
 names = [line.rstrip() for line in lines]
 horses = set(names)
 
@@ -88,41 +88,67 @@ def mostConnectedIn( horseList ) : #but not completely connected
 def mostConnectedAndUnrelatedIn( horseSet ) :
   goldenBoy = mostConnectedIn(horseSet)
   goldenBoyRelations = set(scoreboard[goldenBoy].keys())
-  unrelated = (horseSet - set([goldenBoy])) - goldenBoyRelations
+  goldenBoyRelations.add(goldenBoy) # any horse is by definition its own relative
+  unrelated = horseSet - goldenBoyRelations
   return (goldenBoy, unrelated)
 
 relationshipGoal = len(names) * (len(names) - 1)
 
 # plot stuff
-plt.xkcd() #heh, should install comic-sans humor font
-#plt.axis([0, 230, 0, relationshipGoal]) #will autoscale without
-plt.xlabel('five-horse races')
-plt.ylabel('horse relations')
-plt.ion() # interactive mode on
+#plt.xkcd() #heh
+fig, ax = plt.subplots(ncols=2)
+fig.set_figheight(10)
+fig.set_figwidth(20)
+fig.show()
+fig.canvas.draw()
+
+ax[0].plot(animated=True)
+ax[1].plot(animated=True)
+
+#ax[0].title('Sorting race horses without a stopwatch')
+#ax[0].axis([0, 230, 0, relationshipGoal]) #will autoscale without
+#ax[0].xlabel('# five-horse races')
+#ax[0].ylabel('# horse relations')
+#ax[0].ion() # interactive mode on
+
 
 numRelations = 0;
 while numRelations < relationshipGoal : # the scoreboard is not complete, need to run more races 
-  
-  intersection = horses
-  lineup = ['', '', '', '', '']
-  for position in range(len(lineup)) :
-    lineup[position], intersection = mostConnectedAndUnrelatedIn(intersection)
-    if lineup[position] == None :
-      del(lineup[position:])
-      break
+  try :
+    # Plot stuff
+    paint = 'blue'
+    dot = 'o'
 
-  # Race the most connected horse against the 4 least connected
+    # Actual algo.
+    intersection = horses
+    lineup = ['', '', '', '', '']
+    for position in range(len(lineup)) :
+      lineup[position], intersection = mostConnectedAndUnrelatedIn(intersection)
+      if lineup[position] == None :
+        paint = 'red'; dot = '*' # signify failiure to get a perfect race
+        del(lineup[position:])
+        break
 
-  result = race(lineup)
-  #printRaceResults(result)
-  resultToScoreboard(result)
-  updateScoreboard()
-  numRelations = getNumRelations()
+    result = race(lineup)
+    #printRaceResults(result)
+    resultToScoreboard(result)
+    updateScoreboard()
+    #numRelations = getNumRelations() # calculated by plot stuff
 
-  # more plot stuff
-  plt.scatter(numRaces, numRelations)
-  plt.pause(0.01)
+    # more plot stuff
+
+    # bar graph with a bar for each horse('s time') and how many relatives it has
+    heights = [len(scoreboard[horse]) for horse in names]
+    numRelations = sum(heights)
+    ax[1].bar(times, heights)
+
+    # scatter plot
+    ax[0].scatter(numRaces, numRelations, color=paint, marker=dot)
+    fig.canvas.draw()
+
+  except KeyboardInterrupt:
+    break
 
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
-print(str(ranking()))
+#print(str(ranking()))
