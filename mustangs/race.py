@@ -50,7 +50,7 @@ def race( heat ) :
   numRaces += 1
   race = zip([horseTimes[heat[i]] for i in range(0, len(heat))], heat)
   race.sort()
-  return zip(*race)[1] # return a sorted tuple of the horses in the race 
+  return zip(*race)[1] # return a sorted tuple of the horses in the race
 
 def resultToScoreboard( result ) :
   global scoreboard
@@ -63,7 +63,7 @@ def resultToScoreboard( result ) :
 def ranking() :
   rankings = list()
   for horse in horses :
-    rankings = rankings + [ sum(scoreboard[horse].values()) ]
+    rankings = rankings + [ sum(scoreboard[horse].values()) + 1]
   rankings.sort()
   return rankings
 
@@ -96,23 +96,28 @@ relationshipGoal = len(names) * (len(names) - 1)
 
 # plot stuff
 #plt.xkcd() #heh
-fig, ax = plt.subplots(ncols=2)
+fig, ax = plt.subplots(figsize=(20, 10), ncols=2)
 fig.set_figheight(10)
 fig.set_figwidth(20)
+
+line = ax[0].plot(range(250), range(0, relationshipGoal, relationshipGoal/250), animated=True)
+bars = ax[1].bar(times, range(125), animated=True)
+
+# Let's capture the background of the figure
+backgrounds = [fig.canvas.copy_from_bbox(axe.bbox) for axe in ax]
+
+ax[0].set_title ('Total relations (goal=15500)')
+ax[0].set_xlabel('# five-horse races')
+ax[0].set_ylabel('# horse relations')
+
+ax[1].set_title( 'Individual relations (goal=124)')
+ax[1].set_xlabel('Horse time')
+ax[1].set_ylabel('# horse relations')
+
 fig.show()
 fig.canvas.draw()
 
-ax[0].plot(animated=True)
-ax[1].plot(animated=True)
-
-#ax[0].title('Sorting race horses without a stopwatch')
-#ax[0].axis([0, 230, 0, relationshipGoal]) #will autoscale without
-#ax[0].xlabel('# five-horse races')
-#ax[0].ylabel('# horse relations')
-#ax[0].ion() # interactive mode on
-
-
-numRelations = 0;
+numRelations = 0; relationsList = range(0, relationshipGoal, relationshipGoal/250)
 while numRelations < relationshipGoal : # the scoreboard is not complete, need to run more races 
   try :
     # Plot stuff
@@ -140,15 +145,27 @@ while numRelations < relationshipGoal : # the scoreboard is not complete, need t
     # bar graph with a bar for each horse('s time') and how many relatives it has
     heights = [len(scoreboard[horse]) for horse in names]
     numRelations = sum(heights)
-    ax[1].bar(times, heights)
+
+    fig.canvas.restore_region(backgrounds[1])
+    for  idx in range(125) :
+      bars[idx].set_height(heights[idx])
+      ax[1].draw_artist(bars[idx])
+    fig.canvas.blit(ax[1].bbox)
 
     # scatter plot
-    ax[0].scatter(numRaces, numRelations, color=paint, marker=dot)
-    fig.canvas.draw()
+    fig.canvas.restore_region(backgrounds[0])
+    relationsList[numRaces] = numRelations
+    line[0].set_ydata(relationsList)
+    ax[0].draw_artist(line[0])
+    fig.canvas.blit(ax[0].bbox)
+    #ax[0].scatter(numRaces, numRelations, color=paint, marker=dot)
+
+    #fig.canvas.blit(ax[0].bbox)
+    #fig.canvas.draw()
 
   except KeyboardInterrupt:
     break
 
 
 print('It took ' + str(numRaces) + ' five-horse-races to rank all ' + str(len(names)) + ' horses')
-#print(str(ranking()))
+print(str(ranking()))
