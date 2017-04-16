@@ -61,10 +61,9 @@ def resultToScoreboard( result ) :
       scoreboard[result[position]][result[slower]] = False
 
 def ranking() :
-  rankings = list()
+  rankings = range(len(horses))
   for horse in horses :
-    rankings = rankings + [ sum(scoreboard[horse].values()) + 1]
-  rankings.sort()
+    rankings[sum(scoreboard[horse].values())] = horseTimes[horse]
   return rankings
 
 def printRaceResults( result ) :
@@ -100,7 +99,10 @@ fig, ax = plt.subplots(figsize=(20, 10), ncols=2)
 fig.set_figheight(10)
 fig.set_figwidth(20)
 
-line = ax[0].plot(range(250), range(0, relationshipGoal, relationshipGoal/250), animated=True)
+# Set up the canvas, the ranges here decides the elements to plot and y axis ranges (if not limited)
+xticks = 226 #max number of races
+yrange = [0 for i in range(xticks)]; yrange[len(yrange)-1] = relationshipGoal
+line = ax[0].plot(range(xticks), yrange, animated=True)
 bars = ax[1].bar(times, range(125), animated=True)
 
 # Let's capture the background of the figure
@@ -109,15 +111,19 @@ backgrounds = [fig.canvas.copy_from_bbox(axe.bbox) for axe in ax]
 ax[0].set_title ('Total relations (goal=15500)')
 ax[0].set_xlabel('# five-horse races')
 ax[0].set_ylabel('# horse relations')
+ax[0].set_xlim([0, xticks])
+ax[0].set_ylim([0, relationshipGoal])
 
 ax[1].set_title( 'Individual relations (goal=124)')
 ax[1].set_xlabel('Horse time')
 ax[1].set_ylabel('# horse relations')
+ax[1].set_xlim([1, len(horses)])
+ax[1].set_ylim([min(times), max(times)])
 
 fig.show()
 fig.canvas.draw()
 
-numRelations = 0; relationsList = range(0, relationshipGoal, relationshipGoal/250)
+numRelations = 0; relationsList = [0 for i in range(xticks)]
 while numRelations < relationshipGoal : # the scoreboard is not complete, need to run more races 
   try :
     # Plot stuff
