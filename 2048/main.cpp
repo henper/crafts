@@ -38,6 +38,8 @@ void Board::up()
     // go in the direction indicated until an active square is found or edge of board
 
     // merge the squareas if their values are equal
+
+  setSquare(0,0);
 }
 
 Board board;
@@ -83,19 +85,19 @@ void timerCB(int millisec)
     glutPostRedisplay();
 }
 
-void keyboardCB(unsigned char key, int x, int y)
+void keyboardCB(int key, int x, int y)
 {
 
   switch(key)
   {
-    case 65: // up
+    case GLUT_KEY_UP:
       board.up();
       break;
-    case 66: // down
+    case GLUT_KEY_DOWN:
       break;
-    case 67: // right
+    case GLUT_KEY_LEFT:
       break;
-    case 68: // left
+    case GLUT_KEY_RIGHT:
       break;
   }
 
@@ -116,7 +118,7 @@ int main(int argc, char **argv)
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
   //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
-  glutKeyboardFunc(keyboardCB);
+  glutSpecialFunc(keyboardCB);
   //Call to the drawing function
   glutDisplayFunc(draw);
   //Background color
