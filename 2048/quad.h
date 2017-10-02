@@ -8,11 +8,9 @@
 #ifndef SQUARE_H_
 #define SQUARE_H_
 
-#include <GL/glut.h>
-
 typedef struct rgbColor
 {
-  GLfloat r,g,b;
+  float r,g,b;
 } rgbColor;
 
 typedef struct quadVertice
@@ -24,15 +22,11 @@ typedef struct quadVertice
   rgbColor bottomLeft;
 } quadVertice;
 
-class Square {
-
-  static const quadVertice activeBackground;
-  static const quadVertice emptyBackground;
+class Quad {
 
 public:
-  Square();
-  Square(int val);
-  ~Square();
+  Quad();
+  Quad(int val);
 
   quadVertice vertex;
   //int value;

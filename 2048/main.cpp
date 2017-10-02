@@ -34,10 +34,10 @@ void draw(void)
   glEnableClientState(GL_VERTEX_ARRAY);
 
   // before draw, specify vertex arrays
-  glColorPointer(3, GL_FLOAT, 0, &board.square[0][0].vertex.topLeft.r);
+  glColorPointer(3, GL_FLOAT, 0, &board.quad[0][0].vertex.topLeft.r);
   glVertexPointer(2, GL_FLOAT, 0, vertices);
 
-  glDrawArrays(GL_QUADS, 0, 4*dim*dim);
+  glDrawArrays(GL_QUADS, 0, 4*dim*dim); //we're drawing QUADS hence the 4 indices per square
 
   glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
   glDisableClientState(GL_COLOR_ARRAY);
@@ -75,8 +75,8 @@ void keyboardCB(int key, int x, int y)
 int main(int argc, char **argv)
 {
   // set a first two squares
-  board.setSquare(0,1,1);
-  board.setSquare(dim-1,1,1);
+  board.setSquare(0,1,2);
+  board.setSquare(dim-1,1,2);
 
   glutInit(&argc, argv);
   //Simple buffer

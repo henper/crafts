@@ -8,13 +8,13 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include "square.h"
+#include "quad.h"
 
 class Board
 {
 public:
   Board();
-  void setSquare(int x, int y, int val) { square[x][y] = Square(val); }
+  void setSquare(int x, int y, int val) { quad[x][y] = Quad(val); squareVal[x][y] = val; }
 
   // controls
   void up();
@@ -22,7 +22,11 @@ public:
   void right();
   void left();
 
-  Square square[4][4];
+  // holds the colors for all vertices
+  Quad quad[4][4];
+
+  // holds the numerical value in each square
+  int squareVal[4][4];
 };
 
 

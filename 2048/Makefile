@@ -1,4 +1,6 @@
 
+CC_FLAGS = -g -c -std=gnu++14
+
 all : main
 
 .PHONY : clean
@@ -6,14 +8,14 @@ all : main
 clean :
 	rm -f *.o *.h.gch
 
-square.o : square.cpp square.h
-	g++ -g -c $^
+quad.o : quad.cpp
+	g++ $(CC_FLAGS) $^
 
-board.o : board.cpp board.h
-	g++ -g -c $^
+board.o : board.cpp
+	g++ $(CC_FLAGS) $^
 
 main.o : main.cpp colors.h vertices.h
-	g++ -g -c $^
+	g++ $(CC_FLAGS) $^
 
-main : main.o board.o square.o
+main : main.o board.o quad.o
 	g++ $^ -o $@ -lpthread -lGL -lGLU -lglut

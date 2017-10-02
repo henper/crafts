@@ -10,17 +10,35 @@
 
 Board::Board()
 {
-  //std::memset(square, 0, sizeof(square));
+
 }
 
 void Board::up()
 {
   // for all active squares
+  for(int x = 0; x < 4; ++x)
+    {
+      for(int y = 0; y < 4; ++y)
+        {
+          if(squareVal[x][y])
+            {
+              // move in the direction indicated until an active square is found or edge of board
+              int dy = y;
+              while(dy<4)
+                {
+                  if(squareVal[x][dy] )
+                    {
 
-    // go in the direction indicated until an active square is found or edge of board
+                    }
+                  ++dy;
+                }
 
-    // merge the squares if their values are equal
+              // merge the squares if their values are equal
+            }
 
+        }
+
+    }
   setSquare(0,0,0);
 }
 
