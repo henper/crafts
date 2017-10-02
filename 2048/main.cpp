@@ -5,42 +5,9 @@
 #include "vertices.h"
 #include "colors.h"
 
+#include "board.h"
+
 const int dim = 4;
-
-typedef struct rgbColor
-{
-  GLfloat r,g,b;
-} rgbColor;
-
-class Board
-{
-  // The background color of a filled square
-  static const rgbColor squareBackgroundColor;
-
-public:
-  void setSquare(int x, int y) { for(int i = 0; i < 4; colors[y][x][i++] = squareBackgroundColor); }
-
-  // controls
-  void up();
-  void down();
-  void right();
-  void left();
-
-  rgbColor colors[dim][dim][4];
-};
-
-const rgbColor Board::squareBackgroundColor = {.r=1.0, .g=0.8, .b=0.3};
-
-void Board::up()
-{
-  // for all active squares
-
-    // go in the direction indicated until an active square is found or edge of board
-
-    // merge the squareas if their values are equal
-
-  setSquare(0,0);
-}
 
 Board board;
 
@@ -67,7 +34,7 @@ void draw(void)
   glEnableClientState(GL_VERTEX_ARRAY);
 
   // before draw, specify vertex arrays
-  glColorPointer(3, GL_FLOAT, 0, board.colors);
+  glColorPointer(3, GL_FLOAT, 0, &board.square[0][0].vertex.topLeft.r);
   glVertexPointer(2, GL_FLOAT, 0, vertices);
 
   glDrawArrays(GL_QUADS, 0, 4*dim*dim);
@@ -108,8 +75,8 @@ void keyboardCB(int key, int x, int y)
 int main(int argc, char **argv)
 {
   // set a first two squares
-  board.setSquare(0,1);
-  board.setSquare(dim-1,1);
+  board.setSquare(0,1,1);
+  board.setSquare(dim-1,1,1);
 
   glutInit(&argc, argv);
   //Simple buffer

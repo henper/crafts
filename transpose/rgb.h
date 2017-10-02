@@ -1,12 +1,12 @@
-#include <GL/glut.h>
 
-typedef struct 
+struct rgb 
 {
-	GLfloat r,g,b;
-} quadColor;
+  float r;
+  float g;
+  float b;
+};
 
-typedef struct 
+typedef struct quadRgb
 {
-	GLfloat x,y;
-	GLfloat quadColor[3];
+  struct rgb quadColor[4];
 } quadRgb;
