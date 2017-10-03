@@ -22,6 +22,16 @@ void Board::moveSquare(coord origin, coord dest)
   squareVal[origin.x][origin.y] = 0;
 }
 
+void Board::mergeIfEqual(coord origin, coord dest)
+{
+  if(dest.x < 4 && dest.y < 4 &&
+     squareVal[dest.x][dest.y] == squareVal[origin.x][origin.y])
+    {
+      setSquare(origin, 0);
+      squareVal[dest.x][dest.y] *= 2;
+    }
+}
+
 void Board::up()
 {
   coord orig = {.x = 0, .y = 0};
@@ -50,7 +60,8 @@ void Board::up()
                   dest.y++;
                 }
 
-              // merge the squares if their values are equal
+              mergeIfEqual(temp, dest);
+
             }
 
         }
@@ -87,7 +98,8 @@ void Board::down()
                   dest.y--;
                 }
 
-              // merge the squares if their values are equal
+              mergeIfEqual(temp, dest);
+
             }
 
         }
@@ -124,7 +136,8 @@ void Board::right()
                   dest.x++;
                 }
 
-              // merge the squares if their values are equal
+              mergeIfEqual(temp, dest);
+
             }
 
         }
@@ -161,7 +174,8 @@ void Board::left()
                   dest.x--;
                 }
 
-              // merge the squares if their values are equal
+              mergeIfEqual(temp, dest);
+
             }
 
         }

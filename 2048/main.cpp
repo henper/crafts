@@ -110,7 +110,7 @@ int main(int argc, char **argv)
   coord pos = {.x = 0, .y = 1};
   board.setSquare(pos,8);
   pos.x = 1; pos.y = 2;
-  board.setSquare(pos,16);
+  board.setSquare(pos,8);
 
   glutInit(&argc, argv);
   //Simple buffer

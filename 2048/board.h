@@ -20,6 +20,7 @@ class Board
 {
 private:
   void moveSquare(coord origin, coord dest);
+  void mergeIfEqual(coord origin, coord dest);
 
 public:
   Board();
