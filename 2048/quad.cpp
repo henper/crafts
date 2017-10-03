@@ -17,10 +17,10 @@ static const quadVertice activeBackground =
 
 static const quadVertice emptyBackground =
     {
-	.topLeft     = {.r=0, .g=0, .b=0},
-	.topRight    = {.r=0, .g=0, .b=0},
-	.bottomRight = {.r=0, .g=0, .b=0},
-	.bottomLeft  = {.r=0, .g=0, .b=0}
+	.topLeft     = {.r=0.5, .g=0.5, .b=0.5},
+	.topRight    = {.r=0.5, .g=0.5, .b=0.5},
+	.bottomRight = {.r=0.5, .g=0.5, .b=0.5},
+	.bottomLeft  = {.r=0.5, .g=0.5, .b=0.5}
     };
 
 Quad::Quad()

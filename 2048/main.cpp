@@ -28,17 +28,18 @@ void type()
 
               // a mono font character is 119.05 units high and 33.33 units wide
               float scale = 1/(33.33*4*2*strlen(str)); // should then supposedly fill one quarter of the screen (1/2 for -1 to +1 width)
+              //scale *= 5.0/6.0; // reduce the width of the text somewhat 
               float height = 119.05*scale;
 
               // convert from square index (0 to 3) to GL window position (-1 to +1)
-              float x = pos.x/2.0 - 1; // left most edge of the square
+              float x = pos.x/2.0 - (1.0); // -1 would be the leftmost edge
               float y = pos.y/2.0 - 0.75 - height/2.0; // half the text height down from the center of the square
-
 
               glPushMatrix();
               glTranslatef(x, y, 0.0);
               //float scale = 1/(6*152.38);
               glScalef(scale, scale, scale);
+              
               for( char* p = str; *p; p++)
               {
                   glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
@@ -122,6 +123,14 @@ int main(int argc, char **argv)
   glutDisplayFunc(draw);
   //Background color
   glClearColor(0,0,0,1); // opaque
+
+  //Text properties
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glLineWidth(3.0);
+  glColor3f(0.2, 0.2, 0.2);
+
   glutMainLoop();
   return 0;
 }
