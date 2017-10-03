@@ -64,8 +64,10 @@ void keyboardCB(int key, int x, int y)
       board.down();
       break;
     case GLUT_KEY_LEFT:
+      board.left();
       break;
     case GLUT_KEY_RIGHT:
+      board.right();
       break;
   }
 

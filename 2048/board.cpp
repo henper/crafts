@@ -41,7 +41,7 @@ void Board::up()
 
               while(dest.y < 4)
                 {
-                  if(squareVal[dest.x][dest.y] )
+                  if(squareVal[dest.x][dest.y])
                     {
                       break;
                     }
@@ -78,13 +78,87 @@ void Board::down()
 
               while(dest.y > -1)
                 {
-                  if(squareVal[dest.x][dest.y] )
+                  if(squareVal[dest.x][dest.y])
                     {
                       break;
                     }
                   moveSquare(temp, dest);
                   temp = dest;
                   dest.y--;
+                }
+
+              // merge the squares if their values are equal
+            }
+
+        }
+
+    }
+
+}
+
+void Board::right()
+{
+  coord orig = {.x = 0, .y = 0};
+  coord dest = {.x = 0, .y = 0};
+
+  // for all active squares
+  for(orig.x = 2; orig.x > -1; orig.x--)  // begin at the second right-most row of the board (sqaures already at the top have nowhere to go)
+    {
+      for(orig.y = 0; orig.y < 4; orig.y++)  // y-direction matters not
+        {
+          if(squareVal[orig.x][orig.y])
+            {
+              // move in the direction indicated until an active square is found or edge of board
+              dest.x = orig.x + 1;
+              dest.y = orig.y;
+              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+
+              while(dest.x < 4)
+                {
+                  if(squareVal[dest.x][dest.y])
+                    {
+                      break;
+                    }
+                  moveSquare(temp, dest);
+                  temp = dest;
+                  dest.x++;
+                }
+
+              // merge the squares if their values are equal
+            }
+
+        }
+
+    }
+
+}
+
+void Board::left()
+{
+  coord orig = {.x = 0, .y = 0};
+  coord dest = {.x = 0, .y = 0};
+
+  // for all active squares
+  for(orig.x = 1; orig.x < 4; orig.x++)  // begin at the second left-most row of the board
+    {
+      for(orig.y = 0; orig.y < 4; orig.y++)  // y-direction matters not
+        {
+          if(squareVal[orig.x][orig.y])
+            {
+              // move in the direction indicated until an active square is found or edge of board
+              dest.x = orig.x - 1;
+              dest.y = orig.y;
+              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+
+              while(dest.x > -1)
+                {
+                  if(squareVal[dest.x][dest.y])
+                    {
+                      break;
+                    }
+                  moveSquare(temp, dest);
+                  temp = dest;
+                  dest.x--;
                 }
 
               // merge the squares if their values are equal
