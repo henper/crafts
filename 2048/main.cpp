@@ -61,6 +61,7 @@ void keyboardCB(int key, int x, int y)
       board.up();
       break;
     case GLUT_KEY_DOWN:
+      board.down();
       break;
     case GLUT_KEY_LEFT:
       break;
@@ -83,7 +84,7 @@ int main(int argc, char **argv)
   glutInit(&argc, argv);
   //Simple buffer
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
-  glutInitWindowPosition(50,1000);
+  glutInitWindowPosition(1000,50);
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
   //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
