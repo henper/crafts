@@ -25,6 +25,7 @@ private:
 public:
   Board();
   void setSquare(coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
+  void genSquare();
 
   // controls
   void up();

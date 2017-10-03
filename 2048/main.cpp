@@ -107,10 +107,8 @@ void keyboardCB(int key, int x, int y)
 int main(int argc, char **argv)
 {
   // set first two squares
-  coord pos = {.x = 0, .y = 1};
-  board.setSquare(pos,8);
-  pos.x = 1; pos.y = 2;
-  board.setSquare(pos,8);
+  board.genSquare();
+  board.genSquare();
 
   glutInit(&argc, argv);
   //Simple buffer

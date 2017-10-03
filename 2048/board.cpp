@@ -7,9 +7,39 @@
 
 #include "board.h"
 #include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <vector>
 
 Board::Board()
 {
+
+}
+
+void Board::genSquare()
+{
+  std::vector<coord> emptySquares;
+
+  for(coord i = {.x=0, .y=0}; i.y < 4; i.y++)
+    {
+      for(i.x = 0; i.x < 4; i.x++)
+        {
+          if(squareVal[i.x][i.y] == 0)
+            emptySquares.push_back(i);
+        }
+    }
+
+  // if there are no empty squares, you've lost
+  if(emptySquares.empty())
+    {
+      printf("You loose!\n");
+      return;
+    }
+
+  // pick a random empty square and initalize it
+  int idx = rand() % emptySquares.size();
+  int val = ((rand() % 2) + 1) * 2;
+  setSquare(emptySquares[idx], val);
 
 }
 
@@ -68,6 +98,8 @@ void Board::up()
 
     }
 
+  genSquare();
+
 }
 
 void Board::down()
@@ -105,6 +137,8 @@ void Board::down()
         }
 
     }
+
+  genSquare();
 
 }
 
@@ -144,6 +178,8 @@ void Board::right()
 
     }
 
+  genSquare();
+
 }
 
 void Board::left()
@@ -181,6 +217,8 @@ void Board::left()
         }
 
     }
+
+  genSquare();
 
 }
 
