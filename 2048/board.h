@@ -10,11 +10,20 @@
 
 #include "quad.h"
 
+// Square coordinate in grid: 4x4
+typedef struct coord
+{
+  int x, y;
+} coord;
+
 class Board
 {
+private:
+  void moveSquare(coord origin, coord dest);
+
 public:
   Board();
-  void setSquare(int x, int y, int val) { quad[x][y] = Quad(val); squareVal[x][y] = val; }
+  void setSquare(coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
 
   // controls
   void up();

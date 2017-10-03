@@ -74,14 +74,16 @@ void keyboardCB(int key, int x, int y)
 //Main program
 int main(int argc, char **argv)
 {
-  // set a first two squares
-  board.setSquare(0,1,2);
-  board.setSquare(dim-1,1,2);
+  // set first two squares
+  coord pos = {.x = 0, .y = 1};
+  board.setSquare(pos,2);
+  pos.x = 1; pos.y = 2;
+  board.setSquare(pos,2);
 
   glutInit(&argc, argv);
   //Simple buffer
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
-  glutInitWindowPosition(50,50);
+  glutInitWindowPosition(50,1000);
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
   //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
