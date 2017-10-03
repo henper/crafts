@@ -52,20 +52,25 @@ void Board::moveSquare(coord origin, coord dest)
   squareVal[origin.x][origin.y] = 0;
 }
 
-void Board::mergeIfEqual(coord origin, coord dest)
+bool Board::mergeIfEqual(coord origin, coord dest)
 {
   if(dest.x < 4 && dest.y < 4 &&
      squareVal[dest.x][dest.y] == squareVal[origin.x][origin.y])
     {
       setSquare(origin, 0);
       squareVal[dest.x][dest.y] *= 2;
+      return true;
     }
+  return false;
 }
 
 void Board::up()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
+
+  bool movePossible, mergePossible;
+  movePossible = mergePossible = false;
 
   // for all active squares
   for(orig.y = 2; orig.y > -1; orig.y--)  // begin at the second top-most row of the board (sqaures already at the top have nowhere to go)
@@ -83,14 +88,16 @@ void Board::up()
                 {
                   if(squareVal[dest.x][dest.y])
                     {
+                      // another square was in the way (check later if equal values)
                       break;
                     }
+                  movePossible = true;
                   moveSquare(temp, dest);
                   temp = dest;
                   dest.y++;
                 }
 
-              mergeIfEqual(temp, dest);
+              mergePossible = mergeIfEqual(temp, dest);
 
             }
 
@@ -98,7 +105,8 @@ void Board::up()
 
     }
 
-  genSquare();
+  if(movePossible || mergePossible)
+    genSquare();
 
 }
 
@@ -106,6 +114,9 @@ void Board::down()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
+
+  bool movePossible, mergePossible;
+  movePossible = mergePossible = false;
 
   // for all active squares
   for(orig.y = 1; orig.y < 4; orig.y++)  // begin at the second bottom-most row of the board (sqaures already at the top have nowhere to go)
@@ -123,14 +134,16 @@ void Board::down()
                 {
                   if(squareVal[dest.x][dest.y])
                     {
+                      // another square was in the way (check later if equal values)
                       break;
                     }
+                  movePossible = true;
                   moveSquare(temp, dest);
                   temp = dest;
                   dest.y--;
                 }
 
-              mergeIfEqual(temp, dest);
+              mergePossible = mergeIfEqual(temp, dest);
 
             }
 
@@ -138,7 +151,8 @@ void Board::down()
 
     }
 
-  genSquare();
+  if(movePossible || mergePossible)
+    genSquare();
 
 }
 
@@ -146,6 +160,9 @@ void Board::right()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
+
+  bool movePossible, mergePossible;
+  movePossible = mergePossible = false;
 
   // for all active squares
   for(orig.x = 2; orig.x > -1; orig.x--)  // begin at the second right-most row of the board (sqaures already at the top have nowhere to go)
@@ -163,14 +180,16 @@ void Board::right()
                 {
                   if(squareVal[dest.x][dest.y])
                     {
+                      // another square was in the way (check later if equal values)
                       break;
                     }
+                  movePossible = true;
                   moveSquare(temp, dest);
                   temp = dest;
                   dest.x++;
                 }
 
-              mergeIfEqual(temp, dest);
+              mergePossible = mergeIfEqual(temp, dest);
 
             }
 
@@ -178,7 +197,8 @@ void Board::right()
 
     }
 
-  genSquare();
+  if(movePossible || mergePossible)
+    genSquare();
 
 }
 
@@ -186,6 +206,9 @@ void Board::left()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
+
+  bool movePossible, mergePossible;
+  movePossible = mergePossible = false;
 
   // for all active squares
   for(orig.x = 1; orig.x < 4; orig.x++)  // begin at the second left-most row of the board
@@ -203,14 +226,16 @@ void Board::left()
                 {
                   if(squareVal[dest.x][dest.y])
                     {
+                      // another square was in the way (check later if equal values)
                       break;
                     }
+                  movePossible = true;
                   moveSquare(temp, dest);
                   temp = dest;
                   dest.x--;
                 }
 
-              mergeIfEqual(temp, dest);
+              mergePossible = mergeIfEqual(temp, dest);
 
             }
 
@@ -218,7 +243,8 @@ void Board::left()
 
     }
 
-  genSquare();
+  if(movePossible || mergePossible)
+    genSquare();
 
 }
 

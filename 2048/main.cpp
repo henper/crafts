@@ -32,7 +32,7 @@ void type()
               float height = 119.05*scale;
 
               // convert from square index (0 to 3) to GL window position (-1 to +1)
-              float x = pos.x/2.0 - (1.0); // -1 would be the leftmost edge
+              float x = pos.x/2.0 - (0.95); // -1 would be the leftmost edge
               float y = pos.y/2.0 - 0.75 - height/2.0; // half the text height down from the center of the square
 
               glPushMatrix();
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 {
   // set first two squares
   board.genSquare();
-  board.genSquare();
+  board.genSquare(); 
 
   glutInit(&argc, argv);
   //Simple buffer
