@@ -1,6 +1,8 @@
-#include <GL/glut.h>
-#include <cmath>
+
 #include <cstdio>
+#include <cstring>
+
+#include <GL/glut.h>
 
 #include "vertices.h"
 #include "colors.h"
@@ -11,17 +13,41 @@ const int dim = 4;
 
 Board board;
 
-void type(char* str)
+void type()
 {
-  glPushMatrix();
-  glTranslatef(-1.0, -1.0, 0.0);
-  float scale = 1/(6*152.38);
-  glScalef(scale, scale, scale);
-  for( char* p = str; *p; p++)
-  {
-      glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
-  }
-  glPopMatrix();
+  char str[100];
+  coord pos;
+  for(pos.x = 0; pos.x < 4; pos.x++)
+    {
+      for(pos.y = 0; pos.y < 4; pos.y++)
+        {
+          int num = board.squareVal[pos.x][pos.y];
+          if(num)
+            {
+              sprintf(str, "%d", num);
+
+              // a mono font character is 119.05 units high and 33.33 units wide
+              float scale = 1/(33.33*4*2*strlen(str)); // should then supposedly fill one quarter of the screen (1/2 for -1 to +1 width)
+              float height = 119.05*scale;
+
+              // convert from square index (0 to 3) to GL window position (-1 to +1)
+              float x = pos.x/2.0 - 1; // left most edge of the square
+              float y = pos.y/2.0 - 0.75 - height/2.0; // half the text height down from the center of the square
+
+
+              glPushMatrix();
+              glTranslatef(x, y, 0.0);
+              //float scale = 1/(6*152.38);
+              glScalef(scale, scale, scale);
+              for( char* p = str; *p; p++)
+              {
+                  glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
+              }
+              glPopMatrix();
+
+            }
+        }
+    }
 }
 
 //Drawing funciton
@@ -41,6 +67,9 @@ void draw(void)
 
   glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
   glDisableClientState(GL_COLOR_ARRAY);
+
+  // After the quad vertices and colors have been drawn add the number on each square
+  type();
 
   //Draw order
   glFlush();
@@ -79,9 +108,9 @@ int main(int argc, char **argv)
 {
   // set first two squares
   coord pos = {.x = 0, .y = 1};
-  board.setSquare(pos,2);
+  board.setSquare(pos,8);
   pos.x = 1; pos.y = 2;
-  board.setSquare(pos,2);
+  board.setSquare(pos,16);
 
   glutInit(&argc, argv);
   //Simple buffer
