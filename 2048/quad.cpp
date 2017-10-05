@@ -6,21 +6,14 @@
  */
 
 #include "quad.h"
-
-static const quadVertice activeBackground =
-    {
-	.topLeft     = {.r=1.0, .g=0.8, .b=0.3},
-	.topRight    = {.r=1.0, .g=0.8, .b=0.3},
-	.bottomRight = {.r=1.0, .g=0.8, .b=0.3},
-	.bottomLeft  = {.r=1.0, .g=0.8, .b=0.3}
-    };
+#include "colors.h"
 
 static const quadVertice emptyBackground =
     {
 	.topLeft     = {.r=0.5, .g=0.5, .b=0.5},
 	.topRight    = {.r=0.5, .g=0.5, .b=0.5},
-	.bottomRight = {.r=0.5, .g=0.5, .b=0.5},
-	.bottomLeft  = {.r=0.5, .g=0.5, .b=0.5}
+	.bottomLeft  = {.r=0.5, .g=0.5, .b=0.5},
+	.bottomRight = {.r=0.5, .g=0.5, .b=0.5}
     };
 
 Quad::Quad()
@@ -32,7 +25,13 @@ Quad::Quad()
 Quad::Quad(int val)
 {
   if(val > 0)
-    vertex = activeBackground;
+    {
+      /*rgbColor* col1 = reinterpret_cast<rgbColor*>(colors[__builtin_ctz(val)*4]);
+      quadVertice quadColors = {*col1, *col1, *col1, *col1};*/
+
+      quadVertice* quadColors = reinterpret_cast<quadVertice*>(colors[__builtin_ctz(val)*4]);
+      vertex = *quadColors;
+    }
   else
     vertex = emptyBackground;
 }

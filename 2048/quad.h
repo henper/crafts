@@ -18,8 +18,8 @@ typedef struct quadVertice
   // Note order is defined by OpenGL
   rgbColor topLeft;
   rgbColor topRight;
-  rgbColor bottomRight;
   rgbColor bottomLeft;
+  rgbColor bottomRight;
 } quadVertice;
 
 class Quad {

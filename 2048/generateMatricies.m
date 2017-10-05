@@ -16,5 +16,12 @@ end
 
 prettyPrint(single(vertices), 'vertices');
 
-colours   = jet(width*height*4);   % r-g-b values for each quad
-prettyPrint(single(colours), 'colors');
+% Generate colors for 2048 squares
+numColors = 17; % We need a unique color for all unique square values:
+                % 2, 4 ... 65536, 131072
+                % 2¹, 2² ... 2¹⁶, 2¹⁷
+                
+% I like the last half of the bone (kind of blue) color scheme
+scheme = flipud(bone(numColors*2*4)); % times 4 to get a nice gradient for each quad
+colors = scheme(numColors+1:end,:);   % r-g-b values
+prettyPrint(single(colors), 'colors');

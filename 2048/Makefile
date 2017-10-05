@@ -14,7 +14,7 @@ quad.o : quad.cpp
 board.o : board.cpp
 	g++ $(CC_FLAGS) $^
 
-main.o : main.cpp colors.h vertices.h
+main.o : main.cpp vertices.h
 	g++ $(CC_FLAGS) $^
 
 main : main.o board.o quad.o

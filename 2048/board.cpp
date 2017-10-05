@@ -57,8 +57,12 @@ bool Board::mergeIfEqual(coord origin, coord dest)
   if(dest.x < 4 && dest.y < 4 &&
      squareVal[dest.x][dest.y] == squareVal[origin.x][origin.y])
     {
+      // clear the 'from' square
       setSquare(origin, 0);
+
+      // and update the value and color of the merging square
       squareVal[dest.x][dest.y] *= 2;
+      quad[dest.x][dest.y] = Quad(squareVal[dest.x][dest.y]);
       return true;
     }
   return false;

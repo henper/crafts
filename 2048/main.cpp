@@ -5,7 +5,6 @@
 #include <GL/glut.h>
 
 #include "vertices.h"
-#include "colors.h"
 
 #include "board.h"
 
@@ -26,14 +25,31 @@ void type()
             {
               sprintf(str, "%d", num);
 
+              // Scale the numbers to fit nicely into a square, start width making sure that the width will fit
               // a mono font character is 119.05 units high and 33.33 units wide
-              float scale = 1/(33.33*4*2*strlen(str)); // should then supposedly fill one quarter of the screen (1/2 for -1 to +1 width)
-              //scale *= 5.0/6.0; // reduce the width of the text somewhat 
+              float scale = 1/(33.33*4*2); // should then supposedly fill one quarter of the screen (1/2 for -1 to +1 width)
+
+              // Add consideration for number of digits
+              int numDigits = strlen(str);
+              scale /= numDigits; // will make any number of digits fit into the square
+
+              // Having one giant digit fill the entire square looks odd, decreases readability, scale a lone digit down further
+              if(numDigits == 1)
+                {
+                  scale /= 2;
+                }
+
               float height = 119.05*scale;
 
               // convert from square index (0 to 3) to GL window position (-1 to +1)
-              float x = pos.x/2.0 - (0.95); // -1 would be the leftmost edge
+              float x = pos.x/2.0 - 0.95; // -1 would be the leftmost edge
               float y = pos.y/2.0 - 0.75 - height/2.0; // half the text height down from the center of the square
+
+              // b/c of the abnormal scale for one digit it has to be placed further right than the others to be in the middle
+              if(numDigits == 1)
+                {
+                  x += 0.1;
+                }
 
               glPushMatrix();
               glTranslatef(x, y, 0.0);
@@ -109,7 +125,16 @@ int main(int argc, char **argv)
 {
   // set first two squares
   board.genSquare();
-  board.genSquare(); 
+  board.genSquare();
+
+  /*coord pos;
+  pos.y = 0;
+  pos.x = 0;
+  board.setSquare(pos, 65536*2);
+  pos.x = 1;
+  board.setSquare(pos, 65536);
+  pos.x = 2;
+  board.setSquare(pos, 4096);*/
 
   glutInit(&argc, argv);
   //Simple buffer
@@ -118,7 +143,8 @@ int main(int argc, char **argv)
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
   //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
-  glutSpecialFunc(keyboardCB);
+  //glutSpecialFunc(keyboardCB);
+  glutSpecialUpFunc(keyboardCB);
   //Call to the drawing function
   glutDisplayFunc(draw);
   //Background color
