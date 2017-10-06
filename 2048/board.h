@@ -25,13 +25,13 @@ private:
 public:
   Board();
   void setSquare(coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
-  void genSquare();
+  bool genSquare();
 
   // controls
-  void up();
-  void down();
-  void right();
-  void left();
+  bool up();
+  bool down();
+  bool right();
+  bool left();
 
   // holds the colors for all vertices
   Quad quad[4][4];

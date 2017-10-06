@@ -13,10 +13,10 @@
 
 Board::Board()
 {
-
+  std::memset(squareVal, 0, sizeof(squareVal));
 }
 
-void Board::genSquare()
+bool Board::genSquare()
 {
   std::vector<coord> emptySquares;
 
@@ -32,8 +32,8 @@ void Board::genSquare()
   // if there are no empty squares, you've lost
   if(emptySquares.empty())
     {
-      printf("You loose!\n");
-      return;
+      printf("Internal error: Do not call genSquare() if no move was possible \n");
+      return false;
     }
 
   // pick a random empty square and initalize it
@@ -41,6 +41,7 @@ void Board::genSquare()
   int val = ((rand() % 2) + 1) * 2;
   setSquare(emptySquares[idx], val);
 
+  return true;
 }
 
 void Board::moveSquare(coord origin, coord dest)
@@ -68,7 +69,7 @@ bool Board::mergeIfEqual(coord origin, coord dest)
   return false;
 }
 
-void Board::up()
+bool Board::up()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
@@ -110,11 +111,15 @@ void Board::up()
     }
 
   if(movePossible || mergePossible)
-    genSquare();
+  {
+    return genSquare();
+  }
+
+  return false;
 
 }
 
-void Board::down()
+bool Board::down()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
@@ -156,11 +161,14 @@ void Board::down()
     }
 
   if(movePossible || mergePossible)
-    genSquare();
+  {
+    return genSquare();
+  }
 
+  return false;
 }
 
-void Board::right()
+bool Board::right()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
@@ -202,11 +210,15 @@ void Board::right()
     }
 
   if(movePossible || mergePossible)
-    genSquare();
+  {
+    return genSquare();
+  }
+
+  return false;
 
 }
 
-void Board::left()
+bool Board::left()
 {
   coord orig = {.x = 0, .y = 0};
   coord dest = {.x = 0, .y = 0};
@@ -248,7 +260,11 @@ void Board::left()
     }
 
   if(movePossible || mergePossible)
-    genSquare();
+  {
+    return genSquare();
+  }
+
+  return false;
 
 }
 

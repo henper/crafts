@@ -10,7 +10,7 @@
 
 const int dim = 4;
 
-Board board;
+static Board* board = NULL;
 
 void type()
 {
@@ -20,7 +20,7 @@ void type()
     {
       for(pos.y = 0; pos.y < 4; pos.y++)
         {
-          int num = board.squareVal[pos.x][pos.y];
+          int num = board->squareVal[pos.x][pos.y];
           if(num)
             {
               sprintf(str, "%d", num);
@@ -77,7 +77,7 @@ void draw(void)
   glEnableClientState(GL_VERTEX_ARRAY);
 
   // before draw, specify vertex arrays
-  glColorPointer(3, GL_FLOAT, 0, &board.quad[0][0].vertex.topLeft.r);
+  glColorPointer(3, GL_FLOAT, 0, &board->quad[0][0].vertex.topLeft.r);
   glVertexPointer(2, GL_FLOAT, 0, vertices);
 
   glDrawArrays(GL_QUADS, 0, 4*dim*dim); //we're drawing QUADS hence the 4 indices per square
@@ -104,45 +104,40 @@ void keyboardCB(int key, int x, int y)
   switch(key)
   {
     case GLUT_KEY_UP:
-      board.up();
+      board->up();
       break;
     case GLUT_KEY_DOWN:
-      board.down();
+      board->down();
       break;
     case GLUT_KEY_LEFT:
-      board.left();
+      board->left();
       break;
     case GLUT_KEY_RIGHT:
-      board.right();
+      board->right();
       break;
   }
 
   glutPostRedisplay();
 }
 
-//Main program
-int main(int argc, char **argv)
+/* Public functions */
+
+void updateWindow()
 {
-  // set first two squares
-  board.genSquare();
-  board.genSquare();
+  glutPostRedisplay(); 
+}
 
-  /*coord pos;
-  pos.y = 0;
-  pos.x = 0;
-  board.setSquare(pos, 65536*2);
-  pos.x = 1;
-  board.setSquare(pos, 65536);
-  pos.x = 2;
-  board.setSquare(pos, 4096);*/
+void* createWindow(void* boardPtr)
+{
+  board = (Board*)boardPtr;
 
-  glutInit(&argc, argv);
+  glutInit(NULL, 0);
   //Simple buffer
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
   glutInitWindowPosition(1000,50);
   glutInitWindowSize(325,325);
-  glutCreateWindow(argv[0]);
-  //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
+  glutCreateWindow(NULL);
+  glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
   //glutSpecialFunc(keyboardCB);
   glutSpecialUpFunc(keyboardCB);
   //Call to the drawing function
@@ -158,5 +153,5 @@ int main(int argc, char **argv)
   glColor3f(0.2, 0.2, 0.2);
 
   glutMainLoop();
-  return 0;
+  return NULL;
 }

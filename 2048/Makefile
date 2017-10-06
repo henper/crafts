@@ -1,6 +1,9 @@
 
 CC_FLAGS = -g -c -std=gnu++14
 
+SRC_FILES = $(wildcard *.cpp)
+OBJ_FILES = $(SRC_FILES:.cpp=.o)
+
 all : main
 
 .PHONY : clean
@@ -8,14 +11,8 @@ all : main
 clean :
 	rm -f *.o *.h.gch
 
-quad.o : quad.cpp
+.o : $(SRC_FILES)
 	g++ $(CC_FLAGS) $^
 
-board.o : board.cpp
-	g++ $(CC_FLAGS) $^
-
-main.o : main.cpp vertices.h
-	g++ $(CC_FLAGS) $^
-
-main : main.o board.o quad.o
+main : $(OBJ_FILES)
 	g++ $^ -o $@ -lpthread -lGL -lGLU -lglut
