@@ -7,6 +7,7 @@
 #include "vertices.h"
 
 #include "board.h"
+#include "ai.h"
 
 const int dim = 4;
 
@@ -94,6 +95,7 @@ void draw(void)
 
 void timerCB(int millisec)
 {
+    ai_main(&board);
     glutTimerFunc(millisec, timerCB, millisec);
     glutPostRedisplay();
 }
@@ -127,22 +129,13 @@ int main(int argc, char **argv)
   board.genSquare();
   board.genSquare();
 
-  /*coord pos;
-  pos.y = 0;
-  pos.x = 0;
-  board.setSquare(pos, 65536*2);
-  pos.x = 1;
-  board.setSquare(pos, 65536);
-  pos.x = 2;
-  board.setSquare(pos, 4096);*/
-
   glutInit(&argc, argv);
   //Simple buffer
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
   glutInitWindowPosition(1000,50);
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
-  //glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
+  glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
   //glutSpecialFunc(keyboardCB);
   glutSpecialUpFunc(keyboardCB);
   //Call to the drawing function
