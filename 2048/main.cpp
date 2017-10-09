@@ -122,6 +122,12 @@ void keyboardCB(int key, int x, int y)
   glutPostRedisplay();
 }
 
+void idleCB()
+{
+  ai_main(&board);
+  glutPostRedisplay();
+}
+
 //Main program
 int main(int argc, char **argv)
 {
@@ -135,10 +141,16 @@ int main(int argc, char **argv)
   glutInitWindowPosition(1000,50);
   glutInitWindowSize(325,325);
   glutCreateWindow(argv[0]);
-  glutTimerFunc(10, timerCB, 10);                 // redraw only every given millisec
+
+  // Register callback for AI function (only one!)
+  glutTimerFunc(500, timerCB, 500);                 // redraw only every given millisec
+  //glutIdleFunc(idleCB);
+
+  // Register callback for player (keyboard) interaction (only one!)
   //glutSpecialFunc(keyboardCB);
   glutSpecialUpFunc(keyboardCB);
-  //Call to the drawing function
+
+  //Make a first call to the drawing function
   glutDisplayFunc(draw);
   //Background color
   glClearColor(0,0,0,1); // opaque
