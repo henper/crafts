@@ -30,7 +30,7 @@ void addAllSquares(std::vector<square>& listRef, Board* board)
     }
 }
 
-std::vector<coord> addNeighbourSquares(coord origin, Board* board)
+std::vector<coord> addNeighbourSquares(coord origin)
 {
   std::vector<coord> neighbours;
 
@@ -112,21 +112,22 @@ std::vector<square> coordsVec2squaresVec(std::vector<coord> coordsVec, Board* bo
   std::vector<square> squaresVec;
   squaresVec.reserve(coordsVec.size());
 
-  for(int i = 0; i < squaresVec.size(); ++i)
+  for(int i = 0; i < coordsVec.size(); ++i)
     {
       square newSquare = {board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y], coordsVec.at(i)};
-      squaresVec.at(i) = newSquare;
+      squaresVec.push_back(newSquare);
     }
   return squaresVec;
 }
 
-square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=0)
+square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=262144) // default value is impossible to reach
 {
   int highestValue = 0;
   int highestIndex = 0;
   for(int i = 0; i < searchSpace.size(); ++i)
     {
-      if(searchSpace.at(i).value > highestValue) //how to handle equal squares?
+      if(searchSpace.at(i).value > highestValue && //how to handle equal squares?
+         searchSpace.at(i).value <= maxVal)
         {
           highestValue = searchSpace.at(i).value;
           highestIndex = i;
@@ -134,6 +135,22 @@ square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=0)
     }
 
   return (searchSpace.at(highestIndex));
+}
+
+void mergeAdjacentSquaresWithEqualValues(square a, square b, Board* board)
+{
+  // Determine the direction
+  // TODO: add preferred/disqualified directions?
+  if(a.pos.x != b.pos.x)
+    {
+      board->right();
+      return;
+    }
+  if(a.pos.y != b.pos.y)
+    {
+      board->up();
+      return;
+    }
 }
 
 void ai_main(Board* board)
@@ -152,7 +169,16 @@ void ai_main(Board* board)
   square highestValueSquare = findHighestValueIn(squaresToSearch);
 
   // Find the highest value in sequence of the highest square
+  // TODO: iterate!
+  squaresToSearch = coordsVec2squaresVec(addNeighbourSquares(highestValueSquare.pos), board);
+  if(squaresToSearch.size() == 0)
+    return; // TODO
+  square squareValueInSequence = findHighestValueIn(squaresToSearch, highestValueSquare.value);
 
+  // Merge equal squares
+  if(squareValueInSequence.value == highestValueSquare.value)
+    {
+      mergeAdjacentSquaresWithEqualValues(squareValueInSequence, highestValueSquare, board);
+     return;
+    }
 }
-
-
