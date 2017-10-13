@@ -114,27 +114,30 @@ std::vector<square> coordsVec2squaresVec(std::vector<coord> coordsVec, Board* bo
 
   for(int i = 0; i < coordsVec.size(); ++i)
     {
-      square newSquare = {board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y], coordsVec.at(i)};
-      squaresVec.push_back(newSquare);
+      if(board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y] != 0)
+        {
+          square newSquare = {board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y], coordsVec.at(i)};
+          squaresVec.push_back(newSquare);
+        }
     }
   return squaresVec;
 }
 
-square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=262144) // default value is impossible to reach
+int findHighestValueIn(std::vector<square>* searchSpace, int maxVal=262144) // default value is impossible to reach
 {
   int highestValue = 0;
-  int highestIndex = 0;
-  for(int i = 0; i < searchSpace.size(); ++i)
+  int highestIndex = -1;
+  for(int i = 0; i < searchSpace->size(); ++i)
     {
-      if(searchSpace.at(i).value > highestValue && //how to handle equal squares?
-         searchSpace.at(i).value <= maxVal)
+      if(searchSpace->at(i).value > highestValue && //how to handle equal squares?
+         searchSpace->at(i).value <= maxVal)
         {
-          highestValue = searchSpace.at(i).value;
+          highestValue = searchSpace->at(i).value;
           highestIndex = i;
         }
     }
 
-  return (searchSpace.at(highestIndex));
+  return highestIndex;
 }
 
 void mergeAdjacentSquaresWithEqualValues(coord from, coord to, Board* board)
@@ -166,20 +169,20 @@ void findSequenceTail(std::vector<square>* squares, Board* board)
   if(squaresToSearch.size() == 0)
     return; // all alone
 
-  square next = findHighestValueIn(squaresToSearch, squares->back().value);
+  int idx = findHighestValueIn(&squaresToSearch, squares->back().value);
+  if(idx < 0)
+    return;
 
-  if(next.value*2 == squares->back().value) // In sequence
-    {
-      squares->push_back(next);
-      findSequenceTail(squares, board); // NB! Recursion
-      return;
-    }
+  square next = squaresToSearch.at(idx);
 
   if(next.value == squares->back().value) // equal values should be merged
     {
       squares->push_back(next);
       return;
     }
+
+  squares->push_back(next);
+  findSequenceTail(squares, board);
 }
 
 void ai_main(Board* board)
@@ -196,7 +199,7 @@ void ai_main(Board* board)
   squares.reserve(16);
 
   addAllSquares(squares, board);
-  square highValueSquare = findHighestValueIn(squares);
+  square highValueSquare = squares.at(findHighestValueIn(&squares));
 
   squares.clear();
   squares.push_back(highValueSquare);
