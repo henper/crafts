@@ -137,13 +137,13 @@ int main(int argc, char **argv)
 
   coord pos;
   pos.x=0; pos.y=0;
-  board.setSquare(pos, 8);
+  board.setSquare(pos, 2);
   pos.x=1; pos.y=0;
-  board.setSquare(pos, 4);
+  board.setSquare(pos, 2);
   pos.x=2; pos.y=0;
-  board.setSquare(pos, 2);
+  board.setSquare(pos, 4);
   pos.x=3; pos.y=0;
-  board.setSquare(pos, 2);
+  board.setSquare(pos, 8);
 
   glutInit(&argc, argv);
   //Simple buffer

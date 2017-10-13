@@ -43,16 +43,16 @@ std::vector<coord> addNeighbourSquares(coord origin)
       {
       case 3: // handle top left square
         neighbours = {             {.x=1, .y=3},
-                     {.x=0, .y=2}, {.x=1, .y=2}};
+                     {.x=0, .y=2}};
         break;
       case 2:
       case 1: // handle the two middle squares
-        neighbours = {{.x=0, .y=origin.y+1}, {.x=1, .y=origin.y+1},
+        neighbours = {{.x=0, .y=origin.y+1},
                                              {.x=1, .y=origin.y},
-                      {.x=1, .y=origin.y-1}, {.x=1, .y=origin.y-1}};
+                      {.x=1, .y=origin.y-1}};
         break;
       case 0: // handle bottom left square
-        neighbours = {{.x=0, .y=1}, {.x=1, .y=1},
+        neighbours = {{.x=0, .y=1},
                                     {.x=1, .y=0}};
         break;
       }
@@ -65,17 +65,17 @@ std::vector<coord> addNeighbourSquares(coord origin)
       {
       case 3: // handle the two top middle squares
         neighbours = {{.x=origin.x-1, .y=3},                      {.x=origin.x+1, .y=3},
-                      {.x=origin.x-1, .y=2}, {.x=origin.x, .y=2}, {.x=origin.x+1, .y=2}};
+                                             {.x=origin.x, .y=2}};
         break;
       break;
       case 2:
       case 1: // handle the four middle squares
-        neighbours = {{.x=origin.x-1, .y=origin.y+1}, {.x=origin.x, .y=origin.y+1}, {.x=origin.x+1, .y=origin.y+1},
+        neighbours = {                                {.x=origin.x, .y=origin.y+1},
                       {.x=origin.x-1, .y=origin.y  },                               {.x=origin.x+1, .y=origin.y  },
-                      {.x=origin.x-1, .y=origin.y-1}, {.x=origin.x, .y=origin.y-1}, {.x=origin.x+1, .y=origin.y-1}};
+                                                      {.x=origin.x, .y=origin.y-1}};
         break;
       case 0: // handle the two bottom middle squares
-        neighbours = {{.x=origin.x-1, .y=1}, {.x=origin.x, .y=1}, {.x=origin.x+1, .y=1},
+        neighbours = {                       {.x=origin.x, .y=1},
                       {.x=origin.x-1, .y=0},                      {.x=origin.x+1, .y=0}};
         break;
       }
@@ -87,16 +87,16 @@ std::vector<coord> addNeighbourSquares(coord origin)
       {
       case 3: // handle top right square
         neighbours = {{.x=2, .y=3},
-                      {.x=2, .y=2}, {.x=3, .y=2}};
+                                    {.x=3, .y=2}};
         break;
       case 2:
       case 1: // handle the two middle squares
-        neighbours = {{.x=2, .y=origin.y+1}, {.x=3, .y=origin.y+1},
+        neighbours = {                       {.x=3, .y=origin.y+1},
                       {.x=2, .y=origin.y},
-                      {.x=2, .y=origin.y-1}, {.x=3, .y=origin.y-1}};
+                                             {.x=3, .y=origin.y-1}};
         break;
       case 0: // handle bottom left square
-        neighbours = {{.x=2, .y=1}, {.x=3, .y=1},
+        neighbours = {              {.x=3, .y=1},
                       {.x=2, .y=0}};
         break;
       }
@@ -137,18 +137,24 @@ square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=262144) /
   return (searchSpace.at(highestIndex));
 }
 
-void mergeAdjacentSquaresWithEqualValues(square a, square b, Board* board)
+void mergeAdjacentSquaresWithEqualValues(coord from, coord to, Board* board)
 {
-  // Determine the direction
-  // TODO: add preferred/disqualified directions?
-  if(a.pos.x != b.pos.x)
+  if(from.y == to.y)
     {
-      board->right();
+      //move horizontally
+      if(from.x < to.x)
+        board->right();
+      else
+        board->left();
       return;
     }
-  if(a.pos.y != b.pos.y)
+  else
     {
-      board->up();
+      // move vertically
+      if(from.y < to.y)
+        board->up();
+      else
+        board->down();
       return;
     }
 }
@@ -166,6 +172,7 @@ void findSequenceTail(std::vector<square>* squares, Board* board)
     {
       squares->push_back(next);
       findSequenceTail(squares, board); // NB! Recursion
+      return;
     }
 
   if(next.value == squares->back().value) // equal values should be merged
@@ -173,8 +180,6 @@ void findSequenceTail(std::vector<square>* squares, Board* board)
       squares->push_back(next);
       return;
     }
-
-  return;
 }
 
 void ai_main(Board* board)
@@ -210,7 +215,7 @@ void ai_main(Board* board)
   // Merge equal squares
   if(squares.back().value == last.value)
     {
-      mergeAdjacentSquaresWithEqualValues(squares.back(), last, board);
+      mergeAdjacentSquaresWithEqualValues(last.pos, squares.back().pos, board);
       return;
     }
 }
