@@ -12,6 +12,6 @@
 
 void ai_main(Board* board);
 
-
+enum direction {Up, Down, Left, Right};
 
 #endif /* AI_H_ */

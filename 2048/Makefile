@@ -4,7 +4,7 @@ CC_FLAGS = -g -c -std=gnu++14
 SRC_FILES = $(wildcard *.cpp)
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 
-all : main
+all : .o main
 
 .PHONY : clean
 

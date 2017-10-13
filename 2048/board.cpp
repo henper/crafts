@@ -169,7 +169,7 @@ void Board::right()
   movePossible = mergePossible = false;
 
   // for all active squares
-  for(orig.x = 2; orig.x > -1; orig.x--)  // begin at the second right-most row of the board (sqaures already at the top have nowhere to go)
+  for(orig.x = 2; orig.x > -1; orig.x--)  // begin at the second right-most row of the board (sqaures already at the rightmost edge have nowhere to go)
     {
       for(orig.y = 0; orig.y < 4; orig.y++)  // y-direction matters not
         {
