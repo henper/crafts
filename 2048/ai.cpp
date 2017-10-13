@@ -104,10 +104,21 @@ std::vector<coord> addNeighbourSquares(coord origin, Board* board)
     }
   }
 
-
   return neighbours;
 }
 
+std::vector<square> coordsVec2squaresVec(std::vector<coord> coordsVec, Board* board)
+{
+  std::vector<square> squaresVec;
+  squaresVec.reserve(coordsVec.size());
+
+  for(int i = 0; i < squaresVec.size(); ++i)
+    {
+      square newSquare = {board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y], coordsVec.at(i)};
+      squaresVec.at(i) = newSquare;
+    }
+  return squaresVec;
+}
 
 square findHighestValueIn(std::vector<square>& searchSpace, int maxVal=0)
 {
