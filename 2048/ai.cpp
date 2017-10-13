@@ -153,6 +153,30 @@ void mergeAdjacentSquaresWithEqualValues(square a, square b, Board* board)
     }
 }
 
+void findSequenceTail(std::vector<square>* squares, Board* board)
+{
+  std::vector<square> squaresToSearch = coordsVec2squaresVec(addNeighbourSquares(squares->back().pos), board);
+
+  if(squaresToSearch.size() == 0)
+    return; // all alone
+
+  square next = findHighestValueIn(squaresToSearch, squares->back().value);
+
+  if(next.value*2 == squares->back().value) // In sequence
+    {
+      squares->push_back(next);
+      findSequenceTail(squares, board); // NB! Recursion
+    }
+
+  if(next.value == squares->back().value) // equal values should be merged
+    {
+      squares->push_back(next);
+      return;
+    }
+
+  return;
+}
+
 void ai_main(Board* board)
 {
   // TODO:Place super smart AI here
@@ -163,22 +187,30 @@ void ai_main(Board* board)
   // make only one move and then exit.
 
   // Find the position of the highest valued square NOT already in sequence, i.e 256 > 128 > 64 > _8_
-  std::vector<square> squaresToSearch;
-  addAllSquares(squaresToSearch, board);
+  std::vector<square> squares;
+  squares.reserve(16);
 
-  square highestValueSquare = findHighestValueIn(squaresToSearch);
+  addAllSquares(squares, board);
+  square highValueSquare = findHighestValueIn(squares);
 
-  // Find the highest value in sequence of the highest square
-  // TODO: iterate!
-  squaresToSearch = coordsVec2squaresVec(addNeighbourSquares(highestValueSquare.pos), board);
-  if(squaresToSearch.size() == 0)
-    return; // TODO
-  square squareValueInSequence = findHighestValueIn(squaresToSearch, highestValueSquare.value);
+  squares.clear();
+  squares.push_back(highValueSquare);
+
+  findSequenceTail(&squares, board);
+
+  if(squares.size() < 2)
+    {
+      //TODO: make a(ny?) valid move
+      board->up();
+    }
+
+  square last = squares.back();
+  squares.pop_back();
 
   // Merge equal squares
-  if(squareValueInSequence.value == highestValueSquare.value)
+  if(squares.back().value == last.value)
     {
-      mergeAdjacentSquaresWithEqualValues(squareValueInSequence, highestValueSquare, board);
-     return;
+      mergeAdjacentSquaresWithEqualValues(squares.back(), last, board);
+      return;
     }
 }

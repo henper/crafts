@@ -134,9 +134,15 @@ int main(int argc, char **argv)
   // set first two squares
   //board.genSquare();
   //board.genSquare();
-  coord pos = {.x=0, .y=0};
-  board.setSquare(pos, 2);
+
+  coord pos;
+  pos.x=0; pos.y=0;
+  board.setSquare(pos, 8);
   pos.x=1; pos.y=0;
+  board.setSquare(pos, 4);
+  pos.x=2; pos.y=0;
+  board.setSquare(pos, 2);
+  pos.x=3; pos.y=0;
   board.setSquare(pos, 2);
 
   glutInit(&argc, argv);
