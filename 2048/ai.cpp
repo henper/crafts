@@ -11,13 +11,13 @@
 struct square
 {
  int value;
- coord pos;
+ Coord pos;
 };
 
 void addAllSquares(std::vector<square>& listRef, Board* board)
 {
   listRef.reserve(16);
-  coord pos;
+  Coord pos;
   square elem;
   for(pos.x = 0; pos.x < 4; pos.x++)
     {
@@ -30,9 +30,9 @@ void addAllSquares(std::vector<square>& listRef, Board* board)
     }
 }
 
-std::vector<coord> addNeighbourSquares(coord origin)
+std::vector<Coord> addNeighbourSquares(Coord origin)
 {
-  std::vector<coord> neighbours;
+  std::vector<Coord> neighbours;
 
   // Handle the cases in columns from left to right
   switch(origin.x) //left edge
@@ -107,16 +107,16 @@ std::vector<coord> addNeighbourSquares(coord origin)
   return neighbours;
 }
 
-std::vector<square> coordsVec2squaresVec(std::vector<coord> coordsVec, Board* board)
+std::vector<square> coordsVec2squaresVec(std::vector<Coord> CoordsVec, Board* board)
 {
   std::vector<square> squaresVec;
-  squaresVec.reserve(coordsVec.size());
+  squaresVec.reserve(CoordsVec.size());
 
-  for(int i = 0; i < coordsVec.size(); ++i)
+  for(int i = 0; i < CoordsVec.size(); ++i)
     {
-      if(board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y] != 0)
+      if(board->squareVal[CoordsVec.at(i).x][CoordsVec.at(i).y] != 0)
         {
-          square newSquare = {board->squareVal[coordsVec.at(i).x][coordsVec.at(i).y], coordsVec.at(i)};
+          square newSquare = {board->squareVal[CoordsVec.at(i).x][CoordsVec.at(i).y], CoordsVec.at(i)};
           squaresVec.push_back(newSquare);
         }
     }
@@ -140,7 +140,7 @@ int findHighestValueIn(std::vector<square>* searchSpace, int maxVal=262144) // d
   return highestIndex;
 }
 
-void mergeAdjacentSquaresWithEqualValues(coord from, coord to, Board* board)
+void mergeAdjacentSquaresWithEqualValues(Coord from, Coord to, Board* board)
 {
   if(from.y == to.y)
     {

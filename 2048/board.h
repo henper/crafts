@@ -9,22 +9,17 @@
 #define BOARD_H_
 
 #include "quad.h"
-
-// Square coordinate in grid: 4x4
-typedef struct coord
-{
-  int x, y;
-} coord;
+#include "coord.h"
 
 class Board
 {
 private:
-  void moveSquare(coord origin, coord dest);
-  bool mergeIfEqual(coord origin, coord dest);
+  void moveSquare(Coord origin, Coord dest);
+  bool mergeIfEqual(Coord origin, Coord dest);
 
 public:
   Board();
-  void setSquare(coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
+  void setSquare(Coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
   void genSquare();
 
   // controls
