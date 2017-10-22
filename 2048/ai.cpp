@@ -140,6 +140,25 @@ int findHighestValueIn(std::vector<square>* searchSpace, int maxVal=262144) // d
   return highestIndex;
 }
 
+void swipe(direction move, Board* board)
+{
+  switch(move)
+  {
+  case Up:
+    board->up();
+    break;
+  case Down:
+    board->down();
+    break;
+  case Left:
+    board->left();
+    break;
+  case Right:
+    board->right();
+    break;
+  }
+}
+
 void mergeAdjacentSquaresWithEqualValues(Coord from, Coord to, Board* board)
 {
   if(from.y == to.y)
@@ -185,6 +204,113 @@ void findSequenceTail(std::vector<square>* squares, Board* board)
   findSequenceTail(squares, board);
 }
 
+bool placeInCorner(Coord pos, Board* board)
+{
+  // Place at right edge if possible
+  bool moveRight = false;
+  for(int x = pos.x+1; x < 3; ++x)
+    {
+      moveRight = true;
+      if(board->squareVal[x][pos.y])
+        {
+          moveRight = false;
+          break; // a square is in the way
+        }
+    }
+
+  if(moveRight)
+    {
+      board->right();
+      return true;
+    }
+
+  // Place at left edge if possible
+  bool moveLeft = false;
+  for(int x = pos.x-1; x >= 0; --x)
+    {
+      moveRight = true;
+      if(board->squareVal[x][pos.y])
+        {
+          moveLeft = false;
+          break; // a square is in the way
+        }
+    }
+
+  if(moveLeft)
+    {
+      board->left();
+      return true;
+    }
+
+  // Place at top edge if possible
+  bool moveUp = false;
+  for(int y = pos.y+1; y < 3; ++y)
+    {
+      moveUp = true;
+      if(board->squareVal[pos.x][y])
+        {
+          moveUp = false;
+          break; // a square is in the way
+        }
+    }
+
+  if(moveUp)
+    {
+      board->up();
+      return true;
+    }
+
+  // Place at top edge if possible
+  bool moveDown = false;
+  for(int y = pos.y-1; y <= 0; --y)
+    {
+      moveDown = true;
+      if(board->squareVal[pos.x][y])
+        {
+          moveDown = false;
+          break; // a square is in the way
+        }
+    }
+
+  if(moveDown)
+    {
+      board->down();
+      return true;
+    }
+
+  return false;
+}
+
+compass disqualifyDirections(Coord pos, Board* board)
+{
+  compass swipe;
+  if(pos.isInBottomLeftCorner())
+    {
+      swipe.horizontal = Left;
+      swipe.vertical   = Down;
+    }
+
+  if(pos.isInBottomRightCorner())
+    {
+      swipe.horizontal = Right;
+      swipe.vertical   = Down;
+    }
+
+  if(pos.isInTopLeftCorner())
+    {
+      swipe.horizontal = Left;
+      swipe.vertical   = Up;
+    }
+
+  if(pos.isInTopRightCorner())
+    {
+      swipe.horizontal = Right;
+      swipe.vertical   = Up;
+    }
+
+  return swipe;
+}
+
 void ai_main(Board* board)
 {
   // TODO:Place super smart AI here
@@ -201,16 +327,18 @@ void ai_main(Board* board)
   addAllSquares(squares, board);
   square highValueSquare = squares.at(findHighestValueIn(&squares));
 
+  if(highValueSquare.pos.isInCorner() == false)
+    {
+      if(placeInCorner(highValueSquare.pos, board) == false)
+        return; // not possible to place highest value square in corner
+    }
+
+  compass noGo = disqualifyDirections(highValueSquare.pos, board);
+
   squares.clear();
   squares.push_back(highValueSquare);
 
   findSequenceTail(&squares, board);
-
-  if(squares.size() < 2)
-    {
-      //TODO: make a(ny?) valid move
-      board->up();
-    }
 
   square last = squares.back();
   squares.pop_back();

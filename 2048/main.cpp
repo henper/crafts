@@ -16,7 +16,7 @@ Board board;
 void type()
 {
   char str[100];
-  coord pos;
+  Coord pos;
   for(pos.x = 0; pos.x < 4; pos.x++)
     {
       for(pos.y = 0; pos.y < 4; pos.y++)
@@ -132,10 +132,11 @@ void idleCB()
 int main(int argc, char **argv)
 {
   // set first two squares
-  //board.genSquare();
-  //board.genSquare();
+  board.genSquare();
+  board.genSquare();
 
-  coord pos;
+  /*
+  Coord pos;
   pos.x=0; pos.y=0;
   board.setSquare(pos, 2);
   pos.x=1; pos.y=0;
@@ -144,6 +145,7 @@ int main(int argc, char **argv)
   board.setSquare(pos, 4);
   pos.x=3; pos.y=0;
   board.setSquare(pos, 8);
+  */
 
   glutInit(&argc, argv);
   //Simple buffer

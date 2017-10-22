@@ -14,4 +14,11 @@ void ai_main(Board* board);
 
 enum direction {Up, Down, Left, Right};
 
+
+typedef struct compass
+{
+  direction horizontal;
+  direction vertical;
+} compass;
+
 #endif /* AI_H_ */

@@ -6,6 +6,7 @@
  */
 
 #include "board.h"
+#include "coord.h"
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
@@ -18,9 +19,9 @@ Board::Board()
 
 void Board::genSquare()
 {
-  std::vector<coord> emptySquares;
+  std::vector<Coord> emptySquares;
 
-  for(coord i = {.x=0, .y=0}; i.y < 4; i.y++)
+  for(Coord i = {.x=0, .y=0}; i.y < 4; i.y++)
     {
       for(i.x = 0; i.x < 4; i.x++)
         {
@@ -43,7 +44,7 @@ void Board::genSquare()
 
 }
 
-void Board::moveSquare(coord origin, coord dest)
+void Board::moveSquare(Coord origin, Coord dest)
 {
   quad[dest.x][dest.y] = quad[origin.x][origin.y];
   quad[origin.x][origin.y] = Quad(0);
@@ -52,7 +53,7 @@ void Board::moveSquare(coord origin, coord dest)
   squareVal[origin.x][origin.y] = 0;
 }
 
-bool Board::mergeIfEqual(coord origin, coord dest)
+bool Board::mergeIfEqual(Coord origin, Coord dest)
 {
   if(dest.x < 4 && dest.y < 4 &&
      squareVal[dest.x][dest.y] == squareVal[origin.x][origin.y])
@@ -70,8 +71,8 @@ bool Board::mergeIfEqual(coord origin, coord dest)
 
 void Board::up()
 {
-  coord orig = {.x = 0, .y = 0};
-  coord dest = {.x = 0, .y = 0};
+  Coord orig = {.x = 0, .y = 0};
+  Coord dest = {.x = 0, .y = 0};
 
   bool movePossible, mergePossible;
   movePossible = mergePossible = false;
@@ -86,7 +87,7 @@ void Board::up()
               // move in the direction indicated until an active square is found or edge of board
               dest.x = orig.x;
               dest.y = orig.y + 1;
-              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+              Coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
 
               while(dest.y < 4)
                 {
@@ -116,8 +117,8 @@ void Board::up()
 
 void Board::down()
 {
-  coord orig = {.x = 0, .y = 0};
-  coord dest = {.x = 0, .y = 0};
+  Coord orig = {.x = 0, .y = 0};
+  Coord dest = {.x = 0, .y = 0};
 
   bool movePossible, mergePossible;
   movePossible = mergePossible = false;
@@ -132,7 +133,7 @@ void Board::down()
               // move in the direction indicated until an active square is found or edge of board
               dest.x = orig.x;
               dest.y = orig.y - 1;
-              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+              Coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
 
               while(dest.y > -1)
                 {
@@ -162,8 +163,8 @@ void Board::down()
 
 void Board::right()
 {
-  coord orig = {.x = 0, .y = 0};
-  coord dest = {.x = 0, .y = 0};
+  Coord orig = {.x = 0, .y = 0};
+  Coord dest = {.x = 0, .y = 0};
 
   bool movePossible, mergePossible;
   movePossible = mergePossible = false;
@@ -178,7 +179,7 @@ void Board::right()
               // move in the direction indicated until an active square is found or edge of board
               dest.x = orig.x + 1;
               dest.y = orig.y;
-              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+              Coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
 
               while(dest.x < 4)
                 {
@@ -208,8 +209,8 @@ void Board::right()
 
 void Board::left()
 {
-  coord orig = {.x = 0, .y = 0};
-  coord dest = {.x = 0, .y = 0};
+  Coord orig = {.x = 0, .y = 0};
+  Coord dest = {.x = 0, .y = 0};
 
   bool movePossible, mergePossible;
   movePossible = mergePossible = false;
@@ -224,7 +225,7 @@ void Board::left()
               // move in the direction indicated until an active square is found or edge of board
               dest.x = orig.x - 1;
               dest.y = orig.y;
-              coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
+              Coord temp = orig; // the square gets moved incrementally, therefore we need to keep the both the original location and a potentially temporary location (if multiple steps)
 
               while(dest.x > -1)
                 {
