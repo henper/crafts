@@ -8,8 +8,9 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include "quad.h"
 #include "coord.h"
+#include "quadcolor.h"
+#include "quadvertex.h"
 
 class Board
 {
@@ -19,7 +20,7 @@ private:
 
 public:
   Board();
-  void setSquare(Coord pos, int val) { quad[pos.x][pos.y] = Quad(val); squareVal[pos.x][pos.y] = val; }
+  void setSquare(Coord pos, int val) { quad[pos.x][pos.y] = QuadColor(val); squareVal[pos.x][pos.y] = val; }
   void genSquare();
 
   // controls
@@ -29,7 +30,10 @@ public:
   void left();
 
   // holds the colors for all vertices
-  Quad quad[4][4];
+  QuadColor quad[4][4];
+
+  // holds the coordinates for all vertices
+  QuadVertex vertex[4][4];
 
   // holds the numerical value in each square
   int squareVal[4][4];

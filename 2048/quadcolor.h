@@ -16,17 +16,17 @@ typedef struct rgbColor
 typedef struct quadVertice
 {
   // Note order is defined by OpenGL
+  rgbColor bottomLeft;
   rgbColor topLeft;
   rgbColor topRight;
-  rgbColor bottomLeft;
   rgbColor bottomRight;
 } quadVertice;
 
-class Quad {
+class QuadColor {
 
 public:
-  Quad();
-  Quad(int val);
+  QuadColor();
+  QuadColor(int val);
 
   quadVertice vertex;
   //int value;

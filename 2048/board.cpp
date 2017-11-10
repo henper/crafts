@@ -12,9 +12,11 @@
 #include <cstdio>
 #include <vector>
 
+#include "vertices.h"
+
 Board::Board()
 {
-
+  std::memcpy(vertex, vertices, sizeof(vertex));
 }
 
 void Board::genSquare()
@@ -47,7 +49,7 @@ void Board::genSquare()
 void Board::moveSquare(Coord origin, Coord dest)
 {
   quad[dest.x][dest.y] = quad[origin.x][origin.y];
-  quad[origin.x][origin.y] = Quad(0);
+  quad[origin.x][origin.y] = QuadColor(0);
 
   squareVal[dest.x][dest.y] = squareVal[origin.x][origin.y];
   squareVal[origin.x][origin.y] = 0;
@@ -63,7 +65,7 @@ bool Board::mergeIfEqual(Coord origin, Coord dest)
 
       // and update the value and color of the merging square
       squareVal[dest.x][dest.y] *= 2;
-      quad[dest.x][dest.y] = Quad(squareVal[dest.x][dest.y]);
+      quad[dest.x][dest.y] = QuadColor(squareVal[dest.x][dest.y]);
       return true;
     }
   return false;

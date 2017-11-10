@@ -4,8 +4,6 @@
 
 #include <GL/glut.h>
 
-#include "vertices.h"
-
 #include "board.h"
 #include "ai.h"
 
@@ -78,8 +76,8 @@ void draw(void)
   glEnableClientState(GL_VERTEX_ARRAY);
 
   // before draw, specify vertex arrays
-  glColorPointer(3, GL_FLOAT, 0, &board.quad[0][0].vertex.topLeft.r);
-  glVertexPointer(2, GL_FLOAT, 0, vertices);
+  glColorPointer(3, GL_FLOAT, 0, &board.quad[0][0].vertex.bottomLeft.r);
+  glVertexPointer(2, GL_FLOAT, 0, &board.vertex[0][0].bottomLeft);
 
   glDrawArrays(GL_QUADS, 0, 4*dim*dim); //we're drawing QUADS hence the 4 indices per square
 

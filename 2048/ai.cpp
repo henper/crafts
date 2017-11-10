@@ -7,11 +7,17 @@
 
 #include "ai.h"
 #include <vector>
+#include <algorithm>
 
 struct square
 {
- int value;
- Coord pos;
+  int value;
+  Coord pos;
+
+  bool operator < (const square& sqr) const
+  {
+    return (value < sqr.value);
+  }
 };
 
 void addAllSquares(std::vector<square>& listRef, Board* board)
@@ -325,6 +331,11 @@ void ai_main(Board* board)
   squares.reserve(16);
 
   addAllSquares(squares, board);
+
+  std::sort(squares.begin(), squares.end());
+  squares.erase(std::remove_if(squares.begin(), squares.end(),
+                [](square sqr) { return sqr.value < squares.end()->value; }), squares.end());
+
   square highValueSquare = squares.at(findHighestValueIn(&squares));
 
   if(highValueSquare.pos.isInCorner() == false)
