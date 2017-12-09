@@ -9,8 +9,7 @@
 #define BOARD_H_
 
 #include "coord.h"
-#include "quadcolor.h"
-#include "quadvertex.h"
+#include "square.h"
 
 class Board
 {

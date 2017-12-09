@@ -1,5 +1,5 @@
 
-CXXFLAGS = -g -c -std=gnu++14
+CXXFLAGS = -g -c -std=gnu++11
 
 SRC_FILES = $(wildcard *.cpp)
 OBJ_FILES = $(SRC_FILES:.cpp=.o)

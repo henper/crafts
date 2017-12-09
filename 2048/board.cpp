@@ -32,10 +32,10 @@ void Board::genSquare()
         }
     }
 
-  // if there are no empty squares, you've lost
+  // if there are no empty squares, you shouldn't have been able to move
   if(emptySquares.empty())
     {
-      printf("You loose!\n");
+      printf("Impossible!\n");
       return;
     }
 

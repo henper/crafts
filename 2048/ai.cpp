@@ -334,7 +334,7 @@ void ai_main(Board* board)
 
   std::sort(squares.begin(), squares.end());
   squares.erase(std::remove_if(squares.begin(), squares.end(),
-                [](square sqr) { return sqr.value < squares.end()->value; }), squares.end());
+                [squares](square sqr) { return sqr.value < squares.end()->value; }), squares.end());
 
   square highValueSquare = squares.at(findHighestValueIn(&squares));
 
