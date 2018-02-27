@@ -1,17 +1,10 @@
 
-CXXFLAGS = -MMD -g -c -std=gnu++11
 
 SRC_FILES = $(wildcard *.cpp)
-OBJ_FILES = $(SRC_FILES:.cpp=.o)
+INC_DIR = .
 
--include $(OBJ_FILES:.o=.d)
 
-all : main
+SRC_FILES += $(wildcard ai/*.cpp)
+INC_DIR += ai
 
-.PHONY : clean
-
-clean :
-	rm -f *.o *.d main
-
-main : $(OBJ_FILES)
-	g++ $^ -o $@ -lpthread -lGL -lGLU -lglut
+include ../main.mk
