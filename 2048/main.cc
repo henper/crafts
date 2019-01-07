@@ -153,7 +153,7 @@ int main(int argc, char **argv)
   glutCreateWindow(argv[0]);
 
   // Register callback for AI function (only one!)
-  glutTimerFunc(500, timerCB, 500);                 // redraw only every given millisec
+  //glutTimerFunc(500, timerCB, 500);                 // redraw only every given millisec
   //glutIdleFunc(idleCB);
 
   // Register callback for player (keyboard) interaction (only one!)
