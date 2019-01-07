@@ -18,11 +18,15 @@ void glwInit(int* argc, char** argv, windowParamsS winp, callbacksS cb)
   glutCreateWindow(winp.title);
 
   // install callbacks
-  glutTimerFunc(cb.period, cb.timer, cb.period); // use the period as both the timeout value and the ID (the argument to timer callback)
   glutIdleFunc(cb.idle);
   glutKeyboardUpFunc(cb.alphaKey);
   glutSpecialUpFunc(cb.specialKey);
   glutDisplayFunc(cb.window);
+
+  // only install timer if given (avoid segfault)
+  if (cb.timer != NULL && cb.period != 0)
+    glutTimerFunc(cb.period, cb.timer, cb.period); // use the period as both the timeout value and the ID (the argument to timer callback)
+
 
   //Background color
   glClearColor(0,0,0,1); // opaque

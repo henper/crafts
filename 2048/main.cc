@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include <GL/glut.h>
+#include "glutWrapper.h"
 
 #include "board.h"
 #include "ai.h"
@@ -145,33 +146,20 @@ int main(int argc, char **argv)
   board.setSquare(pos, 8);
   */
 
-  glutInit(&argc, argv);
-  //Simple buffer
-  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
-  glutInitWindowPosition(1000,50);
-  glutInitWindowSize(325,325);
-  glutCreateWindow(argv[0]);
+  coord2dS size = {325, 325};
+  windowParamsS win = {.title = "2048",
+                       .position = {0},
+                       .size = size};
 
-  // Register callback for AI function (only one!)
-  //glutTimerFunc(500, timerCB, 500);                 // redraw only every given millisec
-  //glutIdleFunc(idleCB);
+  callbacksS cb = {.window = draw,
+                   .alphaKey = NULL,
+                   .specialKey = keyboardCB,
+                   .idle = NULL,
+                   .timer = NULL,
+                   .period = 0};
 
-  // Register callback for player (keyboard) interaction (only one!)
-  //glutSpecialFunc(keyboardCB);
-  glutSpecialUpFunc(keyboardCB);
+  glwInit(&argc, argv, win, cb);
 
-  //Make a first call to the drawing function
-  glutDisplayFunc(draw);
-  //Background color
-  glClearColor(0,0,0,1); // opaque
-
-  //Text properties
-  glEnable(GL_LINE_SMOOTH);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glLineWidth(3.0);
-  glColor3f(0.2, 0.2, 0.2);
-
-  glutMainLoop();
+  glwMainLoop();
   return 0;
 }
