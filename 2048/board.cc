@@ -7,6 +7,7 @@
 
 #include "board.h"
 #include "coord.h"
+#include "square.h"
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
@@ -49,7 +50,7 @@ void Board::genSquare()
 void Board::moveSquare(Coord origin, Coord dest)
 {
   quad[dest.x][dest.y] = quad[origin.x][origin.y];
-  quad[origin.x][origin.y] = QuadColor(0);
+  quad[origin.x][origin.y] = Square(0);
 
   squareVal[dest.x][dest.y] = squareVal[origin.x][origin.y];
   squareVal[origin.x][origin.y] = 0;
@@ -65,7 +66,7 @@ bool Board::mergeIfEqual(Coord origin, Coord dest)
 
       // and update the value and color of the merging square
       squareVal[dest.x][dest.y] *= 2;
-      quad[dest.x][dest.y] = QuadColor(squareVal[dest.x][dest.y]);
+      quad[dest.x][dest.y] = Square(squareVal[dest.x][dest.y]);
       return true;
     }
   return false;

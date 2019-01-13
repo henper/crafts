@@ -6,24 +6,10 @@
  */
 
 #include "square.h"
-
+#include "quad.h"
 #include "colors.h"
 
-static const quadVertice emptyBackground =
-{
-  .bottomLeft  = {.r=0.5, .g=0.5, .b=0.5},
-  .topLeft     = {.r=0.5, .g=0.5, .b=0.5},
-  .topRight    = {.r=0.5, .g=0.5, .b=0.5},
-  .bottomRight = {.r=0.5, .g=0.5, .b=0.5}
-};
-
-QuadColor::QuadColor()
-{
-  //value  = 0;
-  vertexColor = emptyBackground;
-}
-
-QuadColor::QuadColor(int val)
+Square::Square(int val)
 {
   if(val > 0)
     {
@@ -31,6 +17,6 @@ QuadColor::QuadColor(int val)
       vertexColor = *quadColors;
     }
   else
-    vertexColor = emptyBackground;
+    setEmpty();
 }
 
