@@ -13,7 +13,7 @@ Square::Square(int val)
 {
   if(val > 0)
     {
-      quadVertice* quadColors = reinterpret_cast<quadVertice*>(colors[__builtin_ctz(val)*4]);  // count trailing zeroes, i.e. log2()
+      quadVerticeColor* quadColors = reinterpret_cast<quadVerticeColor*>(colors[__builtin_ctz(val)*4]);  // count trailing zeroes, i.e. log2()
       vertexColor = *quadColors;
     }
   else
