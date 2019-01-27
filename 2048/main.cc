@@ -70,26 +70,8 @@ void type()
 //Drawing funciton
 void draw(void)
 {
-  glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer with current clearing color
-
-  // enable vertex arrays
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnableClientState(GL_VERTEX_ARRAY);
-
-  // before draw, specify vertex arrays
-  glColorPointer(3, GL_FLOAT, 0, &board.quad[0][0].vertexColor.bottomLeft.r);
-  glVertexPointer(2, GL_FLOAT, 0, &board.vertex[0][0].bottomLeft);
-
-  glDrawArrays(GL_QUADS, 0, 4*dim*dim); //we're drawing QUADS hence the 4 indices per square
-
-  glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
-  glDisableClientState(GL_COLOR_ARRAY);
-
-  // After the quad vertices and colors have been drawn add the number on each square
+  // glutWrapper will take care of displaying the squares, we just need to add the numbers
   type();
-
-  //Draw order
-  glFlush();
 }
 
 void timerCB(int millisec)
@@ -134,24 +116,15 @@ int main(int argc, char **argv)
   board.genSquare();
   board.genSquare();
 
-  /*
-  Coord pos;
-  pos.x=0; pos.y=0;
-  board.setSquare(pos, 2);
-  pos.x=1; pos.y=0;
-  board.setSquare(pos, 2);
-  pos.x=2; pos.y=0;
-  board.setSquare(pos, 4);
-  pos.x=3; pos.y=0;
-  board.setSquare(pos, 8);
-  */
-
   coord2dS size = {325, 325};
   windowParamsS win = {.title = "2048",
                        .position = {0},
-                       .size = size};
+                       .size = size,
+                       .vertices = board.vertex[0],
+                       .colors = board.quad[0],
+                       .length = dim*dim};
 
-  callbacksS cb = {.window = draw,
+  callbacksS cb = {.draw = draw,
                    .alphaKey = NULL,
                    .specialKey = keyboardCB,
                    .idle = NULL,

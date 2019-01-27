@@ -8,7 +8,12 @@
 #ifndef QUAD_H_
 #define QUAD_H_
 
-#include "glutWrapper.h"
+typedef struct coord2dS
+{
+  int x,y;
+
+  void scale(int factor) { x *= factor; y *= factor; };
+} coord2dS;
 
 typedef struct rgbColor
 {
@@ -22,7 +27,7 @@ typedef struct quadVerticeColor
   rgbColor topLeft;
   rgbColor topRight;
   rgbColor bottomRight;
-} quadVertice;
+} quadVerticeColor;
 
 class QuadColor {
 
