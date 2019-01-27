@@ -77,4 +77,18 @@ void glwInit(int* argc, char** argv, windowParamsS winp, callbacksS cb)
   glColor3f(0.2, 0.2, 0.2);
 }
 
+void glwStrokeMonospace(char* str, coord2dS pos, float scale)
+{
+  glPushMatrix();
+  glTranslatef(pos.x, pos.y, 0.0);
+  glScalef(scale, scale, scale);
+  
+  for(char* p = str; *p; p++)
+  {
+    glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
+  }
+  glPopMatrix();
+}
+
 void glwMainLoop(void) { glutMainLoop(); }
+void glwRedraw(void) { glutPostRedisplay(); }

@@ -10,6 +10,11 @@
 
 #include "quad.h"
 
+
+/* Defines *******************************************************************/
+#define MONOSPACE_CHAR_HEIGHT (119.05)
+#define MONOSPACE_CHAR_WIDTH  ( 33.33)
+
 /* Types *********************************************************************/
 
 typedef struct windowParamsS
@@ -40,5 +45,11 @@ void glwInit(int* argc, char** argv, windowParamsS winp, callbacksS cb);
 
 // call this last in your main
 void glwMainLoop(void);
+
+// call this from your callbacks if you want to refresh the window
+void glwRedraw(void);
+
+// helper for printing monospace charachters on the screen
+void glwStrokeMonospace(char* str, coord2dS pos, float scale);
 
 #endif /* GLUTWRAPPER_H_ */

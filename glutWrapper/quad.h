@@ -10,7 +10,7 @@
 
 typedef struct coord2dS
 {
-  int x,y;
+  float x,y;
 
   void scale(int factor) { x *= factor; y *= factor; };
 } coord2dS;
