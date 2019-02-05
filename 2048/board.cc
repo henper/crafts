@@ -13,11 +13,15 @@
 #include <cstdio>
 #include <vector>
 
-#include "vertices.h"
-
 Board::Board()
 {
-  std::memcpy(vertex, vertices, sizeof(vertex));
+  for(int yIdx = 0; yIdx < 4; yIdx++)
+  {
+    for(int xIdx = 0; xIdx < 4; xIdx++)
+    {
+      vertex[xIdx][yIdx] = QuadVertex(xIdx, yIdx, 4, 4);
+    }
+  }
 }
 
 void Board::genSquare()

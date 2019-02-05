@@ -41,10 +41,15 @@ public:
 class QuadVertex {
 
 public:
+  QuadVertex();
+  QuadVertex(int xIdx, int yIdx, int xMax, int yMax); // set the coord2ds for an indexed square
+
   coord2dS bottomLeft;
   coord2dS topLeft;
   coord2dS topRight;
   coord2dS bottomRight;
 };
+
+QuadVertex* generateGrid(int xsquares, int ysquares);
 
 #endif /* QUAD_H_ */
