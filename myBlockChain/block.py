@@ -15,33 +15,36 @@ class Block :
     
     def __init__(self, prevHash, data="") :
         self.prevHash = prevHash
-        # concatenate data, prev hash, nonce and timestamp
-        concat = data + time.ctime() + str(prevHash) #TODO nonce
-        self.thisHash = hashlib.sha256(concat)
+        self.timeStamp = time.ctime()
+        self.data = data
+        # concatenate data, prev hash, (nonce) and timestamp
+        self.thisHash = hashlib.sha256(self.data + self.timeStamp + prevHash).hexdigest()
 
 def buildBlocks(numBlocks) :
-    blockChain = [Block(0)]
+    blockChain = [Block('0')]
     for idx in range(1,numBlocks) :
-        blockChain.append(Block(blockChain[idx-1].prevHash))
+        prevHash = blockChain[idx-1].thisHash
+        blockChain.append(Block(prevHash))
     return blockChain
 
 def validateBlocks(blockChain):
-    prevHash = 0
+    prevHash = '0'
     for block in blockChain:
         if block.prevHash != prevHash :
             return False
+        prevHash = block.thisHash
     return True
 
 class Test(unittest.TestCase):
 
 
     def testGenisis(self):
-        genises = Block(0, "Genisis")
-        assert(genises.prevHash == 0)
+        genises = Block('0', "Genisis")
+        assert(genises.prevHash == '0')
         pass
 
     def testNextBlock(self):
-        genises  = Block(0, "Genisis")
+        genises  = Block('0', "Genisis")
         nextGen  = Block(genises.thisHash, "I am next")
         nextNext = Block(nextGen.thisHash, "I am nextNext")
         
