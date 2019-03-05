@@ -6,19 +6,20 @@ Created on Mar 5, 2019
 import unittest
 import hashlib
 import time
+import gnupg
 
-class Block :
-    prevHash = 0
-    thisHash = 0
-    data = ""
-    timeStamp = 0
-    
+class Transaction:
+    def __init__(self, publicKey):
+        self.publicKey = publicKey
+
+class Block :    
     def __init__(self, prevHash, data="") :
         self.prevHash = prevHash
         self.timeStamp = time.ctime()
         self.data = data
         # concatenate data, prev hash, (nonce) and timestamp
-        self.thisHash = hashlib.sha256(self.data + self.timeStamp + prevHash).hexdigest()
+        concat = self.data + self.timeStamp + prevHash
+        self.thisHash = hashlib.sha256(concat.encode('utf-8')).hexdigest()
 
 class BlockChain :
     def __init__(self):
@@ -41,6 +42,8 @@ class BlockChain :
             prevHash = block.thisHash
         return True
 
+
+# vestige convenience function
 def buildBlocks(numBlocks) :
     blockChain = BlockChain()
     for idx in range(1,numBlocks) :
