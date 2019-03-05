@@ -20,20 +20,32 @@ class Block :
         # concatenate data, prev hash, (nonce) and timestamp
         self.thisHash = hashlib.sha256(self.data + self.timeStamp + prevHash).hexdigest()
 
-def buildBlocks(numBlocks) :
-    blockChain = [Block('0')]
-    for idx in range(1,numBlocks) :
-        prevHash = blockChain[idx-1].thisHash
-        blockChain.append(Block(prevHash))
-    return blockChain
+class BlockChain :
+    def __init__(self):
+        self.blocks = [Block('0')]
+        self.length = 1
+    def __len__(self):
+        return self.length
+    def __getitem__(self,key):
+        return self.blocks[key]
+    def add(self, data=""):
+        lastIndex = len(self.blocks) - 1
+        prevHash  = self.blocks[lastIndex].thisHash
+        self.blocks.append(Block(prevHash, data))
+        self.length = len(self.blocks)
+    def validate(self):
+        prevHash = '0'
+        for block in self.blocks:
+            if block.prevHash != prevHash :
+                return False
+            prevHash = block.thisHash
+        return True
 
-def validateBlocks(blockChain):
-    prevHash = '0'
-    for block in blockChain:
-        if block.prevHash != prevHash :
-            return False
-        prevHash = block.thisHash
-    return True
+def buildBlocks(numBlocks) :
+    blockChain = BlockChain()
+    for idx in range(1,numBlocks) :
+        blockChain.add()
+    return blockChain   
 
 class Test(unittest.TestCase):
 
@@ -57,8 +69,11 @@ class Test(unittest.TestCase):
     def testValidate(self):
         blockChain = buildBlocks(3)
         assert(len(blockChain) == 3)
-        assert(validateBlocks(blockChain))
+        assert(blockChain.validate())
         
+        # tamper with the chain
+        blockChain.blocks[1] = Block(blockChain[0].thisHash, "All coins to Henrik")
+        assert(blockChain.validate() == False)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
