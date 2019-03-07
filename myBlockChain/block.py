@@ -4,16 +4,20 @@ Created on Mar 5, 2019
 @author: eponhik
 '''
 import unittest
-import hashlib
+import hashlib # TODO replace with cryptography hash
 import time
 
-from cryptography.hazmat.backends import backend
+# note to self, by see about aquiring Gordon Freemans suite
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import dsa
 
 class Wallet:
-    def __init__(self, userName):
-        self.keys = dsa.generate_private_key( key_size=1024, backend=backend())
+    def __init__(self):
+        self.private_key = dsa.generate_private_key( key_size=1024, backend=default_backend() )
+        self.public_key  = self.private_key.public_key()
+    def sign(self, data):
+        return self.private_key.sign(data, hashes.SHA256())
 
 class Transaction:
     def __init__(self, data, publicKey, signature):
@@ -21,6 +25,10 @@ class Transaction:
         self.signature = signature
         self.data = data
     def verify(self):
+        try:
+            self.publicKey.verify(self.signature, self.data, hashes.SHA256())
+        except cryptography.exceptions.InvalidSignature :
+            return False
         return True
 
 class Block :    
@@ -89,7 +97,14 @@ class Test(unittest.TestCase):
         assert(blockChain.validate() == False)
         
     def testWallet(self):
-        pass
+        alice = Wallet()
+        eve   = Wallet()
+
+        data = b'all Alices money to Bob'
+        wire = Transaction(data, alice.public_key, alice.sign(data))
+
+        assert(wire.verify())
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
