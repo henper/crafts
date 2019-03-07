@@ -28,7 +28,7 @@ DEP_FILES = $(OBJ_FILES:%.o=%.d)
 
 CXXFLAGS = -g -c -std=gnu++11
 
-all : $(OBJ_DIR) main
+all : $(OBJ_DIR) $(TARGET)
 
 # Silence output unless user invokes with > make VERBOSE=true
 $(VERBOSE).SILENT :
@@ -38,7 +38,7 @@ $(VERBOSE).SILENT :
 clean :
 	rm -f $(OBJ_FILES) main
 
-main : $(OBJ_FILES)
+$(TARGET) : $(OBJ_FILES)
 	g++ $^ -o $@ -lpthread -lGL -lGLU -lglut
 
 $(OBJ_DIR) :

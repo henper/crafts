@@ -1,4 +1,6 @@
 
+TARGET = main
+
 SRC_FILES = $(wildcard *.cc)
 INC_DIR = .
 
