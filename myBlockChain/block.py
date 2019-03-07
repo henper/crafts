@@ -102,9 +102,13 @@ class Test(unittest.TestCase):
 
         data = b'all Alices money to Bob'
         wire = Transaction(data, alice.public_key, alice.sign(data))
-
         assert(wire.verify())
 
+        hack = b'all Alices money to Eve'
+        wire.data = hack
+        assert(wire.verify() == False)
+        wire = Transaction(hack, alice.public_key, eve.sign(hack))
+        assert(wire.verify() == False)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
