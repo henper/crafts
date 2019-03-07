@@ -11,6 +11,7 @@ import time
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import dsa
+from cryptography.exceptions import InvalidSignature
 
 class Wallet:
     def __init__(self):
@@ -27,7 +28,7 @@ class Transaction:
     def verify(self):
         try:
             self.publicKey.verify(self.signature, self.data, hashes.SHA256())
-        except cryptography.exceptions.InvalidSignature :
+        except InvalidSignature :
             return False
         return True
 
