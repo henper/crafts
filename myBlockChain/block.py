@@ -6,11 +6,22 @@ Created on Mar 5, 2019
 import unittest
 import hashlib
 import time
-import gnupg
+
+from cryptography.hazmat.backends import backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import dsa
+
+class Wallet:
+    def __init__(self, userName):
+        self.keys = dsa.generate_private_key( key_size=1024, backend=backend())
 
 class Transaction:
-    def __init__(self, publicKey):
+    def __init__(self, data, publicKey, signature):
         self.publicKey = publicKey
+        self.signature = signature
+        self.data = data
+    def verify(self):
+        return True
 
 class Block :    
     def __init__(self, prevHash, data="") :
@@ -41,7 +52,6 @@ class BlockChain :
                 return False
             prevHash = block.thisHash
         return True
-
 
 # vestige convenience function
 def buildBlocks(numBlocks) :
@@ -77,6 +87,9 @@ class Test(unittest.TestCase):
         # tamper with the chain
         blockChain.blocks[1] = Block(blockChain[0].thisHash, "All coins to Henrik")
         assert(blockChain.validate() == False)
+        
+    def testWallet(self):
+        pass
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
