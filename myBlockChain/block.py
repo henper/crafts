@@ -24,24 +24,34 @@ class Wallet:
         return self.private_key.sign(transactionMeta, hashes.SHA256())
 
 class Transaction:
-    def __init__(self, sender, transactionMeta, signature):
-        self.sender = sender
+    def __init__(self, transactionMeta, signature):
         self.transactionMeta = transactionMeta
         self.signature = signature
+    def __eq__(self, other):
+        return (self.transactionMeta == other.transactionMeta and self.signature == other.signature)
     def verify(self):
-        publicKey = load_pem_public_key(self.sender, backend=default_backend())
+        sender = desTransactionMeta(self.transactionMeta).get('sender')
+        publicKey = load_pem_public_key(sender.encode('utf-8'), backend=default_backend())
         try:
             publicKey.verify(self.signature, self.transactionMeta, hashes.SHA256())
         except InvalidSignature :
             return False
         return True
+    def pack(self):
+        packed = bytes() # the signature is a pure byte object and not decodable, append it to the metadata
+        return packed.join([self.transactionMeta, self.signature])
+    @classmethod
+    def unpack(object, packedTransaction):
+        # the metadata is in a dictionary which ends with a curlybracket, split there to get both metadata and signature
+        [transactionMeta, sep, signature] = packedTransaction.partition(b'}')
+        return Transaction(transactionMeta+sep, signature)
 
 def serTransactionMeta(sender, amount, receiver):
     meta = {'sender': sender.decode('utf-8'), 'amount': amount, 'receiver': receiver.decode('utf-8')}
     return json.dumps(meta, indent=4, sort_keys=True).encode('utf-8')
 
 def desTransactionMeta(transactionMeta):
-    return json.loads(meta.decode('utf-8'))
+    return json.loads(transactionMeta.decode('utf-8'))
 
 class Block :    
     def __init__(self, prevHash, transaction=b"") :
@@ -110,13 +120,13 @@ class Test(unittest.TestCase):
         blockChain.blocks[1] = Block(blockChain[0].thisHash, b"All coins to Henrik")
         assert(blockChain.validate() == False)
         
-    def testTransactions(self):
+    def testTransactionVerification(self):
         alice = Wallet()
         bob   = Wallet()
         eve   = Wallet()
 
         meta = serTransactionMeta(alice.id(), 10.5, bob.id())
-        wire = Transaction(alice.id(), meta, alice.sign(meta))
+        wire = Transaction(meta, alice.sign(meta))
         assert(wire.verify())
 
         # intercept
@@ -125,8 +135,20 @@ class Test(unittest.TestCase):
         assert(wire.verify() == False)
 
         # inject
-        wire = Transaction(alice.id(), hack, eve.sign(hack))
+        wire = Transaction(hack, eve.sign(hack))
         assert(wire.verify() == False)
+
+    def testTransactionSerdes(self):
+        alice = Wallet()
+        bob   = Wallet()
+        meta = serTransactionMeta(alice.id(), 10.5, bob.id())
+        wire = Transaction(meta, alice.sign(meta))
+
+        packed = wire.pack()
+        unpacked = Transaction.unpack(packed)
+        
+        assert(wire == unpacked)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
