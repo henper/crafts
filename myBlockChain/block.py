@@ -71,8 +71,8 @@ class Block :
         self.thisHash = digest.finalize()
 
 class BlockChain :
-    def __init__(self):
-        self.blocks = [Block(b'0')]
+    def __init__(self, block=Block(b'0')):
+        self.blocks = [block]
         self.length = 1
     def __len__(self):
         return self.length
@@ -83,6 +83,7 @@ class BlockChain :
         prevHash  = self.blocks[lastIndex].thisHash
         self.blocks.append(Block(prevHash, transaction))
         self.length = len(self.blocks)
+        return True
     def validate(self):
         prevHash = b'0'
         for block in self.blocks:
@@ -109,13 +110,10 @@ class Test(unittest.TestCase):
         genises  = Block(b'0', b"Genisis")
         nextGen  = Block(genises.thisHash, b"I am next")
         nextNext = Block(nextGen.thisHash, b"I am nextNext")
-        
-        print(nextGen.thisHash)
-        print(nextNext.thisHash)
-        
+
         assert(nextGen.prevHash == genises.thisHash)
         assert(nextNext.prevHash == nextGen.thisHash)
-        
+
     def testValidate(self):
         blockChain = buildBlocks(3)
         assert(len(blockChain) == 3)
@@ -124,7 +122,7 @@ class Test(unittest.TestCase):
         # tamper with the chain
         blockChain.blocks[1] = Block(blockChain[0].thisHash, b"All coins to Henrik")
         assert(blockChain.validate() == False)
-        
+
     def testTransactionVerification(self):
         alice = Wallet()
         bob   = Wallet()
@@ -159,6 +157,53 @@ class Test(unittest.TestCase):
         unpacked = Transaction.unpack(packed)
         
         assert(wire == unpacked)
+
+    def testBlockChainOfTransactions(self):
+        cornucopia = Wallet()
+        alice = Wallet()
+
+        allTheMonies = 1024*1024 #should be enough for everyone
+        wire = Transaction(cornucopia.id(), allTheMonies, alice.id())
+        wire.signature = cornucopia.sign(wire)
+
+        # to create a ledgible ledger it'd help with names from id's
+        names = {cornucopia.id(): 'cornucopia', alice.id(): 'alice'} 
+        cornucopia = None # no inflation zone
+
+        blockChain = BlockChain(Block(b'0', wire.pack()))
+
+        # add frindly user and transfer some monies
+        bob = Wallet()
+        names.update({bob.id(): 'bob'})
+
+        wire = Transaction(alice.id(), 10.5, bob.id())
+        assert(blockChain.add(wire.pack()))
+
+        # pretty print the current balance of all users
+        ledger = dict()
+        for block in blockChain :
+            transaction = Transaction.unpack(block.transaction)
+
+            # update receiver
+            if(ledger.get(transaction.receiver)):
+                # user already in ledger
+                ledger.update({transaction.receiver: ledger.get(transaction.receiver)+transaction.amount})
+            else:
+                # welcome to the game
+                ledger.update({transaction.receiver: transaction.amount})
+
+            #update sender
+            if(ledger.get(transaction.sender)):
+                # user already in ledger
+                ledger.update({transaction.sender: ledger.get(transaction.sender)-transaction.amount})
+            else:
+                # welcome to the game (genisis block only!)
+                ledger.update({transaction.sender: -transaction.amount})
+
+        ledgibleLedger = dict()
+        for key in names.keys():
+            ledgibleLedger.update({names[key]: ledger[key]})
+        print(json.dumps(ledgibleLedger, indent=4, sort_keys=True))
 
 
 if __name__ == "__main__":
