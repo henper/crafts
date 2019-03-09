@@ -19,39 +19,44 @@ class Wallet:
         self.private_key = dsa.generate_private_key( key_size=1024, backend=default_backend() )
         self.public_key  = self.private_key.public_key()
     def id(self):
-        return self.public_key.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
-    def sign(self, transactionMeta):
-        return self.private_key.sign(transactionMeta, hashes.SHA256())
+        return self.public_key.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo).decode('utf-8')
+    def sign(self, transaction):
+        return self.private_key.sign(transaction.serialize(), hashes.SHA256())
 
 class Transaction:
-    def __init__(self, transactionMeta, signature):
-        self.transactionMeta = transactionMeta
+    def __init__(self, sender, amount, receiver, signature=b''):
+        self.sender = sender
+        self.amount = amount
+        self.receiver = receiver
         self.signature = signature
     def __eq__(self, other):
-        return (self.transactionMeta == other.transactionMeta and self.signature == other.signature)
+        return (self.sender == other.sender and
+                self.amount == other.amount and
+                self.receiver == other.receiver and
+                self.signature == other.signature)
     def verify(self):
-        sender = desTransactionMeta(self.transactionMeta).get('sender')
-        publicKey = load_pem_public_key(sender.encode('utf-8'), backend=default_backend())
+        publicKey = load_pem_public_key(self.sender.encode('utf-8'), backend=default_backend())
         try:
-            publicKey.verify(self.signature, self.transactionMeta, hashes.SHA256())
+            publicKey.verify(self.signature, self.serialize(), hashes.SHA256())
         except InvalidSignature :
             return False
         return True
-    def pack(self):
-        packed = bytes() # the signature is a pure byte object and not decodable, append it to the metadata
-        return packed.join([self.transactionMeta, self.signature])
+    def serialize(self):
+        meta = {'sender': self.sender, 'amount': self.amount, 'receiver': self.receiver}
+        return json.dumps(meta, indent=4, sort_keys=True).encode('utf-8')
     @classmethod
-    def unpack(object, packedTransaction):
+    def deserialize(object, serialized):
+        return(Transaction(**json.loads(serialized.decode('utf-8'))))
+    def pack(self):
+        packed = bytes() # the signature is a pure byte object and not decodable, append it to the serialized object
+        return packed.join([self.serialize(), self.signature])
+    @classmethod
+    def unpack(obj, packed):
         # the metadata is in a dictionary which ends with a curlybracket, split there to get both metadata and signature
-        [transactionMeta, sep, signature] = packedTransaction.partition(b'}')
-        return Transaction(transactionMeta+sep, signature)
-
-def serTransactionMeta(sender, amount, receiver):
-    meta = {'sender': sender.decode('utf-8'), 'amount': amount, 'receiver': receiver.decode('utf-8')}
-    return json.dumps(meta, indent=4, sort_keys=True).encode('utf-8')
-
-def desTransactionMeta(transactionMeta):
-    return json.loads(transactionMeta.decode('utf-8'))
+        [meta, sep, signature] = packed.partition(b'}')
+        obj = Transaction.deserialize(meta+sep)
+        obj.signature = signature
+        return obj
 
 class Block :    
     def __init__(self, prevHash, transaction=b"") :
@@ -125,24 +130,30 @@ class Test(unittest.TestCase):
         bob   = Wallet()
         eve   = Wallet()
 
-        meta = serTransactionMeta(alice.id(), 10.5, bob.id())
-        wire = Transaction(meta, alice.sign(meta))
+        wire = Transaction(alice.id(), 10.5, bob.id())
+        wire.signature = alice.sign(wire)
         assert(wire.verify())
 
         # intercept
-        hack = serTransactionMeta(alice.id(), 10.5, eve.id())
-        wire.transactionMeta = hack
+        wire.receiver = eve.id()
         assert(wire.verify() == False)
 
         # inject
-        wire = Transaction(hack, eve.sign(hack))
+        hack = Transaction(alice.id(), 10.5, eve.id())
+        hack.signature = alice.sign(wire)
         assert(wire.verify() == False)
 
     def testTransactionSerdes(self):
         alice = Wallet()
         bob   = Wallet()
-        meta = serTransactionMeta(alice.id(), 10.5, bob.id())
-        wire = Transaction(meta, alice.sign(meta))
+
+        wire = Transaction(alice.id(), 10.5, bob.id())
+
+        serialized = wire.serialize()
+        deserialized = Transaction.deserialize(serialized)
+        assert(wire == deserialized)
+
+        wire.signature = alice.sign(wire)
 
         packed = wire.pack()
         unpacked = Transaction.unpack(packed)
