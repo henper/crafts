@@ -9,36 +9,48 @@ import unittest
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import dsa
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat, load_pem_public_key
 from cryptography.exceptions import InvalidSignature
 from time import ctime
+import json
 
 class Wallet:
     def __init__(self):
         self.private_key = dsa.generate_private_key( key_size=1024, backend=default_backend() )
         self.public_key  = self.private_key.public_key()
-    def sign(self, data):
-        return self.private_key.sign(data, hashes.SHA256())
+    def id(self):
+        return self.public_key.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+    def sign(self, transactionMeta):
+        return self.private_key.sign(transactionMeta, hashes.SHA256())
 
 class Transaction:
-    def __init__(self, data, publicKey, signature):
-        self.publicKey = publicKey
+    def __init__(self, sender, transactionMeta, signature):
+        self.sender = sender
+        self.transactionMeta = transactionMeta
         self.signature = signature
-        self.data = data
     def verify(self):
+        publicKey = load_pem_public_key(self.sender, backend=default_backend())
         try:
-            self.publicKey.verify(self.signature, self.data, hashes.SHA256())
+            publicKey.verify(self.signature, self.transactionMeta, hashes.SHA256())
         except InvalidSignature :
             return False
         return True
 
+def serTransactionMeta(sender, amount, receiver):
+    meta = {'sender': sender.decode('utf-8'), 'amount': amount, 'receiver': receiver.decode('utf-8')}
+    return json.dumps(meta, indent=4, sort_keys=True).encode('utf-8')
+
+def desTransactionMeta(transactionMeta):
+    return json.loads(meta.decode('utf-8'))
+
 class Block :    
-    def __init__(self, prevHash, data=b"") :
+    def __init__(self, prevHash, transaction=b"") :
         self.prevHash = prevHash
         self.timeStamp = ctime().encode('utf-8')
-        self.data = data
+        self.transaction = transaction
         
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        digest.update(self.data)
+        digest.update(self.transaction)
         digest.update(self.timeStamp)
         digest.update(self.prevHash)
         self.thisHash = digest.finalize()
@@ -51,10 +63,10 @@ class BlockChain :
         return self.length
     def __getitem__(self,key):
         return self.blocks[key]
-    def add(self, data=b""):
+    def add(self, transaction=b""):
         lastIndex = len(self.blocks) - 1
         prevHash  = self.blocks[lastIndex].thisHash
-        self.blocks.append(Block(prevHash, data))
+        self.blocks.append(Block(prevHash, transaction))
         self.length = len(self.blocks)
     def validate(self):
         prevHash = b'0'
@@ -98,18 +110,22 @@ class Test(unittest.TestCase):
         blockChain.blocks[1] = Block(blockChain[0].thisHash, b"All coins to Henrik")
         assert(blockChain.validate() == False)
         
-    def testWallet(self):
+    def testTransactions(self):
         alice = Wallet()
+        bob   = Wallet()
         eve   = Wallet()
 
-        data = b'all Alices money to Bob'
-        wire = Transaction(data, alice.public_key, alice.sign(data))
+        meta = serTransactionMeta(alice.id(), 10.5, bob.id())
+        wire = Transaction(alice.id(), meta, alice.sign(meta))
         assert(wire.verify())
 
-        hack = b'all Alices money to Eve'
-        wire.data = hack
+        # intercept
+        hack = serTransactionMeta(alice.id(), 10.5, eve.id())
+        wire.transactionMeta = hack
         assert(wire.verify() == False)
-        wire = Transaction(hack, alice.public_key, eve.sign(hack))
+
+        # inject
+        wire = Transaction(alice.id(), hack, eve.sign(hack))
         assert(wire.verify() == False)
 
 if __name__ == "__main__":
