@@ -177,7 +177,15 @@ class Test(unittest.TestCase):
         names.update({bob.id(): 'bob'})
 
         wire = Transaction(alice.id(), 10.5, bob.id())
-        assert(blockChain.add(wire.pack()))
+        assert(blockChain.add(wire.pack()) == False)
+
+        # add an unfriendly user and try to transfer more monies than exists
+        eve = Wallet()
+        names.update({eve.id(), 'eve'})
+
+        wire = Transaction(bob.id(), 11, eve.id())
+        wire.signature = bob.sign(wire)
+        assert(blockChain.add(wire.pack()) == False)
 
         # pretty print the current balance of all users
         ledger = dict()
