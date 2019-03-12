@@ -12,7 +12,10 @@ from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat, load_pem_public_key
 from cryptography.exceptions import InvalidSignature
 from time import ctime
+from math import log, ceil
 import json
+
+DIFFICULTY = '0000'
 
 class Wallet:
     def __init__(self):
@@ -64,11 +67,29 @@ class Block :
         self.timeStamp = ctime().encode('utf-8')
         self.transaction = transaction
         
+        # pre-hash the knowns so we only do that the one time
+        preDigested = self.__preDigest()
+        
+        # Do proof-of work by finding a hash that ends with difficulty
+        self.difficulty = DIFFICULTY
+        self.thisHash = b'1' # init hash with anything that doesn't satisfy difficulty
+        self.nonce = 0
+        
+        # find a nonce-value that will satisfy the difficulty
+        while(self.thisHash.hex().endswith(self.difficulty) == False):
+            digest = preDigested.copy()
+            self.nonce = self.nonce +1
+            bytesToStoreNonce = ceil(log(self.nonce+1)/log(2)/8)
+            digest.update(self.nonce.to_bytes(bytesToStoreNonce, byteorder='big'))
+            self.thisHash = digest.finalize()
+            #print(self.thisHash.hex())
+
+    def __preDigest(self):
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
         digest.update(self.transaction)
         digest.update(self.timeStamp)
         digest.update(self.prevHash)
-        self.thisHash = digest.finalize()
+        return digest
 
 class BlockChain :
     def __init__(self, block=Block(b'0')):
@@ -143,6 +164,7 @@ class Test(unittest.TestCase):
     def testGenisis(self):
         genises = Block(b'0', b"Genisis")
         assert(genises.prevHash == b'0')
+        assert(genises.thisHash.hex().endswith(DIFFICULTY))
 
     def testNextBlock(self):
         genises  = Block(b'0', b"Genisis")
