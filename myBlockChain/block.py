@@ -15,7 +15,7 @@ from time import ctime
 from math import log, ceil
 import json
 
-DIFFICULTY = '0000'
+DIFFICULTY = '000'
 
 class Wallet:
     def __init__(self):
@@ -50,22 +50,12 @@ class Transaction:
     @classmethod
     def deserialize(object, serialized):
         return(Transaction(**json.loads(serialized.decode('utf-8'))))
-    def pack(self):
-        packed = bytes() # the signature is a pure byte object and not decodable, append it to the serialized object
-        return packed.join([self.serialize(), self.signature])
-    @classmethod
-    def unpack(obj, packed):
-        # the metadata is in a dictionary which ends with a curlybracket, split there to get both metadata and signature
-        [meta, sep, signature] = packed.partition(b'}')
-        obj = Transaction.deserialize(meta+sep)
-        obj.signature = signature
-        return obj
 
 class Block :    
-    def __init__(self, prevHash, transaction=b"") :
+    def __init__(self, prevHash, transactions=[Transaction('foo', 1, 'bar')]) :
         self.prevHash = prevHash
         self.timeStamp = ctime().encode('utf-8')
-        self.transaction = transaction
+        self.transactions = transactions
         
         # pre-hash the knowns so we only do that the one time
         preDigested = self.__preDigest()
@@ -86,44 +76,56 @@ class Block :
 
     def __preDigest(self):
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        digest.update(self.transaction)
+        
+        for transaction in self.transactions :
+            digest.update(transaction.serialize())
+            digest.update(transaction.signature)
+        
         digest.update(self.timeStamp)
         digest.update(self.prevHash)
         return digest
 
 class BlockChain :
-    def __init__(self, block=Block(b'0')):
+    genisisHash = b'0'
+    def __init__(self, block=Block(genisisHash)):
         self.blocks = [block]
         self.length = 1
     def __len__(self):
         return self.length
     def __getitem__(self,key):
         return self.blocks[key]
-    def add(self, transaction):
-        # verify the transaction signature
-        if(transaction.verify() == False):
+    def add(self, transactions):
+        
+        if self.__verifyTransactions(transactions) == False:
             return False
-
-        # verify sender has the necessary monies
-        ledger = self.ledger()
-        if(transaction.sender in ledger):
-            funds = ledger[transaction.sender]
-            if(funds < transaction.amount):
-                print('ERROR: Sender has only ' + str(funds) + ' monies!')
-                return False
-        else:
-            print('ERROR: Sender has never received any monies!')
-            return False
-
-        packed = transaction.pack()
 
         lastIndex = len(self.blocks) - 1
         prevHash  = self.blocks[lastIndex].thisHash
-        self.blocks.append(Block(prevHash, packed))
+        self.blocks.append(Block(prevHash, transactions))
         self.length = len(self.blocks)
         return True
+    def __verifyTransactions(self, transactions):
+        for transaction in transactions :
+        # verify the transaction signature
+            if(transaction.verify() == False):
+                print('ERROR: Transaction signature validation failed!')
+                return False
+    
+            # verify sender has the necessary monies
+            ledger = self.ledger()
+            if(transaction.sender in ledger):
+                funds = ledger[transaction.sender]
+                if(funds < transaction.amount):
+                    print('ERROR: Sender has only ' + str(funds) + ' monies!')
+                    return False
+            else:
+                print('ERROR: Sender has never received any monies!')
+                return False
+        
+        # all checks Ok
+        return True
     def validate(self):
-        prevHash = b'0'
+        prevHash = genisisHash
         for block in self.blocks:
             if block.prevHash != prevHash :
                 return False
@@ -132,23 +134,21 @@ class BlockChain :
     def ledger(self): # build a dictionary of all users bottom line
         ledger = dict()
         for block in self.blocks :
-            transaction = Transaction.unpack(block.transaction)
-
-            # update receiver
-            if(transaction.receiver in ledger):
-                # user already in ledger
-                ledger.update({transaction.receiver: ledger[transaction.receiver]+transaction.amount})
-            else:
-                # welcome to the game
-                ledger.update({transaction.receiver: transaction.amount})
-
-            #update sender
-            if(transaction.sender in ledger):
-                # user already in ledger
-                ledger.update({transaction.sender: ledger[transaction.sender]-transaction.amount})
-            else:
-                # welcome to the game (genisis block only!)
-                ledger.update({transaction.sender: -transaction.amount})
+            for transaction in block.transactions :
+                # update receiver
+                if(transaction.receiver in ledger):
+                    # user already in ledger
+                    ledger.update({transaction.receiver: ledger[transaction.receiver]+transaction.amount})
+                else:
+                    # welcome to the game
+                    ledger.update({transaction.receiver: transaction.amount})
+                #update sender
+                if(transaction.sender in ledger):
+                    # user already in ledger
+                    ledger.update({transaction.sender: ledger[transaction.sender]-transaction.amount})
+                else:
+                    # welcome to the game (genisis block only!)
+                    ledger.update({transaction.sender: -transaction.amount})
         return ledger
 
 # vestige convenience function
@@ -162,14 +162,14 @@ class Test(unittest.TestCase):
 
 
     def testGenisis(self):
-        genises = Block(b'0', b"Genisis")
+        genises = Block(b'0')
         assert(genises.prevHash == b'0')
         assert(genises.thisHash.hex().endswith(DIFFICULTY))
 
     def testNextBlock(self):
-        genises  = Block(b'0', b"Genisis")
-        nextGen  = Block(genises.thisHash, b"I am next")
-        nextNext = Block(nextGen.thisHash, b"I am nextNext")
+        genises  = Block(b'0')
+        nextGen  = Block(genises.thisHash)
+        nextNext = Block(nextGen.thisHash)
 
         assert(nextGen.prevHash == genises.thisHash)
         assert(nextNext.prevHash == nextGen.thisHash)
@@ -213,11 +213,6 @@ class Test(unittest.TestCase):
 
         wire.signature = alice.sign(wire)
 
-        packed = wire.pack()
-        unpacked = Transaction.unpack(packed)
-        
-        assert(wire == unpacked)
-
     def testBlockChainOfTransactions(self):
         cornucopia = Wallet()
         alice = Wallet()
@@ -230,16 +225,16 @@ class Test(unittest.TestCase):
         names = {cornucopia.id(): 'cornucopia', alice.id(): 'alice'} 
         cornucopia = None # no inflation zone
 
-        blockChain = BlockChain(Block(b'0', wire.pack()))
+        blockChain = BlockChain(Block(b'0', [wire]))
 
         # add frindly user and transfer some monies
         bob = Wallet()
         names.update({bob.id(): 'bob'})
 
         wire = Transaction(alice.id(), 10.5, bob.id())
-        assert(blockChain.add(wire) == False) # unsigned!
+        assert(blockChain.add([wire]) == False) # unsigned!
         wire.signature = alice.sign(wire)
-        assert(blockChain.add(wire))
+        assert(blockChain.add([wire]))
         
 
         # add an unfriendly user and try to transfer more monies than exists
@@ -248,7 +243,7 @@ class Test(unittest.TestCase):
 
         wire = Transaction(bob.id(), 11, eve.id())
         wire.signature = bob.sign(wire)
-        assert(blockChain.add(wire) == False)
+        assert(blockChain.add([wire]) == False)
 
         print('Blocks in chain: ' + str(len(blockChain)))
         # pretty print the current balance of all users
