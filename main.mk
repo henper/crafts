@@ -1,6 +1,7 @@
 # Begin: generic Makefile material
 
 INC += $(addprefix -I, $(INC_DIR))
+LIB += $(addprefix -l, $(LIBRARIES))
 
 # For all source file paths, create a path to corresponding obj-file
 # different than that of the source file itself. Steps:
@@ -36,10 +37,10 @@ $(VERBOSE).SILENT :
 .PHONY : clean
 
 clean :
-	rm -f $(OBJ_FILES) main
+	rm -f $(OBJ_FILES) $(TARGET)
 
 $(TARGET) : $(OBJ_FILES)
-	g++ $^ -o $@ -lpthread -lGL -lGLU -lglut
+	g++ $^ -o $@ $(LIB_DIR) $(LIB)
 
 $(OBJ_DIR) :
 	mkdir -p $(OBJ_DIR)
