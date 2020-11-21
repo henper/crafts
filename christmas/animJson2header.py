@@ -7,7 +7,9 @@ frames = json.loads(txt)
 
 print('{')
 for frame in frames:
+    print('  {')
     for led in frame:
         r,g,b = led['color']
-        print(f'    {{.index = {led["index"]}, .color = RgbColor({r}, {g}, {b})}},')
+        print(f'    RgbColor({r}, {g}, {b}),')
+    print('  },')
 print('}')

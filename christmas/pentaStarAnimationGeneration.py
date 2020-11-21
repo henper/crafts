@@ -5,6 +5,7 @@ from pygame import ftfont
 from math import sqrt, sin, cos, radians
 import json
 from sys import stdin
+from copy import deepcopy
 
 WIDTH, HEIGHT = (1000, 1000)
 WHITE = (255, 255, 255)
@@ -223,4 +224,10 @@ while True:
     pygame.display.update()
 
 # when the application exits, write the frames to json and dump it to stdout
-serialize(frames)
+output = []
+for frame in frames:
+    output.append(deepcopy(leds))
+    for led in frame:
+        output[-1][led['index']] = led
+
+serialize(output)
