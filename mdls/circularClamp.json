@@ -1,0 +1,13 @@
+{
+    "parameterSets": {
+        "design default values": {
+            "$fa": "3",
+            "$fs": "0.5",
+            "height": "9",
+            "iradius": "5",
+            "oradius": "10",
+            "zfight": "1"
+        }
+    },
+    "fileFormatVersion": "1"
+}
