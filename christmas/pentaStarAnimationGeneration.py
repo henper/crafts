@@ -45,12 +45,13 @@ def serialize(frames):
     print(json.dumps(frames))
 
 def deserialize():
-    #if stdin.isatty():
-    #    return [[]]
+    if stdin.isatty():
+        return [[]]
 
-    #frames = json.loads(stdin.read())
-    txt = open("christmas/anim.json").read()
-    frames = json.loads(txt)
+    frames = json.loads(stdin.read())
+    
+    #txt = open("christmas/anim.json").read()
+    #frames = json.loads(txt)
 
     for frame in frames:
         for led in frame:
@@ -108,7 +109,7 @@ pentagram[1::2] = mountains
 pygame.draw.polygon(screen, pygame.Color('grey'), pentagram, 2)
 
 # do linear interpolation to determine led positions
-LEDS_PER_FACET = 5
+LEDS_PER_FACET = 4
 ledCoords = []
 leds = []
 
@@ -121,15 +122,23 @@ def clearAllLeds():
         draw(led)
 
 for i in range(5):
+    distBetweeenLeds = 1.0/(LEDS_PER_FACET+1)
+    ledOffset = distBetweeenLeds/2
+
     for led in range(int(LEDS_PER_FACET)):
-        coord = valleys[i].lerp(mountains[i], (1.0/LEDS_PER_FACET)*led)
+        coord = valleys[i].lerp(mountains[i], ledOffset+distBetweeenLeds*led)
         createLed(coord)
 
+
+    # mountain led
+    createLed(mountains[i])
+
+    for led in range(int(LEDS_PER_FACET)):
         nextValley = i + 1
         if nextValley == 5:
             nextValley = 0
 
-        coord = mountains[i].lerp(valleys[nextValley], (1.0/LEDS_PER_FACET)*led)
+        coord = mountains[i].lerp(valleys[nextValley], 3*ledOffset+distBetweeenLeds*led)
         createLed(coord)
 
 frames = deserialize()

@@ -42,6 +42,42 @@ fi = (1+sqrt(5))/2;
 hypot = 83;
 roundness = 7;
 
-color("white")  translate([0,0,0]) linear_extrude(height=1) pentagram(u=hypot/fi);
-color("blue") translate([0,0,1]) linear_extrude(height=1) offset(r=-roundness) pentagram(u=hypot/fi+1.4*roundness);
-color("red")   translate([0,0,2]) linear_extrude(height=1) offset(r=roundness) pentagram(u=hypot/fi-1.4*roundness);
+//color("white")  translate([0,0,0]) linear_extrude(height=1) pentagram(u=hypot/fi);
+//color("blue") translate([0,0,1]) linear_extrude(height=1) offset(r=-roundness) pentagram(u=hypot/fi+1.4*roundness);
+//color("red")   translate([0,0,2]) linear_extrude(height=1) offset(r=roundness) pentagram(u=hypot/fi-1.4*roundness);
+
+
+/*
+difference()
+{
+  {
+    cylinder(h=5, r=5);
+    union()
+    {
+        translate([0,0,1]) difference()
+        {
+          linear_extrude(height=5) pentagram(u=2);
+
+          difference()
+          {
+            cylinder(h=4, r=6);
+            cylinder(h=5, r1=0, r2=5);
+          }
+        }
+    }
+  }
+}
+*/
+$fn = 50;
+
+difference()
+{
+  linear_extrude(height=5) pentagram(u=4);
+
+  translate([0,0,-1]) cylinder(h=1+3.5, r=2.5/2);
+  difference()
+  {
+    cylinder(h=6, r=8);
+    cylinder(h=5, r1=8, r2=0);
+  }
+}
