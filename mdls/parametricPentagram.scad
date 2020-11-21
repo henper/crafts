@@ -46,38 +46,26 @@ roundness = 7;
 //color("blue") translate([0,0,1]) linear_extrude(height=1) offset(r=-roundness) pentagram(u=hypot/fi+1.4*roundness);
 //color("red")   translate([0,0,2]) linear_extrude(height=1) offset(r=roundness) pentagram(u=hypot/fi-1.4*roundness);
 
+$fn = 50;
 
-/*
-difference()
+
+module threeDimPentagram(radii=8, height=5)
 {
+  difference()
   {
-    cylinder(h=5, r=5);
-    union()
+    linear_extrude(height=height) pentagram(u=radii/2);
+    difference()
     {
-        translate([0,0,1]) difference()
-        {
-          linear_extrude(height=5) pentagram(u=2);
-
-          difference()
-          {
-            cylinder(h=4, r=6);
-            cylinder(h=5, r1=0, r2=5);
-          }
-        }
+      cylinder(h=height+1, r=radii);
+      cylinder(h=height, r1=radii, r2=0);
     }
   }
 }
-*/
-$fn = 50;
 
 difference()
 {
-  linear_extrude(height=5) pentagram(u=4);
-
-  translate([0,0,-1]) cylinder(h=1+3.5, r=2.5/2);
-  difference()
-  {
-    cylinder(h=6, r=8);
-    cylinder(h=5, r1=8, r2=0);
-  }
+  threeDimPentagram(radii=12, height=8);
+  threeDimPentagram(radii=10, height=5);
+  translate([0,0,-1]) cylinder(h=10, r=2.5/2);
+  translate([0,0,6]) cylinder(h=3, r1=2.5/2, r2=5);
 }
