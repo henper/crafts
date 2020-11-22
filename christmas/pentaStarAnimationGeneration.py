@@ -113,10 +113,12 @@ pygame.draw.polygon(screen, pygame.Color('grey'), pentagram, 2)
 LEDS_PER_FACET = 4
 ledCoords = []
 leds = []
-
+ledIndex = 0
 def createLed(coord):
+    global ledIndex
     rect = pygame.draw.circle(screen, pygame.Color('black'), (int(coord.x),int(coord.y)), 10)
-    leds.append({'index': i*5+i+led+1, 'rect': rect, 'color': pygame.Color('black')})
+    leds.append({'index': ledIndex, 'rect': rect, 'color': pygame.Color('black')})
+    ledIndex += 1
 
 def clearAllLeds():
     for led in leds:
@@ -160,7 +162,6 @@ while True:
         ledRemoved = False
         for led in frames[frame]:
             if led['rect'].collidepoint(event.pos):
-                led['color'] = pygame.Color('yellow')
                 frames[frame].remove(led)
                 ledRemoved = True
                 break
@@ -172,7 +173,7 @@ while True:
             if led['rect'].collidepoint(event.pos):
                 if led not in frames[frame]:
                     nled = led.copy()
-                    nled['color'] = pygame.Color('yellow')
+                    nled['color'] = pygame.Color('darkred')
                     frames[frame].append(nled)
                 break
 

@@ -5,8 +5,8 @@
 
 
 #ifndef STASSID
-#define STASSID "Molndal_Guest"
-#define STAPSK  "seanbanan"
+#define STASSID "biggie"
+#define STAPSK  ""
 #endif
 
 const char* ssid          = STASSID;
@@ -16,8 +16,9 @@ const char* password      = STAPSK;
 const uint16_t PixelCount = 45; // this example assumes 4 pixels, making it smaller will cause a failure
 const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266
 
+#include "anim.h"
 
-
+const int numFrames = sizeof(anim)/sizeof(anim[0]) / PixelCount;
 
 // three element pixels, in different order and speeds
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
@@ -90,20 +91,20 @@ void setup() {
 
 }
 
+int frame = 0;
 void loop() {
   ArduinoOTA.handle();
 
-  for(int i = 0; i < 45; i++)
+  for(int i = 0; i < PixelCount; i++)
   {
-    strip.SetPixelColor(i,RgbColor(128,128,128));
+    strip.SetPixelColor(i,anim[frame*PixelCount+i]);
   }
+
+  frame++;
+  if (frame == numFrames)
+    frame = 0;
 
   strip.Show();
-  delay(1000);
-
-  for(int i = 0; i < 45; i++)
-  {
-    strip.SetPixelColor(i,RgbColor(200,200,200));
-  }
+  delay(500);
 
 }
