@@ -173,7 +173,7 @@ while True:
             if led['rect'].collidepoint(event.pos):
                 if led not in frames[frame]:
                     nled = led.copy()
-                    nled['color'] = pygame.Color('darkred')
+                    nled['color'] = pygame.Color('lightyellow')
                     frames[frame].append(nled)
                 break
 
