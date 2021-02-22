@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\..\\kossel"
+		},
+		{
+			"path": "..\\..\\hyperpixel-raspi4b-case"
+		}
+	],
+	"settings": {}
+}
