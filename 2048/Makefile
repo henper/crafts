@@ -10,4 +10,6 @@ INC_DIR += ../glutWrapper
 SRC_FILES += $(wildcard ai/*.cc)
 INC_DIR += ai
 
+LIBRARIES = GL glut
+
 include ../main.mk
