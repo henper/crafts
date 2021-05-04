@@ -109,22 +109,11 @@ var config = {
 		},
 		{
 			module: "MMM-TemperatureDisplay",
-			position: "center",
 			config: {
 				bridgeIp: "192.168.88.254",
 				user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO"
 			}
-		   },
-		{
-			disabled: true,
-			module: "MMM-G-manTEST",
-			position: "middle_center",
-			config: {
-			bridgeIp: "192.168.88.254",
-        		user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO",
-			updateInterval: 2,
-			}
-		   },		
+		},
 		{
 			disabled: true,
 			module: 'MMM-Globe',

@@ -13,17 +13,6 @@ Module.register("MMM-TemperatureDisplay", {
     this.scheduleUpdate(1 * 1000) // schedule initial update in 1s
   },
 
-  getDom: function() {
-      var element = document.createElement("div")
-      element.className = "temperature"
-      element.innerHTML = String(this.temperature) + "°";
-      return element
-  },
-
-  getStyles: function () {
-    return ["MMM-TemperatureDisplay.css"];
-  },
-
   scheduleUpdate: function (delay) {
 		clearTimeout(this.updateTimer);
 
@@ -38,7 +27,6 @@ Module.register("MMM-TemperatureDisplay", {
       .then( response => response.json())
       .then( data => {
         this.temperature = data.state.temperature / 100; // sensor in centi-Celsius
-        this.updateDom();
         this.scheduleUpdate(5*1000) // schedule next update in 10 minutes
       });
 
