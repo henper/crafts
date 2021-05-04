@@ -77,7 +77,8 @@ var config = {
 			config: {
 				location: "Göteborg",
 				locationID: "2711537", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-				appid: "9cab403720f3d1dfd158dcbfc27c194b"
+				appid: "9cab403720f3d1dfd158dcbfc27c194b",
+				showIndoorTemperature: true
 			}
 		},
 		{
@@ -87,7 +88,9 @@ var config = {
 			config: {
 				location: "Göteborg",
 				locationID: "2711537", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-				appid: "9cab403720f3d1dfd158dcbfc27c194b"
+				appid: "9cab403720f3d1dfd158dcbfc27c194b",
+				colored: true,
+				showRainAmount: true
 			}
 		},
 		{
@@ -105,6 +108,24 @@ var config = {
 			}
 		},
 		{
+			module: "MMM-TemperatureDisplay",
+			position: "center",
+			config: {
+				bridgeIp: "192.168.88.254",
+				user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO"
+			}
+		   },
+		{
+			disabled: true,
+			module: "MMM-G-manTEST",
+			position: "middle_center",
+			config: {
+			bridgeIp: "192.168.88.254",
+        		user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO",
+			updateInterval: 2,
+			}
+		   },		
+		{
 			disabled: true,
 			module: 'MMM-Globe',
 			position: 'middle_center',
@@ -116,6 +137,7 @@ var config = {
 			}
 		},
 		{
+			disabled: true,
 			module: 'MMM-Screencast',
 			position: 'center', // This position is for a hidden <div /> and not the screencast window
 			config: {
@@ -199,6 +221,7 @@ var config = {
             }
         },
 		{
+			disabled: true,
     		module: "MMM-Stock",
     		position: "top_left",
     		config: {
