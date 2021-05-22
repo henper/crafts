@@ -172,7 +172,7 @@ var config = {
                      debug: false,                 // Optional. Enable some extra output when debugging.
                      sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
                                                    // default is "track".
-                     refreshRate: "20000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
+                     refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
                      trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
                      board: {
                         destination: {

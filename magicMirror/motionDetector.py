@@ -9,6 +9,7 @@ hue.connect()
 # state
 monitorOn = True
 brightness = 0
+subsequent = 0
 
 # shell commands for Rpi to enable and disable video output
 #videoOn  = 'ddcutil setvcp D6 01 --noverify'
@@ -25,11 +26,11 @@ if os.uname()[4].startswith('x86'):
     videoOff = 'echo "Display Off"'
     setBrightness = 'echo "Adjusting brightness"'
 
-def adjustBrightness():
+def adjustBrightness(ambient):
     global brightness
 
     # Simple linear ambient to brightness, max brightness at 20000, min at 0.
-    ambient = hue.get_sensor(sensor_id=7, parameter='state')['lightlevel']
+    #ambient = hue.get_sensor(sensor_id=7, parameter='state')['lightlevel']
     k = 200
     setpoint = min(100, int(ambient/k))
 
@@ -38,28 +39,42 @@ def adjustBrightness():
         os.system(setBrightness + str(brightness) + ' --noverify') # saw an error regarding max retries, author suggested no verify (used to be default)
         os.system('echo "Ambient at ' + str(ambient) + ' Brightness set to: ' + str(brightness) + '"') # log to stdout
 
-def main():
-    global monitorOn, host
+def onState():
+    os.system(videoOn)
 
-    while(True):
-        # Ids 6 = motion sensor, 7 = ambient light, 8 = temperature
-        presence = hue.get_sensor(sensor_id=6, parameter='state')['presence']
+    subsequentNoPrescenceMeasurements = 0
 
-        if monitorOn is not presence:
-            # change state
-            monitorOn = presence
+    while subsequentNoPrescenceMeasurements < 7:
+        sensors = hue.get_sensor() # get all sensors
+        presence = sensors['6']['state']['presence']
+        ambient = sensors['7']['state']['lightlevel']
 
-            if monitorOn:
-                os.system(videoOn)
-            else:
-                os.system(videoOff)
+        adjustBrightness(ambient) # continously adjust brightness when in on-state
 
-        if monitorOn:
-            adjustBrightness()
-            time.sleep(8)
+        if not presence:
+            subsequentNoPrescenceMeasurements += 1
+            os.system(f'echo "no prescence detected, consecutive measurements: {subsequentNoPrescenceMeasurements}"')
         else:
-            time.sleep(2)
+            subsequentNoPrescenceMeasurements = 0
 
+        time.sleep(8) # on period 8 seconds
+
+def offState():
+    os.system(videoOff)
+
+    while not hue.get_sensor(sensor_id=6, parameter='state')['presence']:
+        time.sleep(2) # off period 2 secs
+
+def main():
+    os.system('echo "Motion detector initializing..."')
+
+    try:
+
+        while(True):
+            onState()
+            offState()
+    except KeyboardInterrupt:
+        os.system('echo "Performing proper shutdown..."')
 
 if __name__ == "__main__":
     main()
