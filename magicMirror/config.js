@@ -50,6 +50,7 @@ var config = {
 			position: "top_left"
 		},
 		{
+			disabled: true,
 			module: "calendar",
 			header: "Kalender",
 			position: "top_left",
@@ -63,7 +64,8 @@ var config = {
 						symbol: "calendar-check",
 						url: "http://kalender.link/ical/best"
 					}
-				]
+				],
+				//selfSignedCert: true
 			}
 		},
 		{
@@ -137,12 +139,13 @@ var config = {
 			}
 		},
 		{
+			disabled: true,
 			module: "compliments",
 			position: "lower_third"
 		},
 		{
 			module: "newsfeed",
-			position: "bottom_bar",
+			position: "lower_third",
 			config: {
 				feeds: [
 					{
@@ -156,67 +159,109 @@ var config = {
 				],
 				showSourceTitle: true,
 				showPublishDate: true,
-				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
+				broadcastNewsFeeds: false,
+				broadcastNewsUpdates: false,
+				showDescription: true,
+				wrapDescription: true
 			}
 		},
 		{
-            module: "MMM-Vasttrafik-PublicTransport",
-            position: "bottom_left",
-            header: "Västtrafik",
-            config: {
-                     stopIds: ["9021014007171000"],   // REQUIRED. An array of stop is's. Your are required to have at least one stop.
-                                                   // see 3. Get stops that you want to track.
-                     appKey: "5jbfEZBDMAJVPjNYaZQFdAiwhfga",       // REQUIRED. see 1. Create application and obtain required client id and secret.
-                     appSecret: "d8iPTrrQ3CgkfcmGpcAFl45pfSca", // REQUIRED. see 1. Create application and obtain required client id and secret.
-                     debug: false,                 // Optional. Enable some extra output when debugging.
-                     sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
-                                                   // default is "track".
-                     refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
-                     trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
-                     board: {
-                        destination: {
-                            maxPxWidth: 150       // Optional. Force max width for destination names.
-                        }, 
-                    },
-                    showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
-                    //showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
-                    //showDestinationName: false   //Optional. Default is true, if set to false will hide the direction/stop column. 
-                    filterAttr: "track",           //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
-                    filterKey: "A",             //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
-                    enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
-                    departureTimeColors: [
-                    {
-                        max: 1,
-                        min: 0,
-                        color: "#660202"
-                    },
-                    {
-                      max: 4,
-                      min: 2,
-                      color: "#FF0000"
-                    },
-                    {
-                      max: 6,
-                      min: 4,
-                      color: "#FFF200"
-                    },
-                    {
-                      max: 15,
-                      min: 7,
-                      color: "#52FF33"
-                    }
-                  ]
-            }
-        },
+			module: "MMM-Vasttrafik-PublicTransport",
+			position: "bottom_left",
+			header: "Västtrafik",
+			config: {
+						stopIds: ["9021014007171000"],   // REQUIRED. An array of stop is's. Your are required to have at least one stop.
+														// see 3. Get stops that you want to track.
+						appKey: "5jbfEZBDMAJVPjNYaZQFdAiwhfga",       // REQUIRED. see 1. Create application and obtain required client id and secret.
+						appSecret: "d8iPTrrQ3CgkfcmGpcAFl45pfSca", // REQUIRED. see 1. Create application and obtain required client id and secret.
+						debug: false,                 // Optional. Enable some extra output when debugging.
+						sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
+													// default is "track".
+						refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
+						trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
+						board: {
+						destination: {
+							maxPxWidth: 150       // Optional. Force max width for destination names.
+						}, 
+					},
+					showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
+					//showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
+					//showDestinationName: false   //Optional. Default is true, if set to false will hide the direction/stop column. 
+					filterAttr: "track",           //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
+					filterKey: "A",             //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
+					enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
+					departureTimeColors: [
+					{
+						max: 1,
+						min: 0,
+						color: "#660202"
+					},
+					{
+						max: 4,
+						min: 2,
+						color: "#FF0000"
+					},
+					{
+						max: 6,
+						min: 4,
+						color: "#FFF200"
+					},
+					{
+						max: 15,
+						min: 7,
+						color: "#52FF33"
+					}
+					]
+			}
+		},
 		{
 			disabled: true,
-    		module: "MMM-Stock",
-    		position: "top_left",
-    		config: {
-    			companies: ["ERIC", "PDX.ST", "TSLA", "GOOG", "AAPL"]
-    		}
-		}
+			module: "MMM-Stock",
+			position: "top_left",
+			config: {
+				companies: ["ERIC", "PDX.ST", "TSLA", "GOOG", "AAPL"]
+			}
+		},
+		{
+			disabled: true,
+			module: "MMM-Detector",
+			position: "top_left",
+			configDeepMerge: true,
+			config: {
+				debug: false,
+				detectors: [
+					{
+						detector: "Snowboy",
+						Model: "alexa",
+						Sensitivity: null,
+						Logo: "alexa",
+						autoRestart: false,
+						onDetected: {
+							notification: "ALEXA_ACTIVATE"
+						}
+					},
+				]
+			}
+		},
+		{
+			disabled: true,
+			module: "MMM-Alexa",
+			position: "top_left",
+			configDeepMerge: true,
+			config: {
+				debug: false,
+				avs: {
+					ProductID: "Alexa",
+					ClientID: "amzn1.application-oa2-client.44c486ac01e348d2a79480d34d5421b2",
+					ClientSecret: "bed2fe50c4eca45f192cc66f1baab2cde3ed3e9b16fb45942c820ae560f07875",
+					InitialCode: "ANvXExaRWgdSDgwPxJmH",
+					deviceSerialNumber: 1
+				},
+				micConfig: {
+					exitOnSilence: 15, //default 15
+				}
+			}
+		},
 	]
 };
 
