@@ -201,7 +201,7 @@ while True:
             time = 0
             playing = False
         else:
-            time = 500
+            time = 250
             playing = True
 
         pygame.time.set_timer(pygame.USEREVENT, time)

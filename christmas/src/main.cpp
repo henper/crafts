@@ -3,12 +3,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-
-#ifndef STASSID
-#define STASSID "biggie"
-#define STAPSK  "lusky_812"
-#endif
-
+#include "secrets.h"
 const char* ssid          = STASSID;
 const char* password      = STAPSK;
 
@@ -40,7 +35,7 @@ void setup() {
   // ArduinoOTA.setPort(8266);
 
   // Hostname defaults to esp8266-[ChipID]
-  // ArduinoOTA.setHostname("myesp8266");
+  ArduinoOTA.setHostname("christmasStar");
 
   // No authentication by default
   // ArduinoOTA.setPassword("admin");
