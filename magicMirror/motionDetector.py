@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, time
+import os, sys, time
 from phue import Bridge as PhilipsHueBridge
 
 # Connect to Philips Hue Bridge
@@ -44,26 +44,38 @@ def onState():
 
     subsequentNoPrescenceMeasurements = 0
 
-    while subsequentNoPrescenceMeasurements < 7:
-        sensors = hue.get_sensor() # get all sensors
-        presence = sensors['6']['state']['presence']
-        ambient = sensors['7']['state']['lightlevel']
+    while subsequentNoPrescenceMeasurements < 12:
+        try:
+            sensors = hue.get_sensor() # get all sensors
+            presence = sensors['6']['state']['presence']
+            ambient = sensors['7']['state']['lightlevel']
 
-        adjustBrightness(ambient) # continously adjust brightness when in on-state
+            adjustBrightness(ambient) # continously adjust brightness when in on-state
 
-        if not presence:
-            subsequentNoPrescenceMeasurements += 1
-            os.system(f'echo "no prescence detected, consecutive measurements: {subsequentNoPrescenceMeasurements}"')
-        else:
-            subsequentNoPrescenceMeasurements = 0
+            if not presence:
+                subsequentNoPrescenceMeasurements += 1
+                os.system(f'echo "no prescence detected, consecutive measurements: {subsequentNoPrescenceMeasurements}"')
+            else:
+                subsequentNoPrescenceMeasurements = 0
+        except IOError as e:
+            if e.errno == 101:
+                sys.stderr.write('Network unreachable, retrying in 10 seconds.')
+        except:
+            raise
 
-        time.sleep(8) # on period 8 seconds
+        time.sleep(10) # on period 8 seconds
 
 def offState():
     os.system(videoOff)
 
-    while not hue.get_sensor(sensor_id=6, parameter='state')['presence']:
-        time.sleep(2) # off period 2 secs
+    try:
+        while not hue.get_sensor(sensor_id=6, parameter='state')['presence']:
+            time.sleep(2) # off period 2 secs
+    except IOError as e:
+        if e.errno == 101:
+            sys.stderr.write('Network unreachable, leaving off state.')
+    except:
+        raise
 
 def main():
     os.system('echo "Motion detector initializing..."')
@@ -75,6 +87,7 @@ def main():
             offState()
     except KeyboardInterrupt:
         os.system('echo "Performing proper shutdown..."')
+        os.system(videoOn)
 
 if __name__ == "__main__":
     main()

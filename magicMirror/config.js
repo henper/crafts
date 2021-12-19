@@ -50,7 +50,7 @@ var config = {
 			position: "top_left"
 		},
 		{
-			disabled: true,
+			disabled: false,
 			module: "calendar",
 			header: "Kalender",
 			position: "top_left",
@@ -62,7 +62,7 @@ var config = {
 					},*/
 					{
 						symbol: "calendar-check",
-						url: "http://kalender.link/ical/best"
+						url: "https://kalender.link/ical/best"
 					}
 				],
 				//selfSignedCert: true
@@ -73,6 +73,7 @@ var config = {
 			position: "top_left",
 			header: "Namnsdag"
 		},
+		/*
  		{
 			module: "currentweather",
 			position: "top_right",
@@ -95,7 +96,22 @@ var config = {
 				showRainAmount: true
 			}
 		},
+		*/
 		{
+			module: "weather",
+			position: "top_right",
+			config: {
+				type: "current",
+				showIndoorTemperature: true,
+				/* Open Weather Map */
+				//weatherProvider: openweathermap,
+				location: "Göteborg",
+				locationID: "",
+				apiKey: "9cab403720f3d1dfd158dcbfc27c194b"
+			}
+		},
+		{
+			//disabled: true,
 			module: 'mmm-weatherchart',
 			position: 'top_right', // this can be any of the regions
 			config: {
@@ -166,6 +182,7 @@ var config = {
 			}
 		},
 		{
+			//disabled: true,
 			module: "MMM-Vasttrafik-PublicTransport",
 			position: "bottom_left",
 			header: "Västtrafik",
@@ -191,35 +208,27 @@ var config = {
 					filterKey: "A",             //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
 					enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
 					departureTimeColors: [
-					{
-						max: 1,
-						min: 0,
-						color: "#660202"
-					},
-					{
-						max: 4,
-						min: 2,
-						color: "#FF0000"
-					},
-					{
-						max: 6,
-						min: 4,
-						color: "#FFF200"
-					},
-					{
-						max: 15,
-						min: 7,
-						color: "#52FF33"
-					}
+						{
+							max: 1,
+							min: 0,
+							color: "#660202"
+						},
+						{
+							max: 4,
+							min: 2,
+							color: "#FF0000"
+						},
+						{
+							max: 6,
+							min: 4,
+							color: "#FFF200"
+						},
+						{
+							max: 15,
+							min: 7,
+							color: "#52FF33"
+						}
 					]
-			}
-		},
-		{
-			disabled: true,
-			module: "MMM-Stock",
-			position: "top_left",
-			config: {
-				companies: ["ERIC", "PDX.ST", "TSLA", "GOOG", "AAPL"]
 			}
 		},
 		{
