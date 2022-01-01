@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
-import os, sys, time
+import os, sys, asyncio
 from phue import Bridge as PhilipsHueBridge
+from phue import PhueRequestTimeout
 
 # Connect to Philips Hue Bridge
 hue = PhilipsHueBridge()
 hue.connect()
 
+# settings
+OFF_STATE_MEAS_PERIOD = 2 # seconds
+ON_STATE_MEAS_PERIOD = 10 # seconds
+ON_STATE_SUBSEQUENT_PERIODS_WITH_NO_PRESCENCE = 12 # 2 minutes on time minimum
+SLEW_RATE = 0.5 # 1 percent brightness change per 0.5 seconds
+
 # state
 monitorOn = True
 brightness = 0
-subsequent = 0
 
 # shell commands for Rpi to enable and disable video output
 #videoOn  = 'ddcutil setvcp D6 01 --noverify'
@@ -20,37 +26,46 @@ videoOff = 'vcgencmd display_power 0; echo "Display Off"'
 # shell commands for Rpi to adjust brightness with i2c over HDMI
 setBrightness = 'ddcutil setvcp 10 '
 
+
 # assume x86 for host, and arm for Pi. This won't hold forever :)
 if os.uname()[4].startswith('x86'):
     videoOn  = 'echo "Display On"'
     videoOff = 'echo "Display Off"'
-    setBrightness = 'echo "Adjusting brightness"'
+    setBrightness = 'echo "Adjusting brightness "'
 
-def adjustBrightness(ambient):
+async def adjustBrightness(ambient, slew = True):
     global brightness
 
     # Simple linear ambient to brightness, max brightness at 20000, min at 0.
-    #ambient = hue.get_sensor(sensor_id=7, parameter='state')['lightlevel']
     k = 200
     setpoint = min(100, int(ambient/k))
 
-    if setpoint != brightness:
-        brightness = setpoint
+    step = 1
+    if setpoint < brightness :
+        step = -1
+    if not slew:
+        step = setpoint - brightness
+
+    while brightness != setpoint:
+        brightness += step
+
         os.system(setBrightness + str(brightness) + ' --noverify') # saw an error regarding max retries, author suggested no verify (used to be default)
         os.system('echo "Ambient at ' + str(ambient) + ' Brightness set to: ' + str(brightness) + '"') # log to stdout
 
-def onState():
+        await asyncio.sleep(SLEW_RATE)
+
+async def onState():
     os.system(videoOn)
 
     subsequentNoPrescenceMeasurements = 0
 
-    while subsequentNoPrescenceMeasurements < 12:
+    while subsequentNoPrescenceMeasurements < ON_STATE_SUBSEQUENT_PERIODS_WITH_NO_PRESCENCE:
         try:
             sensors = hue.get_sensor() # get all sensors
             presence = sensors['6']['state']['presence']
             ambient = sensors['7']['state']['lightlevel']
 
-            adjustBrightness(ambient) # continously adjust brightness when in on-state
+            await adjustBrightness(ambient) # continously adjust brightness when in on-state
 
             if not presence:
                 subsequentNoPrescenceMeasurements += 1
@@ -60,34 +75,39 @@ def onState():
         except IOError as e:
             if e.errno == 101:
                 sys.stderr.write('Network unreachable, retrying in 10 seconds.')
+        except PhueRequestTimeout:
+            sys.stderr.write('Phue GET reqeust timed out, retrying...')
         except:
             raise
 
-        time.sleep(10) # on period 8 seconds
+        await asyncio.sleep(ON_STATE_MEAS_PERIOD)
 
-def offState():
+async def offState():
     os.system(videoOff)
 
     try:
         while not hue.get_sensor(sensor_id=6, parameter='state')['presence']:
-            time.sleep(2) # off period 2 secs
+            await asyncio.sleep(OFF_STATE_MEAS_PERIOD) # off period 2 secs
     except IOError as e:
         if e.errno == 101:
             sys.stderr.write('Network unreachable, leaving off state.')
+    except PhueRequestTimeout:
+            sys.stderr.write('Phue GET reqeust timed out, retrying...')
     except:
         raise
 
-def main():
+async def main():
     os.system('echo "Motion detector initializing..."')
 
-    try:
+    await adjustBrightness(10000, slew=False) # immideately set brightness to proper level
 
+    try:
         while(True):
-            onState()
-            offState()
+            await onState()
+            await offState()
     except KeyboardInterrupt:
         os.system('echo "Performing proper shutdown..."')
         os.system(videoOn)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
