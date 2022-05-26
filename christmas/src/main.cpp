@@ -7,6 +7,13 @@
 const char* ssid          = STASSID;
 const char* password      = STAPSK;
 
+/*#include <NTPClient.h>
+WiFiUDP wifiUdp;
+NTPClient timeClient(wifiUdp, "pool.ntp.org");
+*/
+#include <TZ.h>
+struct timeval timevalue;
+
 #include <NeoPixelBus.h>
 const uint16_t PixelCount = 45; // this example assumes 4 pixels, making it smaller will cause a failure
 const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266
@@ -17,7 +24,6 @@ const int numFrames = sizeof(anim)/sizeof(anim[0]) / PixelCount;
 
 // three element pixels, in different order and speeds
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
-
 
 void setup() {
   Serial.begin(115200);
@@ -79,6 +85,13 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+
+  //timeClient.begin();
+
+  configTime(TZ_Europe_Stockholm, "pool.ntp.org");
+
+
+  time(nullptr);
 
   // this resets all the neopixels to an off state
   strip.Begin();
