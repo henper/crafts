@@ -65,7 +65,7 @@ async def onState():
             presence = sensors['6']['state']['presence']
             ambient = sensors['7']['state']['lightlevel']
 
-            await adjustBrightness(ambient) # continously adjust brightness when in on-state
+            await adjustBrightness(ambient, slew = False) # continously adjust brightness when in on-state
 
             if not presence:
                 subsequentNoPrescenceMeasurements += 1

@@ -186,49 +186,59 @@ var config = {
 			module: "MMM-Vasttrafik-PublicTransport",
 			position: "bottom_left",
 			header: "Västtrafik",
-			config: {
-						stopIds: ["9021014007171000"],   // REQUIRED. An array of stop is's. Your are required to have at least one stop.
-														// see 3. Get stops that you want to track.
-						appKey: "5jbfEZBDMAJVPjNYaZQFdAiwhfga",       // REQUIRED. see 1. Create application and obtain required client id and secret.
-						appSecret: "d8iPTrrQ3CgkfcmGpcAFl45pfSca", // REQUIRED. see 1. Create application and obtain required client id and secret.
-						debug: false,                 // Optional. Enable some extra output when debugging.
-						sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
-													// default is "track".
-						refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
-						trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
-						board: {
-						destination: {
-							maxPxWidth: 150       // Optional. Force max width for destination names.
-						}, 
+			config:
+			{
+				myStops: // REQUIRED. An array of stop id's. Your are required to have at least one stop.
+				[      // see 3. Get stops that you want to track.
+					{
+						id: "9021014007171000",
+						filterAttr: "track", //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
+						filterKey: "A"       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
 					},
-					showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
-					//showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
-					//showDestinationName: false   //Optional. Default is true, if set to false will hide the direction/stop column. 
-					filterAttr: "track",           //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
-					filterKey: "A",             //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
-					enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
-					departureTimeColors: [
-						{
-							max: 1,
-							min: 0,
-							color: "#660202"
-						},
-						{
-							max: 4,
-							min: 2,
-							color: "#FF0000"
-						},
-						{
-							max: 6,
-							min: 4,
-							color: "#FFF200"
-						},
-						{
-							max: 15,
-							min: 7,
-							color: "#52FF33"
-						}
-					]
+					{
+						id: "9022014007172001",
+						filterAttr: "track",
+						filterKey: "B"
+					},
+				],
+				appKey: "5jbfEZBDMAJVPjNYaZQFdAiwhfga",       // REQUIRED. see 1. Create application and obtain required client id and secret.
+				appSecret: "d8iPTrrQ3CgkfcmGpcAFl45pfSca", // REQUIRED. see 1. Create application and obtain required client id and secret.
+				debug: false,                 // Optional. Enable some extra output when debugging.
+				sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
+											// default is "track".
+				refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
+				trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
+				board:
+				{
+					destination: { maxPxWidth: 150 },      // Optional. Force max width for destination names.
+				},
+				showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
+				//showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
+				showDestinationName: false,   //Optional. Default is true, if set to false will hide the direction/stop column.
+				enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
+				departureTimeColors:
+				[
+					{
+						max: 1,
+						min: 0,
+						color: "#660202"
+					},
+					{
+						max: 4,
+						min: 2,
+						color: "#FF0000"
+					},
+					{
+						max: 6,
+						min: 4,
+						color: "#FFF200"
+					},
+					{
+						max: 15,
+						min: 7,
+						color: "#52FF33"
+					}
+				]
 			}
 		},
 		{
