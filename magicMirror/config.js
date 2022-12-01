@@ -193,7 +193,7 @@ var config = {
 					{
 						id: "9021014007171000",
 						filterAttr: "track", //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
-						filterKey: "A"       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board. 
+						filterKey: "A"       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board.
 					},
 					{
 						id: "9022014007172001",
@@ -280,6 +280,19 @@ var config = {
 					exitOnSilence: 15, //default 15
 				}
 			}
+		},
+		{
+			module: 'MMM-SystemStats',
+			position: 'bottom_right', // This can be any of the regions.
+			// classes: 'small dimmed', // Add your own styling. OPTIONAL.
+			// header: 'System Stats', // Set the header text OPTIONAL
+			config: {
+				updateInterval: 10000, // every 10 seconds
+				align: 'right', // align labels
+				//header: 'System Stats', // This is optional
+				units: 'metric', // default, metric, imperial
+				view: 'textAndIcon',
+			},
 		},
 	]
 };
