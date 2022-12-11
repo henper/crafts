@@ -5,7 +5,10 @@ Note, search-replace:
 '    If' with:
 '  If'
 """
-troop = yaml.load(open('./adventOfCode2022/11/example.txt'), Loader=yaml.FullLoader)
+troop = yaml.load(open('./adventOfCode2022/11/input.txt'), Loader=yaml.FullLoader)
+
+# all tests are divisions, use the common divisor to keep numbers low
+common_divisor = 1
 
 # parse Starting items to list and add an inspection counter
 for monkey in troop.keys():
@@ -17,12 +20,14 @@ for monkey in troop.keys():
         troop[monkey]['Items'] = [starting_items] # achtually only one item
     troop[monkey]['Inspections'] = 0
 
+    common_divisor *= int(troop[monkey]['Test'].split()[2])
+
 do = {'+': operator.add, '*': operator.mul, '**': operator.ipow}
 
 timestamp = time()
 
 #for round in range(20):
-for round in range(1000):
+for round in range(10000):
     for monkey in troop.keys():
 
         op, v = troop[monkey]['Operation'].split()[3:]
@@ -47,6 +52,9 @@ for round in range(1000):
             # worry and get bored
             item = do[op](item, v)
 
+            # trick
+            item = item % common_divisor
+
             # test
             if item % int(div) == 0:
                 m = troop[monkey]['If true'].split()[3]
@@ -56,7 +64,7 @@ for round in range(1000):
             # throw
             troop['Monkey '+m]['Items'].append(item)
 
-    if (round + 1 in [1, 20, 100, 500, 600, 700, 725, 750, 800, 900, 1000, 2000, 3000, 4000, 6000, 7000, 8000, 9000, 10000]):
+    if (round + 1 in [1, 20, 100, 500, 1000, 2000, 3000, 4000, 6000, 7000, 8000, 9000, 10000]):
         print(f"== After Round {round+1} ==")
         for monkey in troop.keys():
             print(f"{monkey} inspected items {troop[monkey]['Inspections']} times.")
