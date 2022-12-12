@@ -4,7 +4,7 @@ rope = np.array([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
 
 history_of_the_tail = np.array([[0, 0]])
 
-with open('./adventOfCode2022/9/example.txt', 'r') as input:
+with open('./adventOfCode2022/9/input.txt', 'r') as input:
     for line in input:
         direction, distance = line.split()
 
@@ -32,8 +32,9 @@ with open('./adventOfCode2022/9/example.txt', 'r') as input:
 
                     # but only by one step in either direction
                     # find the coordinate, x or y, that is two steps away
-                    c = np.where(2 == abs(head-tail))[0][0]
-                    move[c] /= 2 # and make it one
+                    coords = np.where(2 == abs(head-tail))[0]
+                    for c in coords:
+                        move[c] /= 2 # and make it one
 
                     rope[knot] += move
 
