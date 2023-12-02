@@ -1,16 +1,20 @@
 
 import re
 
-with open('./adventOfCode2023/2/input.txt', 'r') as games:
+with open('./adventOfCode2023/2/example.txt', 'r') as games:
 
     invalid_games = set()
     all_games     = set()
+
+    powers = []
 
     for game in games:
         m = re.search('Game ([0-9]+): (.+)', game)
 
         game_no = int(m.group(1))
         all_games.add(game_no)
+
+        min = {'red': 0, 'green': 0, 'blue': 0}
 
         handfulls = m.group(2)
 
@@ -20,12 +24,9 @@ with open('./adventOfCode2023/2/input.txt', 'r') as games:
                 num   = int(m.group(1))
                 color = m.group(2)
 
-                match color:
-                    case 'red':
-                        if num > 12: invalid_games.add(game_no)
-                    case 'green':
-                        if num > 13: invalid_games.add(game_no)
-                    case 'blue':
-                        if num > 14: invalid_games.add(game_no)
+                if (min[color] < num):
+                    min[color] = num
 
-    print(sum(all_games.difference(invalid_games)))
+        powers.append(min['red'] * min['green'] * min['blue'])
+
+    print(sum(powers))
