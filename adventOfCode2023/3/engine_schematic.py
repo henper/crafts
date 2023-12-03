@@ -30,7 +30,7 @@ for line_num, line in enumerate(schematic):
         frame = frame + '.'
         start_offset = num_len(schematic[line_num][start-1::-1]) #middle left, backwards
         end_offset   = num_len(schematic[line_num][end:]) #middle right
-        frame = frame + schematic[line_num][start-start_offset:start] + schematic[line_num][end:end+end_offset]
+        frame = frame + schematic[line_num][start-start_offset:start] + '.' + schematic[line_num][end:end+end_offset]
         frame = frame + '.'
         start_offset = num_len(schematic[line_num+1][start-1::-1]) #bottom left, backwards
         end_offset   = num_len(schematic[line_num+1][end:]) #bottom right
