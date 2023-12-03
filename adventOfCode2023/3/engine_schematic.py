@@ -1,44 +1,45 @@
 import re
 
-
-translation = {}
-numbers = "0123456789"
-for number in numbers:
-    translation[number] = '.'
-
-symbols = "!\"#¤%&/()=?@£${[]}\\+-_"
-for symbol in symbols:
-    translation[symbol] = 'S'
-
-translation = str.maketrans(translation)
-
-
 schematic = open('./adventOfCode2023/3/input.txt', 'r').readlines()
-num_lines = len(schematic)
-line_len  = len(schematic[0])
 
-actual_part_nos = []
+def num_len(str):
+    m = re.search('^([0-9]+)', str)
+    if (m):
+        return len(m.group(1))
+    else:
+        return 1
+
+gear_ratios = []
 for line_num, line in enumerate(schematic):
 
     # Find a number and it's position
     end = 0
 
-    part_nos = re.findall('([0-9]+)', line[end+1:])
+    gears = re.findall('\*', line[end+1:])
 
-    for part_no in part_nos:
-        start = end + line[end:].index(part_no)
-        end   = start + len(part_no)
+    for gear in gears:
+        start = end + line[end:].index('*')
+        end   = start + 1
 
-        # determine if this is an actual part number
         frame = ''
-        frame = frame + schematic[line_num-1][start-1:end+1]
-        frame = frame + schematic[line_num][start-1] + schematic[line_num][end]
-        frame = frame + schematic[line_num+1][start-1:end+1]
-        #frame = frame + schematic[line_num+1][start-1:end+1]
 
-        #frame = frame.translate(translation) # replace all numbers with dots
-        if len(frame) * '.' != frame:        # compare the frame with a string of the same length filled with all dots
-            actual_part_nos.append(int(part_no))
+        # expand the frame with any numbers found in the corners and edges
+        start_offset = num_len(schematic[line_num-1][start-1::-1]) #top left, backwards
+        end_offset   = num_len(schematic[line_num-1][end:]) #top right
+        frame = frame + schematic[line_num-1][start-start_offset:end+end_offset]
+        frame = frame + '.'
+        start_offset = num_len(schematic[line_num][start-1::-1]) #middle left, backwards
+        end_offset   = num_len(schematic[line_num][end:]) #middle right
+        frame = frame + schematic[line_num][start-start_offset:start] + schematic[line_num][end:end+end_offset]
+        frame = frame + '.'
+        start_offset = num_len(schematic[line_num+1][start-1::-1]) #bottom left, backwards
+        end_offset   = num_len(schematic[line_num+1][end:]) #bottom right
+        frame = frame + schematic[line_num+1][start-start_offset:end+end_offset]
+
+        part_nos = re.findall('[0-9]+', frame)
+        if (len(part_nos) == 2):
+            gear_ratios.append(int(part_nos[0]) * int(part_nos[1]))
 
 
-print(sum(actual_part_nos))
+
+print(sum(gear_ratios))
