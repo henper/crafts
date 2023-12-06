@@ -1,2 +1,2 @@
-times=[7, 15, 30]
-distances=[9, 40, 200]
+times=[71530]
+distances=[940200]
