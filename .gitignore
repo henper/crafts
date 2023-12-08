@@ -5,3 +5,4 @@ obj
 *.o
 *.d
 */secrets.h
+*.pyc
