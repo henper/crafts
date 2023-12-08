@@ -1,13 +1,8 @@
 from input import *
 
-start = 'AAA'
-goal  = 'ZZZ'
-
-steps = 0
-
 class Ghost_walker():
 
-    def __init__(self):
+    def __init__(self, start):
         self.position = start
         self.dir_pos  = -1
 
@@ -23,14 +18,37 @@ class Ghost_walker():
         else:
             _,self.position = map[self.position]
 
+        if self.position[2] == 'Z':
+            return True
+        else:
+            return False
 
-ghost = Ghost_walker()
+
+# Find start position and create ghosts
+ghosts = []
+for key in map.keys():
+    if key[2] == 'A':
+        ghosts.append(Ghost_walker(key))
+
+print(f'ghosts: {len(ghosts)}')
 
 steps = 0
-while (ghost.position is not goal):
-    ghost.step()
-    steps += 1
 
+
+
+while(True):
+    all_done = True
+    steps += 1
+    for ghost in ghosts:
+
+        if not ghost.step():
+            # should continue
+            all_done = False
+
+    if all_done:
+        break
+
+    print(steps)
 
 
 
