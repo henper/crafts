@@ -13,6 +13,9 @@ class Type(Enum):
     def determine(cards):
         s = set(cards)
 
+
+        jokers = cards.count('J')
+
         match len(s):
             case 1:
                 return Type.FIVE_OF_A_KIND
@@ -20,17 +23,34 @@ class Type(Enum):
                 # four of a kind or full house
                 i = cards.count(s.pop())
                 if i == 2 or i == 3:
+                    if(jokers):
+                        return Type.FIVE_OF_A_KIND
                     return Type.FULL_HOUSE
+
+                if (jokers): # one or four
+                    return Type.FIVE_OF_A_KIND
+
                 return Type.FOUR_OF_A_KIND
             case 3:
                 # three of a kind or two pair
                 for c in s:
                     if cards.count(c) == 3:
+                        if (jokers): # only one or three possible, 2 would have been categorized as a full house
+                            return Type.FOUR_OF_A_KIND
                         return Type.THREE_OF_A_KIND
+
+                if (jokers == 1):
+                    return Type.FULL_HOUSE
+                if (jokers == 2):
+                    return Type.FOUR_OF_A_KIND
                 return Type.TWO_PAIR
             case 4:
+                if (jokers):
+                    return Type.THREE_OF_A_KIND
                 return Type.ONE_PAIR
             case 5:
+                if (jokers): # can only be one, otherwise they'd be a pair
+                    return Type.ONE_PAIR
                 return Type.HIGH_CARD
 
 class Hand():
@@ -46,7 +66,7 @@ class Hand():
                 if self.cards[i] == other.cards[i]:
                     continue
 
-                deck = ['A','K','Q','J','T','9','8','7','6','5','4','3','2']
+                deck = ['A','K','Q','T','9','8','7','6','5','4','3','2','J']
                 deck.reverse()
                 val = deck.index(self.cards[i]) < deck.index(other.cards[i])
                 return val
