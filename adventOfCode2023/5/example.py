@@ -30,4 +30,5 @@ temperature_to_humidity =  [
 
 humidity_to_location =  [
 (60, 56, 37),
+(56, 93, 4)
 ]
