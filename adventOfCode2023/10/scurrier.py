@@ -52,6 +52,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
+while(True):
+    event = pygame.event.poll()
+
+    if event.type == pygame.KEYDOWN and event.key == pygame.K_DELETE:
+        break
+
 # expand the pipe shapes into 3x3 squares
 pipe_shapes = { 'L': [pygame.Rect(S, 0, S, 2*S), pygame.Rect(2*S, S, S, S) ],
                 'J': [pygame.Rect(S, 0, S, 2*S), pygame.Rect(  0, S, S, S) ],
@@ -141,7 +147,8 @@ def mapper(squares):
     return list(set(new))
 
 # start from the endpoint and map all, reachable, squares and count the steps needed
-y,x = (0,0)
+y,x = (len(pipes)/2,len(pipes[0])/2)
+#x,y = (2,6)
 c = 0
 scan = [(y,x,c)]
 
@@ -158,11 +165,19 @@ pygame.display.flip()
 scanned = [(x,y) for x,y,_ in scan]
 reached = list(filter(lambda coord: coord not in path, scanned))
 
-# remove the outside perimeter
-reached = list(filter(lambda coord: coord[0] < len(pipes[0]), reached ))
-reached = list(filter(lambda coord: coord[1] < len(pipes), reached ))
+print(len(reached))
 
-print( len(pipes)*len(pipes[0]) - (len(path)-1) - len(reached) )
+for square in reached:
+    x,y = square
+    pygame.draw.rect(screen, (255,255,0),pygame.Rect((1+x*3)*S, (1+y*3)*S, 2*S, 2*S))
+    pygame.display.flip()
+    pass
+
+# remove the outside perimeter
+#reached = list(filter(lambda coord: coord[0] < len(pipes[0]), reached ))
+#reached = list(filter(lambda coord: coord[1] < len(pipes), reached ))
+
+#print( len(pipes)*len(pipes[0]) - (len(path)-1) - len(reached) )
 
 while True:
     event = pygame.event.poll() # get event immediately, if any

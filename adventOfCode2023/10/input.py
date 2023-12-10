@@ -1,4 +1,4 @@
-path = [(25, 83), (24, 83)]
+path = [(25, 83), (25, 84)]
 pipes = [
 'LF-|7F-7.F--7---F7-J-F77.FLF7FF|---J-7-L-J7.F7.-.FF|7|7J7-L7.-F7|.|.F|-F-|7.---777L7-.FF77|77F7.|.FF777FJ.-L-|--7FF.F|-|--|--L.L-|F|-FJ7-JF|',
 'LL7L77-J-J|L7F|FJLJJLFL--7|F--7--L7L-J.||7FJ.|-|.F7LFLJL7..7JLLJLFJF7|7|FF77-L||J-F|.F77--F.7L-7|7FLJF-FJ-||-|7|LLJF-L7|J.L7.|7..|7||LJL-7L7',
