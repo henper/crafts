@@ -1,9 +1,20 @@
 from input import hot_springs
 
-permutations = 0
+# Cache dictionary
+cache = {}
 
-def traverse_group(springs, records, count, d):
-    global permutations
+# Manual memoize decorator
+def memoize(func):
+    def wrapper(springs, records, count, permutations, d):
+        hashable = springs + str(records) + str(count) + str(permutations)
+        if hashable not in cache:
+            cache[hashable] = func(springs, records, count, permutations, d)
+        return cache[hashable]
+
+    return wrapper
+
+@memoize
+def traverse_group(springs, records, count, permutations, d):
 
     # If we've counted the amount of damaged springs that the record show, the next spring must be operational
     # if it's not then this branch did not yield a valid permutation
@@ -15,13 +26,12 @@ def traverse_group(springs, records, count, d):
             if len(records) == 1:
                 # that was the last record, now we just need to determine if this was a successful permutation
                 if springs and '#' in springs:
-                    return # we've failed to count some of the actually damaged springs, meaning some operational springs were mis-labeled
+                    return permutations # we've failed to count some of the actually damaged springs, meaning some operational springs were mis-labeled
 
-                permutations += 1
                 if springs:
                     d += '.' * len(springs)
-                print(d)
-                return
+                print(d, end='\r')
+                return permutations + 1
 
             # continue in the same branch
             d = d + '.'
@@ -30,36 +40,42 @@ def traverse_group(springs, records, count, d):
             records.pop(0)
 
     if not springs:
-        return
+        return permutations
 
     # If we've started counting, there are not any new possibilities. Any encountered spring must be damaged
     # it it's not then this branch did not yield a valid permutation
     if springs[0] == '.':
         if count:
-            return
+            return permutations
         # not yet started counting, operational springs should not be counted
-        return traverse_group(springs[1:], records, count, d + '.')
+        return traverse_group(springs[1:], records, count, permutations, d + '.')
 
     # If we have yet to start counting damaged springs
     # and the next spring is an unknown, that leaves us with two possibilities
     if count == 0 and springs[0] == '?':
-        traverse_group(springs[1:], records.copy(), count + 1, d + '#') # damaged
-        traverse_group(springs[1:], records.copy(), count + 0, d + '.') # operational
-        return
+        perm_branch_a = traverse_group(springs[1:], records.copy(), count + 1, permutations, d + '#') # damaged
+        perm_branch_b = traverse_group(springs[1:], records, count + 0, permutations, d + '.') # operational
+        return perm_branch_a + perm_branch_b
 
     # At this point we're at a damaged spring, known or unknown, and should count it
-    return traverse_group(springs[1:], records, count + 1, d + '#')
+    return traverse_group(springs[1:], records, count + 1, permutations, d + '#')
 
 
 
 
-
+answer = 0
 
 for row in hot_springs:
     line, records = row
     records = list(records)
 
-    traverse_group(line, records, 0, '')
+    # unfold
+    line = (line + '?') * 5
+    line = line[:-1] # eat the last '?'
+    records = records * 5
 
-    print(permutations)
-    #permutations = 0
+    print(line + ' ' + str(records))
+    permutations = traverse_group(line, records, 0, 0, '')
+
+    answer += permutations
+    print(f'\nPermutations: {permutations}, total: {answer}\n')
