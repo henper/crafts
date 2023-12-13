@@ -9,15 +9,14 @@ def pretty_print(plot_of_land):
 
 
 def find_reflection(plot):
-    rows = plot.shape[0]
+    rows, cols = plot.shape
 
     for symmetry in range(1, -(rows // -2)): # weird looking ceil_div
 
         subplot = plot[0:symmetry]
         mirror  = np.flip(plot[symmetry:symmetry*2], axis=0)
 
-        t = subplot == mirror
-        if (np.all(subplot == mirror)):
+        if np.sum(subplot == mirror) == symmetry*cols - 1:
             return symmetry
 
     return None
