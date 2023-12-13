@@ -1,39 +1,55 @@
-from example import landscape
+from input import landscape
 import numpy as np
 
 def pretty_print(plot_of_land):
     byte_strings = np.apply_along_axis(b''.join, axis=1, arr=plot_of_land)
-
+    print('')
     for i in range(byte_strings.shape[0]):
         print(byte_strings[i].decode('utf-8'))
 
 
 def find_reflection(plot):
-    rows = plot.shape[1]
+    rows = plot.shape[0]
 
-    for symmetry in range(1, int((rows-1)/2)):
+    for symmetry in range(1, -(rows // -2)): # weird looking ceil_div
+
         subplot = plot[0:symmetry]
-        mirror  = np.flip(plot[symmetry:symmetry*2])
+        mirror  = np.flip(plot[symmetry:symmetry*2], axis=0)
 
-        pretty_print(np.stack(subplot, mirror))
-
-        if (subplot == mirror):
+        t = subplot == mirror
+        if (np.all(subplot == mirror)):
             return symmetry
 
-    return 0
+    return None
 
 
-
+answer = 0
 
 for plot in landscape:
-    pretty_print(plot)
+    rows, cols = plot.shape
 
-    symmetry = find_reflection(plot)
+    # down
+    ref = find_reflection(plot)
+    if ref:
+        answer += 100 * ref
+        continue
 
-    if (symmetry == 0):
-        symmetry = find_reflection(plot.transpose())
+     # up
+    ref = find_reflection(np.flip(plot, axis=0))
+    if ref:
+        answer += 100 * (rows - ref)
+        continue
 
-    print(symmetry)
+    # left
+    ref = find_reflection(plot.transpose())
+    if ref:
+        answer += ref
+        continue
 
+    # right
+    ref = find_reflection(np.flip(plot.transpose()))
+    if ref:
+        answer += (cols - ref)
+        continue
 
-
+print(answer)
