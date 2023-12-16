@@ -1,6 +1,11 @@
 from input import contraption
 rows = len(contraption[0])
 cols = len(contraption)
+print(f'rows: {rows}, cols: {cols}')
+
+import sys
+print(sys.getrecursionlimit())
+#sys.setrecursionlimit(10000)
 
 #directions
 north = ( 0,-1)
@@ -29,11 +34,31 @@ def move(path, heading):
     location = (x+dx, y+dy)
     x,y = location
 
+    if 0 > x or x >= rows or 0 > y or y >= cols:
+        return
+
+    while contraption[y][x] == '.':
+
+        path.append(((x, y), heading))
+
+        x += dx
+        y += dy
+
+        if 0 > x or x >= rows or 0 > y or y >= cols:
+            return
+
+
+
     # dont go out of bounds
     if 0 <= x and x < rows and 0 <= y and y < cols:
+        location = (x,y)
 
         # dont go back on yourself in the same direction
         if (location, heading) not in path:
+
+            for p in paths:
+                if (location, heading) in p:
+                    return
 
             path.append((location, heading))
             traverse(path)
@@ -61,6 +86,7 @@ def traverse(path):
 
 
 traverse(paths[0])
+
 
 energized = set()
 for path in paths:
