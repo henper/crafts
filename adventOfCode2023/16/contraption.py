@@ -24,7 +24,7 @@ follower = {'\\': { east  : [south], west : [north],
             '|' : { east  : [north, south],
                     west  : [north, south] }}
 
-paths = [[((0,0), east)]]
+paths = [[]]
 
 def move(path, heading):
     location,_ = path[-1]
@@ -84,25 +84,72 @@ def traverse(path):
 
     move(path, headings[0])
 
+def calc_energized():
+    energized = set()
+    for path in paths:
+        path = [(x,y) for ((x,y),_) in path]
+        path = set(path)
 
-traverse(paths[0])
+        energized.update(path)
+    return energized
+
+def pretty_print(energized):
+    return
+    for y, row in enumerate(contraption):
+        row += ' '
+        for x in range(rows):
+            if (x, y) in energized:
+                row += '#'
+            else:
+                row += contraption[y][x]
+        print(row)
+
+num_energized = []
+
+# it came from the west
+for y in range(rows):
+    paths.clear()
+    paths.append([])
+    paths[0].append(((0,y), east))
+    traverse(paths[0])
+    energized = calc_energized()
+    pretty_print(energized)
+    num_energized.append(len(energized))
+    print(f'westbound row {y} energized {num_energized[-1]}')
+
+# it came from the south
+for x in range(cols):
+    paths.clear()
+    paths.append([])
+    paths[0].append(((x,rows-1), north))
+    traverse(paths[0])
+    energized = calc_energized()
+    pretty_print(energized)
+    num_energized.append(len(energized))
+    print(f'northound col {x} energized {num_energized[-1]}')
+
+# it came from the east
+for y in range(rows):
+    paths.clear()
+    paths.append([])
+    paths[0].append(((cols-1, y), west))
+    traverse(paths[0])
+    energized = calc_energized()
+    pretty_print(energized)
+    num_energized.append(len(energized))
+    print(f'eastbound col {y} energized {num_energized[-1]}')
+
+# it came from the north
+for x in range(cols):
+    paths.clear()
+    paths.append([])
+    paths[0].append(((x,0), south))
+    traverse(paths[0])
+    energized = calc_energized()
+    pretty_print(energized)
+    num_energized.append(len(energized))
+    print(f'southound col {x} energized {num_energized[-1]}')
 
 
-energized = set()
-for path in paths:
-    path = [(x,y) for ((x,y),_) in path]
-    path = set(path)
 
-    energized.update(path)
-
-print(len(energized))
-
-
-for y, row in enumerate(contraption):
-    row += ' '
-    for x in range(rows):
-        if (x, y) in energized:
-            row += '#'
-        else:
-            row += contraption[y][x]
-    print(row)
+print(max(num_energized))
