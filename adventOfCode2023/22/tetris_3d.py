@@ -18,6 +18,8 @@ for brick in bricks:
 
 shape = np.array(shape) + 1
 
+print(len(bricks))
+
 # fill in the voxels of each brick
 voxel_bricks = []
 for brick in bricks:
@@ -110,7 +112,7 @@ def drop(xrange, yrange, zrange):
 def drop_all(bricks):
     # from bottom to top, find bricks col by col, row by row and drop'em
     dropped_bricks = []
-    essential = set()
+    essentials = set()
 
     for z in range(shape[2]):
         for y in range(shape[1]):
@@ -142,9 +144,9 @@ def drop_all(bricks):
                         if len(supports) > 1:
                             slist = [supports[0]] * len(supports)
                             if slist == supports:
-                                essential.add(db[hit])
+                                essentials.add(db[hit])
                         if len(supports) == 1:
-                            essential.add(db[hit])
+                            essentials.add(db[hit])
 
                         dropped = []
                         if len(xrange) == 1 and len(yrange) == 1:
@@ -168,17 +170,49 @@ def drop_all(bricks):
 
                         break
 
-    return dropped_bricks, essential
+    return dropped_bricks, essentials
 
-dropped_bricks, essential = drop_all(voxel_bricks)
+dropped_bricks, essentials = drop_all(voxel_bricks)
 
-e_voxels, _ = bricks2voxels(essential)
+e_voxels, _ = bricks2voxels(essentials)
 
 colors = np.empty(voxels.shape, dtype=object)
 colors[:] = 'blue'
 
 colors[np.where(e_voxels)] = 'red'
 
-visrep(voxels, colors)
+#visrep(voxels, colors)
 
-print(len(bricks) - len(essential))
+print(len(bricks))
+print(len(essentials))
+
+def calc_supporting(brick):
+    # Find all bricks that are supported by this one
+    supporting = set()
+
+    # Search one step up for all x's and y's in the brick
+    xrange = range(min([x for x,_,_ in brick]), max([x for x,_,_ in brick]) + 1)
+    yrange = range(min([y for _,y,_ in brick]), max([y for _,y,_ in brick]) + 1)
+    z = max([z for _,_,z in brick]) + 1
+
+
+
+    for y in yrange:
+        for x in xrange:
+            if (x,y,z) in db.keys():
+                supporting.add(db[(x,y,z)])
+
+    for supported in supporting.copy():
+        supporting.update(calc_supporting(supported))
+
+    return supporting
+
+
+
+
+answer = 0
+for brick in essentials:
+    answer += len((calc_supporting(brick)))
+
+
+print(answer)
