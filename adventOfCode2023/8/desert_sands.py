@@ -1,4 +1,6 @@
 from input import *
+import timeit
+
 
 class Ghost_walker():
 
@@ -39,16 +41,27 @@ steps = 0
 while(True):
     all_done = True
     steps += 1
+
+    start = timeit.default_timer()
+
+
     for ghost in ghosts:
 
         if not ghost.step():
             # should continue
             all_done = False
 
+    if (steps % 1000000 == 0):
+        end = timeit.default_timer()
+        print(f'start: {start}')
+        print(f'end: {end}')
+        print('1M step time: {}'.format(end-start))
+        start = end
+
     if all_done:
         break
 
-    print(steps)
+
 
 
 

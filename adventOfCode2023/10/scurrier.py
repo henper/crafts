@@ -148,6 +148,7 @@ def mapper(squares):
 
 # start from the endpoint and map all, reachable, squares and count the steps needed
 y,x = (len(pipes)/2,len(pipes[0])/2)
+#x,y = (0,0)
 #x,y = (2,6)
 c = 0
 scan = [(y,x,c)]

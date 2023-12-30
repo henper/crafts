@@ -51,14 +51,20 @@ def mapper(squares):
             nt = t.copy()
             nt.append(direction)
 
-            if scan[y][x] > c:
+            sc, st = scan[y][x]
+            if sc == -1 or (sc > c and st == nt):
+                new.append((x, y, nc, nt))
+                continue
+
                 locs = [(x,y) for x,y,_,_ in new]
                 if (x,y) in locs:
                     # replace a new item with this one if cheaper
                     i = locs.index((x,y))
-                    _, _, nc,_ = new[i]
-                    if nc > c:
+                    _, _, nc,ot = new[i]
+                    if nc > c and ot == nt:
                         new[i] = (x, y, nc, nt)
+                    else:
+                        new.append((x, y, nc, nt))
                 else:
                     new.append((x, y, nc, nt))
 
@@ -75,12 +81,14 @@ def pretty_print(squares):
     for row in map:
         print(" ".join(row))
 
+    print('')
+
 
 
 
 x = y = c = 0
 tango = [east, north] # initialize the 2-step tango to allow for any direction
-scan = [[0xffff] * cols for r in range(rows)]
+scan = [([(-1, [])] * cols) for r in range(rows)]
 
 # each mapper fills in the squares directly reachable from the current squares not yet mapped
 new = mapper([(x,y,c, tango)])
@@ -88,8 +96,8 @@ pretty_print(new)
 
 while(new): # stop when we can't reach any more squares
 
-    for x,y,c,_ in new:
-        scan[y][x] = c
+    for x,y,c,t in new:
+        scan[y][x] = (c,t)
 
     new = mapper(new)
 

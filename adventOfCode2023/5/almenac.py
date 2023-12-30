@@ -1,5 +1,5 @@
 import numpy as np
-from input import *
+from example import *
 
 maps = [
     seed_to_soil,
@@ -43,7 +43,7 @@ def traverse_mapping(value, maps):
             # bottom part of the values are covered by the mapping
             if start >= source and start <= source_end:
 
-                traverse_mapping((destination + (start - source), source_end + 1 - start), remaining_maps)
+                traverse_mapping((destination + (start - source), source_end - start), remaining_maps)
                 value = (source + map_length, end - source_end + 1)
                 break
 

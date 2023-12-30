@@ -13,7 +13,7 @@ def memoize(func):
 
     return wrapper
 
-@memoize
+
 def traverse_group(springs, records, count, permutations, d):
 
     # If we've counted the amount of damaged springs that the record show, the next spring must be operational
@@ -30,7 +30,8 @@ def traverse_group(springs, records, count, permutations, d):
 
                 if springs:
                     d += '.' * len(springs)
-                print(d, end='\r')
+                #print(d, end='\r')
+                print(d)
                 return permutations + 1
 
             # continue in the same branch
@@ -70,9 +71,9 @@ for row in hot_springs:
     records = list(records)
 
     # unfold
-    line = (line + '?') * 5
-    line = line[:-1] # eat the last '?'
-    records = records * 5
+    #line = (line + '?') * 5
+    #line = line[:-1] # eat the last '?'
+    #records = records * 5
 
     print(line + ' ' + str(records))
     permutations = traverse_group(line, records, 0, 0, '')
