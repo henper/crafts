@@ -18,8 +18,6 @@ for brick in bricks:
 
 shape = np.array(shape) + 1
 
-print(len(bricks))
-
 # fill in the voxels of each brick
 voxel_bricks = []
 for brick in bricks:
@@ -181,13 +179,13 @@ colors[:] = 'blue'
 
 colors[np.where(e_voxels)] = 'red'
 
-#visrep(voxels, colors)
+visrep(voxels, colors)
 
 print(len(bricks))
 print(len(essentials))
 
-def calc_supporting(brick):
-    # Find all bricks that are supported by this one
+def calc_supporting(brick, tower : set):
+    # Find all bricks that are supported by this one..
     supporting = set()
 
     # Search one step up for all x's and y's in the brick
@@ -195,24 +193,41 @@ def calc_supporting(brick):
     yrange = range(min([y for _,y,_ in brick]), max([y for _,y,_ in brick]) + 1)
     z = max([z for _,_,z in brick]) + 1
 
-
-
     for y in yrange:
         for x in xrange:
             if (x,y,z) in db.keys():
-                supporting.add(db[(x,y,z)])
+                supported = db[(x,y,z)]
 
+                # ..and only this brick, if the one above it is supported by another brick as well then it doesn't count
+                voxels = [(x,y,z-1) for (x,y,z) in supported] # volume below the brick in question
+                voxels = list(filter(lambda voxel: voxel not in supported, voxels)) # remove voxels that are part of the same brick (for standing bricks)
+                voxels = list(filter(lambda voxel: voxel not in brick, voxels)) # remove all voxels that belong to the support in question
+                if all(voxel not in db.keys() for voxel in voxels):
+                    supporting.add(db[(x,y,z)])
+                    continue
+
+                # well, it can be supported by more than this brick in question, if they are all part of the same system aka. tower
+                supports = set()
+                for voxel in voxels:
+                    if voxel in db.keys():
+                        supports.add(db[voxel])
+
+                pillars = supports.difference(tower)
+                if not pillars:
+                    supporting.add(db[(x,y,z)])
+
+    # Add all the supported bricks to this tower
+    tower.update(supporting)
+
+    # Then recursively figure out which bricks they in turn supports
     for supported in supporting.copy():
-        supporting.update(calc_supporting(supported))
+        supporting.update(calc_supporting(supported, tower))
 
     return supporting
 
-
-
-
 answer = 0
 for brick in essentials:
-    answer += len((calc_supporting(brick)))
+    answer += len((calc_supporting(brick, set())))
 
 
 print(answer)
