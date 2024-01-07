@@ -1,15 +1,18 @@
-from example import trails
-from itertools import permutations, pairwise
+from input import trails
+from itertools import pairwise
+import networkx as nx
 import pygame
+
+G = nx.Graph()
 
 rows = len(trails)
 cols = len(trails[0])
 
 start = (1, 0)
-goal  = (cols-2, rows-1, 0)
+goal  = (cols-2, rows-1)
 
 # figure out the canvas
-S = SCALING = 25
+S = SCALING = 5
 HEIGHT = rows * S
 WIDTH  = cols * S
 
@@ -36,7 +39,7 @@ hiker_colors = [
 ]
 
 clock = pygame.time.Clock()
-def event_loop(nobreak = False):
+def event_loop():
     while True:
         event = pygame.event.poll() # get event immediately, if any
         # Allow for ways to exit the application
@@ -45,8 +48,8 @@ def event_loop(nobreak = False):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_c and pygame.key.get_mods() & pygame.KMOD_CTRL:
             pygame.quit(); exit()
 
-        if not nobreak and event.type == pygame.MOUSEBUTTONDOWN:
-            break
+        #if event.type == pygame.MOUSEBUTTONDOWN:
+        #    break
 
         clock.tick(60)
 
@@ -54,17 +57,16 @@ def visrep(paths, dead):
     for path in paths:
         if len(path) >= len(hiker_colors):
             for i in range(1,len(hiker_colors)+1):
-                x, y, _ = path[-i]
+                x, y = path[-i]
                 hiker = pygame.Rect(x*S, y*S, S, S)
                 pygame.draw.rect(screen, hiker_colors[i-1], hiker)
 
-
     for path in dead:
-        x, y, _ = path[-1]
+        x, y = path[-1]
         hiker = pygame.Rect(x*S, y*S, S, S)
         pygame.draw.rect(screen, pygame.Color('firebrick4'), hiker)
     pygame.display.flip()
-    event_loop()
+    clock.tick(60)
 
 from numpy import array
 north = array(( 0,-1))
@@ -78,7 +80,7 @@ def inside(pos):
     return y >= 0 and y < rows and x >= 0 and x < cols
 
 def passable(dir):
-    x,y = dir
+    x, y = dir
     t = trails[y][x]
     return t != '#'
 
@@ -109,39 +111,45 @@ def mapper(paths: list, dead: list):
 
 
     for path in paths: # note, shallow copy
-        x,y,c = path[-1]
-        dirs = directions((x,y))
+        pos = path[-1]
+        dirs = directions(pos)
 
         # dont go out of bounds
         dirs = list(filter(lambda dir: inside(dir), dirs))
 
         # dont backtrack
-        step = [(x,y) for x,y,_ in path]
-        dirs = list(filter(lambda dir: dir not in step, dirs))
+        dirs = list(filter(lambda dir: dir not in path, dirs))
 
         # dont venture off into the woods
         dirs = list(filter(lambda dir: passable(dir), dirs))
 
         if not dirs:
-            dead.append(path) # this is where the journey ends, we wil keep stepping in place until all journeys end
+            # this is where the journey ends
+            G.add_node(pos)
+            G.add_edge(pos, path[0], weight = len(path), trail = path)
             continue
 
         new = True # we've taken a step in one or more directions
 
-        # at this point we need to clone ourselves and continue in more than one direction
-        for i in range(1, len(dirs)):
-            x,y = dirs[i]
-            clone = path.copy()
-            clone.append((x, y, c + 1))
-            fro.append(clone)
-
-        # if we're merely continuing on the path, then add this one step
-        if len(dirs) >= 1:
-            x,y = dirs[0]
-            path.append((x, y, c + 1))
+        # if we're merely continuing on the path, then add this one step and continue walking
+        if len(dirs) == 1:
+            path.append(dirs[0])
             fro.append(path)
+            continue
 
+        # When the path forks add the current location as a node and add more mappers
 
+        if pos in G:
+            G.add_edge(pos, path[0], weight = len(path), trail = path)
+            continue # node has already been mapped, others will take care of it. Lay down and rest.
+
+        # and an edge from the path we took to get here
+        G.add_node(pos)
+        G.add_edge(pos, path[0], weight = len(path), trail = path)
+
+        # at this point we need to continue in more than one direction
+        for i in range(0, len(dirs)):
+            fro.append([pos, dirs[i]])
 
     return new, fro, dead
 
@@ -164,6 +172,7 @@ def pretty_print(paths, dead):
 
 # start from the end
 paths = [[goal]]
+G.add_node(goal)
 
 # each mapper fills in the squares directly reachable from the current squares not yet mapped
 new, paths, dead = mapper(paths, [])
@@ -173,51 +182,31 @@ while(new): # stop when we can't reach any more squares
     new, paths, dead = mapper(paths, dead)
     visrep(paths, dead)
 
-    continue
+path_weights = []
+simple_paths = list(nx.all_simple_paths(G, start, goal))
+for path in simple_paths:
+    path_weights.append(nx.path_weight(G, path, weight="weight") - (len(path) - 1))
+print(max(path_weights))
 
-    # Run ahead and kill off hikers when any one detects the footprints of another
-    for pairs in permutations(paths, 2):
-        killer, victim = pairs
+import matplotlib.pyplot as plt
+layout = nx.spring_layout(G)
+nx.draw_networkx_nodes(G, layout)
+nx.draw_networkx_labels(G, layout)
+nx.draw_networkx_edges(G, layout)
+nx.draw_networkx_edge_labels(G, layout, nx.get_edge_attributes(G, "weight"))
+plt.show()
 
-        last_steps = [(x,y) for x,y,_ in killer[-2:]]
-        steps = [(x,y) for x,y,_ in victim]
-        for two_step in pairwise(steps):
-            if list(two_step) == last_steps:
+for edge in pairwise(simple_paths[path_weights.index(max(path_weights))]):
+    a,b = edge
+    trail = G[a][b]['trail']
 
-                x,y,k = killer[-1]
-                _,_,v =victim[steps.index((x,y))]
+    if trail[0] != a:
+        trail.reverse()
 
-                if k > v:
-                    # killer finds and shoots his victim
-                    paths.remove(victim)
-                    dead.append(victim)
-                else:
-                    print('tf')
+    for x,y in trail:
+            hiker = pygame.Rect(x*S, y*S, S, S)
+            pygame.draw.rect(screen, pygame.Color('gold'), hiker)
+            pygame.display.flip()
+            clock.tick(120)
 
-
-journey_lengths = []
-for path in dead:
-    x,y,c = path[-1]
-    if (x,y) == start:
-        journey_lengths.append(c)
-
-print(journey_lengths)
-print(max(journey_lengths))
-
-
-# the ones that made it out without being killed or lost in the woods
-def at_start(pos):
-    x,y,_ = pos[-1]
-    return start == (x,y)
-
-actually_alive = list(filter(lambda path: at_start(path), dead))
-life_lived = [len(hiker) for hiker in actually_alive]
-print(max(life_lived))
-
-longest_hike = actually_alive[life_lived.index(max(life_lived))]
-for x,y,_ in longest_hike:
-        hiker = pygame.Rect(x*S, y*S, S, S)
-        pygame.draw.rect(screen, pygame.Color('gold'), hiker)
-
-pygame.display.flip()
-event_loop(True)
+event_loop()
