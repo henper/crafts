@@ -1,26 +1,30 @@
 from input import garden
 
+import matplotlib.pyplot as plt
+plt.scatter([6, 10, 50, 100, 500, 1000, 5000], [16, 50, 1594, 6536, 167004, 668697, 16733044])
+plt.show()
+
 import pygame
 
 rows = len(garden)
 cols = len(garden[0])
 
 # figure out the canvas
-S = SCALING = 5
-HEIGHT = rows * S
-WIDTH  = cols * S
+S = SCALING = 2
+HEIGHT = rows * S * 3
+WIDTH  = cols * S * 3
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 level = pygame.Surface((WIDTH, HEIGHT))
 
 for y in range(rows):
-    for x in range(cols):
-        if garden[y][x] == '#':
-            woods = pygame.Rect(x*S, y*S, S, S)
-            pygame.draw.rect(level, pygame.Color('chartreuse4'), woods)
-        if garden[y][x] == 'S':
-            start = (x,y)
+    for i in range(3):
+        for x in range(cols):
+            for j in range(3):
+                if garden[y][x] == '#':
+                    woods = pygame.Rect(S*(x+(j*cols)), S*(y+(i*rows)), S, S)
+                    pygame.draw.rect(level, pygame.Color('chartreuse4'), woods)
 
 level = level.convert()
 
@@ -42,11 +46,14 @@ def event_loop():
 
         clock.tick(60)
 
-event_loop()
+#event_loop()
 
 def visrep(squares):
     for square in squares:
         x, y = square
+        if x > 3 * cols or y > 3 * rows:
+            continue
+
         gnome = pygame.Rect(x*S, y*S, S, S)
         pygame.draw.rect(screen, pygame.Color('firebrick4'), gnome)
     pygame.display.flip()
@@ -54,6 +61,9 @@ def visrep(squares):
 
     for square in squares:
         x, y = square
+        if x > 3 * cols or y > 3 * rows:
+            continue
+
         gnome = pygame.Rect(x*S, y*S, S, S)
         pygame.draw.rect(screen, pygame.Color('black'), gnome)
 
@@ -71,7 +81,7 @@ def inside(pos):
 
 def passable(dir):
     x, y = dir
-    t = garden[y][x]
+    t = garden[y % rows][x % cols]
     return t != '#'
 
 def directions(pos):
@@ -89,7 +99,7 @@ def mapper(squares : list):
         dirs = directions(pos)
 
         # dont go out of bounds
-        dirs = list(filter(lambda dir: inside(dir), dirs))
+        #dirs = list(filter(lambda dir: inside(dir), dirs))
 
         # dont backtrack
         #dirs = list(filter(lambda dir: dir not in mapped, dirs))
@@ -105,12 +115,15 @@ squares = set()
 for y in range(rows):
     for x in range(cols):
         if garden[y][x] == 'S':
-            squares.add((x,y))
+            squares.add((x+cols,y+rows))
+
+# We start in the middle of a square, so the number of steps to reach the edge can be calculated
+steps = (rows*3-1)//2
 
 mapped = []
 new = mapper(squares)
 visrep(new)
-for i in range(63):
+for i in range(steps-1):
     mapped += new
     new = mapper(new)
     visrep(new)
