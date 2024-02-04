@@ -73,30 +73,6 @@ var config = {
 			position: "top_left",
 			header: "Namnsdag"
 		},
-		/*
- 		{
-			module: "currentweather",
-			position: "top_right",
-			config: {
-				location: "Göteborg",
-				locationID: "2711537", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-				appid: "9cab403720f3d1dfd158dcbfc27c194b",
-				showIndoorTemperature: true
-			}
-		},
-		{
-			module: "weatherforecast",
-			position: "top_right",
-			header: "Weather Forecast",
-			config: {
-				location: "Göteborg",
-				locationID: "2711537", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
-				appid: "9cab403720f3d1dfd158dcbfc27c194b",
-				colored: true,
-				showRainAmount: true
-			}
-		},
-		*/
 		{
 			module: "weather",
 			position: "top_right",
@@ -130,28 +106,6 @@ var config = {
 			config: {
 				bridgeIp: "192.168.88.254",
 				user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO"
-			}
-		},
-		{
-			disabled: true,
-			module: 'MMM-Globe',
-			position: 'middle_center',
-			config: {
-				style: 'europeDiscNat',
-				imageSize: 600,
-				ownImagePath:'',
-				updateInterval: 10*60*1000
-			}
-		},
-		{
-			disabled: true,
-			module: 'MMM-Screencast',
-			position: 'center', // This position is for a hidden <div /> and not the screencast window
-			config: {
-				position: 'center',
-				height: 720,
-				width: 1280,
-				castName: 'MagicMirror'
 			}
 		},
 		{
@@ -239,46 +193,6 @@ var config = {
 						color: "#52FF33"
 					}
 				]
-			}
-		},
-		{
-			disabled: true,
-			module: "MMM-Detector",
-			position: "top_left",
-			configDeepMerge: true,
-			config: {
-				debug: false,
-				detectors: [
-					{
-						detector: "Snowboy",
-						Model: "alexa",
-						Sensitivity: null,
-						Logo: "alexa",
-						autoRestart: false,
-						onDetected: {
-							notification: "ALEXA_ACTIVATE"
-						}
-					},
-				]
-			}
-		},
-		{
-			disabled: true,
-			module: "MMM-Alexa",
-			position: "top_left",
-			configDeepMerge: true,
-			config: {
-				debug: false,
-				avs: {
-					ProductID: "Alexa",
-					ClientID: "amzn1.application-oa2-client.44c486ac01e348d2a79480d34d5421b2",
-					ClientSecret: "bed2fe50c4eca45f192cc66f1baab2cde3ed3e9b16fb45942c820ae560f07875",
-					InitialCode: "ANvXExaRWgdSDgwPxJmH",
-					deviceSerialNumber: 1
-				},
-				micConfig: {
-					exitOnSilence: 15, //default 15
-				}
 			}
 		},
 		{
