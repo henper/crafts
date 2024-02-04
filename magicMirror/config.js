@@ -150,13 +150,13 @@ var config = {
 						filterKey: "A"       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board.
 					},
 					{
-						id: "9022014007172001",
+						id: "9021014007172000",
 						filterAttr: "track",
 						filterKey: "B"
 					},
 				],
-				appKey: "5jbfEZBDMAJVPjNYaZQFdAiwhfga",       // REQUIRED. see 1. Create application and obtain required client id and secret.
-				appSecret: "d8iPTrrQ3CgkfcmGpcAFl45pfSca", // REQUIRED. see 1. Create application and obtain required client id and secret.
+				appKey: "zELyDmhGqYlkX000OTR_SNTha7Ma",       // REQUIRED. see 1. Create application and obtain required client id and secret.
+				appSecret: "Lrqpm0K1JbqRwNSOMFo1HDI3L8Ma", // REQUIRED. see 1. Create application and obtain required client id and secret.
 				debug: false,                 // Optional. Enable some extra output when debugging.
 				sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
 											// default is "track".
