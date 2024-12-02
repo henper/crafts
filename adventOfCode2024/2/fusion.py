@@ -14,8 +14,9 @@ from input import reports
 num_safe = 0
 
 
-for report in reports:
 
+
+def is_safe(report):
     forwards = report.copy()
     forwards.sort()
 
@@ -33,9 +34,23 @@ for report in reports:
         most = max(gradient)
 
         if least > 0 and most < 4:
-            num_safe += 1
+            return True
+
+    return False
 
 
+for report in reports:
+    if is_safe(report):
+        num_safe += 1
+    else:
+
+        for i, r in enumerate(report):
+            dampened = report.copy()
+            dampened.pop(i)
+
+            if is_safe(dampened):
+                num_safe += 1
+                break
 
 
 
