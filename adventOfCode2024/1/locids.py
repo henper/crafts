@@ -29,3 +29,10 @@ left  = np.array(left)
 diff = right - left
 
 print(sum(np.abs(diff)))
+
+count = []
+for loc in left:
+    same = right == loc
+    count.append(sum(same))
+
+print(sum(left * count))
