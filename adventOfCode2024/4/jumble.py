@@ -109,6 +109,56 @@ def count_xmases(matrix) -> int:
 
     return count
 
+def count_x_mases(matrix) -> int:
+    '''
+    Given a 7x7 matrix of a word jumble,
+    count how many times the word 'XMAS' appears starting from the center
+    '''
+    count = 0
+
+    if matrix[3][3] != 'A':
+        return 0
+
+    # Cross
+    '''
+    s = matrix[3][2:5]
+    if s == 'MAS' or s == 'SAM':
+        matrix = rotate(rotate(matrix))
+        s = ''.join(matrix[3][2:5])
+        if s == 'MAS' or s == 'SAM':
+            count = 1
+    '''
+
+    matrix = rotate(matrix)
+
+    s = ''.join(matrix[3][2:5])
+    if s == 'MAS' or s == 'SAM':
+        matrix = rotate(rotate(matrix))
+        s = ''.join(matrix[3][2:5])
+        if s == 'MAS' or s == 'SAM':
+            count += 1
+
+    return count
+
+jumble = [
+    '................',
+    '................',
+    '................',
+    '....M.S.........',
+    '.....A..MSMS....',
+    '....M.S.MAA.....',
+    '.....A.ASMSM....',
+    '....M.S.M.......',
+    '................',
+    '...S.S.S.S.S....',
+    '....A.A.A.A.....',
+    '...M.M.M.M.M....',
+    '................',
+    '................',
+    '................',
+    '................',
+]
+
 jumble = [
     '................',
     '................',
@@ -123,25 +173,6 @@ jumble = [
     '...SAXAMASAAA...',
     '...MAMMMXMMMM...',
     '...MXMXAXMASX...',
-    '................',
-    '................',
-    '................',
-]
-
-jumble = [
-    '................',
-    '................',
-    '................',
-    '.......XXMAS....',
-    '....SAMXMS......',
-    '......S..A......',
-    '.....A.A.MS.X...',
-    '...XMASAMX.MM...',
-    '...X.....XA.A...',
-    '...S.S.S.S.SS...',
-    '....A.A.A.A.A...',
-    '.....M.M.M.MM...',
-    '....X.X.XMASX...',
     '................',
     '................',
     '................',
@@ -170,13 +201,27 @@ for yp in range(3, height-3):
             jumble[y+6][x:x+7],
         ]
 
-        num_xmases += count_xmases(matrix)
+        if (matrix[3][3]=='A'):
+            for j in range(2,5):
+                print(' '.join(matrix[j][2:5]))
+
+            is_x_mas = count_x_mases(matrix)
+
+            if is_x_mas:
+                print('x-mas')
+            else:
+                print('')
+
+            print('')
+
+            num_xmases += is_x_mas
 
 print(num_xmases)
 
 
 
-
-
+# 4011 Too High
+# 1907 Too High
+# 1913 Too High
 
 
