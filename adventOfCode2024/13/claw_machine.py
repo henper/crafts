@@ -20,17 +20,30 @@ machines =  [(
 )]
 
 from input import machines
-#from marcus import machines
 
 def pythagoras(a, b):
     return np.sqrt(a**2 + b**2)
 
 cost = []
 
+def is_int(x: float) -> bool:
+    if x < 1.0:
+        return False
+
+    if x.is_integer():
+        return True
+
+    f = x - int(x)
+
+    return f < 0.0001 or f > 0.9999
+
 for machine in machines:
     a, b, price = machine
 
     X,Y = price
+    #X += 10000000000000
+    #Y += 10000000000000
+
     Xa, Ya = a
     Xb, Yb = b
 
@@ -39,9 +52,25 @@ for machine in machines:
 
     winner = False
 
-    for A in range(1,100):
+    for A in range(1, 100):
         B = A*a/b
-        if B.is_integer():
+
+        Dx = X/(A*Xa + B*Xb)
+        Dy = Y/(A*Ya + B*Yb)
+
+        if is_int(Dx) and abs(Dx-Dy) < 0.0001:
+            s = int(np.round(Dx))
+            c = s*(3*A+B)
+
+            if not is_int(c):
+                continue
+
+            cost.append(c)
+            break
+
+
+'''
+        if is_int(B):
             B = int(np.round(B))
 
             # found a winner!
@@ -54,7 +83,7 @@ for machine in machines:
             v = (A*Xa + B*Xb)**2 + (A*Ya + B*Yb)**2
             s = np.sqrt(p//v)
 
-            if not s.is_integer():
+            if not is_int(s):
                 break
 
             s = int(np.round(s))
@@ -69,7 +98,7 @@ for machine in machines:
 
     for B in range(1,100):
         A = B*b/a
-        if A.is_integer():
+        if is_int(A):
             A = int(np.round(A))
 
             # found a winner!
@@ -82,7 +111,7 @@ for machine in machines:
             v = (A*Xa + B*Xb)**2 + (A*Ya + B*Yb)**2
             s = np.sqrt(p//v)
 
-            if not s.is_integer():
+            if not is_int(s):
                 break
 
             s = int(np.round(s))
@@ -91,7 +120,7 @@ for machine in machines:
 
             cost.append(c)
             break
-
+'''
 
 print(sum(cost))
 
