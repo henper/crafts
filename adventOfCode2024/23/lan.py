@@ -1,5 +1,5 @@
 import networkx as nx
-import matplotlib.pyplot as plt
+from itertools import combinations
 
 computers = [
     ('kh','tc'),
@@ -36,51 +36,44 @@ computers = [
 	('td','yn'),
 ]
 
-#from input import computers
+from input import computers
 
 G = nx.Graph()
 
 G.add_edges_from(computers)
 
-
-options = {
-    "font_size": 36,
-    "node_size": 3000,
-    "node_color": "white",
-    "edgecolors": "black",
-    "linewidths": 5,
-    "width": 5,
-    "with_labels": True,
-}
-
-nx.draw_networkx(G, **options)
-
-# Set margins for the axes so that nodes aren't clipped
-ax = plt.gca()
-ax.margins(0.20)
-plt.axis("off")
-plt.show()
-
-
-threes = []
+lan_party = [1,2,3] # we know the largest lan party is longer than 3
 for node in G.nodes:
-    if node[0] != 't':
-        continue
 
     neighbors = set(G.adj[node].keys())
 
-    for neighbor in neighbors:
-        once_removed = set(G.adj[neighbor].keys())
+    neighbors_neighbors = [ [neighbor] + list(G.adj[neighbor].keys()) for neighbor in neighbors ]
 
-        triplets = neighbors.intersection(once_removed)
+    largest_lan = len(lan_party)
+    for i in range(largest_lan, len(neighbors)+1):
 
-        for triplet in triplets:
+        combos = combinations(neighbors_neighbors, i)
 
+        for combo in combos:
 
-            three = set((node, neighbor, triplet))
-            if three not in threes:
-                threes.append(three)
+            lan = set([node] + [nodes[0] for nodes in combo])
 
-print(len(threes))
+            is_lan_party = True
+            for node_list in combo:
+
+                if not lan.issubset(node_list):
+                    is_lan_party = False
+                    break
+            
+            if not is_lan_party:
+                continue
+
+            if len(lan) >= largest_lan:
+                lan_party = lan
+
+party = list(lan_party)
+party.sort()
+
+print(','.join(party))
 
 # 2226 Too high
