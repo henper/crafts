@@ -2,6 +2,13 @@ import pygame
 import numpy as np
 
 maze = [
+    '#########',
+    '#S..#..E#',
+    '###...###',
+    '#########',
+
+]
+maze = [
     '#################',
     '#################',
     '##...#...#.....##',
@@ -21,7 +28,7 @@ maze = [
     '#################',
 ]
 
-#from input import maze
+from input import maze
 
 width  = len(maze[0])
 height = len(maze)
@@ -37,7 +44,7 @@ for y in range(height):
             goal = (y,x)
 
 # Visualization
-SCALE = S = 32
+SCALE = S = 4
 pygame.init()
 screen = pygame.display.set_mode((width*SCALE,height*SCALE))
 screen.fill("black")
@@ -110,28 +117,43 @@ for y,x,c in scan:
     draw_cost(x,y,c)
 pygame.display.flip()
 
+area = 20
 
-cheats = []
+cheats =  {}
+num_cheats = 0
 for y,x,c in scan:
-    dirs = directions((y,x), 2)
 
-    for dy,dx in dirs:
-        shortcut = map[dy][dx]
-        if shortcut != 0:
+    pass
 
-            savings = shortcut - c - 2
-            if savings > 0:
-                pos = np.array((y,x))
-                cy,cx = pos + (np.array((dy,dx))-pos)/2
+    for oy in range(area+1):
+        for ox in range(area+1-oy):
+            
+            dirs = set([(x+ox, y+oy), (x-ox, y+oy), (x+ox, y-oy), (x-ox, y-oy)])
 
-                cheats.append((cy,cx,savings))
+            for dx,dy in dirs:
+                if dx < 0 or dy < 0 or dx >= width or dy >= height:
+                    continue
 
-for y,x,c in cheats:
-    draw_cost(x,y,c, "red")
-pygame.display.flip()
 
-savings = np.array([c for _,_,c in cheats])
-print(sum(savings >= 100))
+                shortcut = map[dy][dx]
+                if shortcut != 0:
+
+                    savings = shortcut - c - oy - ox
+                    if savings >= 100:
+                        num_cheats+=1
+
+                        if savings in cheats:
+                            cheats[savings] = cheats[savings] + 1
+                        else:
+                            cheats[savings] = 1
+
+
+keys = list(cheats.keys())
+keys.sort()
+for key in keys:
+    print(f'There are {cheats[key]} that save {key} picoseconds')
+
+print(f'total: {num_cheats}')
 
 while True:
     for event in pygame.event.get():
