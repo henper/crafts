@@ -24,9 +24,9 @@ qh = 230;
 qr = 27/2;
 
 // hole pattern
-fp =  76;
-bp = 115;
-fb = 155;
+fp =  85;
+bp =  95;
+fb = 147;
 
 hd = 11;
 
@@ -35,14 +35,19 @@ module plate() {
         union() {
             hull() {
                 // screw-base
-                translate([0,0,l]) {
-                    rotate([0,0,r])
-                    for (xlr = [-1,1]) {
-                        for (yfb = [-1,1]) {
-                            translate([xlr*fp/2,yfb*fb/2,0])
-                            cylinder(r=hd/2+2, 5);
-                        }
-                    }
+                translate([0,0,l])
+                rotate([0,0,r]) {
+                    // front
+                    for (xlr = [-1,1])
+                        translate([xlr*fp/2, fb/2, 0])
+                        cylinder(r=hd/2+2, 5);
+
+
+                    // back
+                    for (xlr = [-1,1])
+                        translate([xlr*bp/2, -fb/2, 0])
+                        cylinder(r=hd/2+2, 5);
+
                 }
 
                 // legs-support
@@ -57,10 +62,21 @@ module plate() {
 
         // screw-holes
         translate([0,0,l]) {
-            rotate([0,0,r])
-            for (xlr = [-1,1]) {
-                for (yfb = [-1,1]) {
-                    translate([xlr*fp/2,yfb*fb/2,-50/2]) {
+            rotate([0,0,r]) {
+
+                // front
+                for (xlr = [-1,1]) {
+                    translate([xlr*fp/2, fb/2, -50/2]) {
+                        // shaft
+                        cylinder(r=4/2+0.1, 50);
+                        // head
+                        cylinder(r=7/2, 25);
+                    }
+                }
+
+                // back
+                for (xlr = [-1,1]) {
+                    translate([xlr*bp/2, -fb/2, -50/2]) {
                         // shaft
                         cylinder(r=4/2+0.1, 50);
                         // head
