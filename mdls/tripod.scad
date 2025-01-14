@@ -31,6 +31,7 @@ fb = 147;
 hd = 11;
 
 module plate() {
+    color("white")
     difference() {
         union() {
             hull() {
@@ -97,16 +98,24 @@ module plate() {
 
 
 module triwing() {
-    hull()
-    for (i=[0:120:360]) {
-        rotate([s,0,i]) {
-            translate([c,0,-th/2])
-            cylinder(r=d/2+tt, th, $fn=f);
+    color("white")
+    difference() {
+        // body
+        hull()
+        for (i=[0:120:360]) {
+            rotate([s,0,i]) {
+                translate([c,0,-th/2])
+                cylinder(r=d/2+tt, th, $fn=f);
+            }
         }
+
+        legs();
+
     }
 }
 
 module legs() {
+    color("saddlebrown")
     for (i=[0:120:360]) {
         rotate([s,0,i]) {
             translate([c,0,-h/g])
@@ -115,41 +124,32 @@ module legs() {
     }
 }
 
-difference() {
-    // tri-wing
-    color("white")
-    triwing();
-
-    // wooden posts
-    legs();
-}
-
-
-// base-plate
-color("white")
-plate();
-
-// h * cos B = l
-
-color("grey")
-rotate([0,0,r])
-translate([qr-qw/2,-qd/2, l+qr+5])
-minkowski() {
-    cube([qw-2*qr,qd/2,qh-qr*2]);
-    rotate([-90,0,0])
-    cylinder(r=qr, qd/2, $fn=f);
-}
-
-color("saddlebrown")
-legs();
-
-color("goldenrod")
-for (i=[0:120:360]) {
-    rotate([s,0,i]) {
-        translate([c,0,-h/g-5])
-        cylinder(r=d/2, 5, $fn=f);
-
-        translate([c,0,-h/g-25])
-        cylinder(r2=d/2, r1=0, 20, $fn=f);
+module speaker() {
+    color("grey")
+    rotate([0,0,r])
+    translate([qr-qw/2,-qd/2, l+qr+5])
+    minkowski() {
+        cube([qw-2*qr,qd/2,qh-qr*2]);
+        rotate([-90,0,0])
+        cylinder(r=qr, qd/2, $fn=f);
     }
 }
+
+module spikes() {
+    color("goldenrod")
+    for (i=[0:120:360]) {
+        rotate([s,0,i]) {
+            translate([c,0,-h/g-5])
+            cylinder(r=d/2, 5, $fn=f);
+
+            translate([c,0,-h/g-25])
+            cylinder(r2=d/2, r1=0, 20, $fn=f);
+        }
+    }
+}
+
+//triwing();
+plate();
+//speaker();
+//spikes();
+//legs();
