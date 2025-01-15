@@ -40,13 +40,13 @@ module plate() {
                 rotate([0,0,r]) {
                     // front
                     for (xlr = [-1,1])
-                        translate([xlr*fp/2, fb/2, 0])
+                        translate([xlr*fp/2, -fb/2, 0])
                         cylinder(r=hd/2+2, 5);
 
 
                     // back
                     for (xlr = [-1,1])
-                        translate([xlr*bp/2, -fb/2, 0])
+                        translate([xlr*bp/2, fb/2, 0])
                         cylinder(r=hd/2+2, 5);
 
                 }
@@ -67,21 +67,21 @@ module plate() {
 
                 // front
                 for (xlr = [-1,1]) {
-                    translate([xlr*fp/2, fb/2, -50/2]) {
+                    translate([xlr*fp/2, -fb/2, -50/2]) {
                         // shaft
                         cylinder(r=4/2+0.1, 50);
                         // head
-                        cylinder(r=7/2, 25);
+                        cylinder(r=7/2, 28);
                     }
                 }
 
                 // back
                 for (xlr = [-1,1]) {
-                    translate([xlr*bp/2, -fb/2, -50/2]) {
+                    translate([xlr*bp/2, fb/2, -50/2]) {
                         // shaft
                         cylinder(r=4/2+0.1, 50);
                         // head
-                        cylinder(r=7/2, 25);
+                        cylinder(r=7/2, 28);
                     }
                 }
             }
