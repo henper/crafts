@@ -6,12 +6,14 @@ tt = 3;
 th = 15;
 
 // wooden posts
-d = 15+0.1;
+d = 15+0.2;
 h = 600;
 s = 15;      // angle
 c = d/2+tt;  // separation
 
 l = cos(s)*(h-h/g); // height of the legs
+echo("l = ", l);
+
 
 f = 100; // facets
 
@@ -69,9 +71,9 @@ module plate() {
                 for (xlr = [-1,1]) {
                     translate([xlr*fp/2, -fb/2, -50/2]) {
                         // shaft
-                        cylinder(r=4/2+0.1, 50);
+                        cylinder(r=4/2+0.5, 50);
                         // head
-                        cylinder(r=7/2, 28);
+                        cylinder(r=7/2+0.5, 28);
                     }
                 }
 
@@ -79,9 +81,9 @@ module plate() {
                 for (xlr = [-1,1]) {
                     translate([xlr*bp/2, fb/2, -50/2]) {
                         // shaft
-                        cylinder(r=4/2+0.1, 50);
+                        cylinder(r=4/2+0.5, 50);
                         // head
-                        cylinder(r=7/2, 28);
+                        cylinder(r=7/2+0.5, 28);
                     }
                 }
             }
@@ -148,8 +150,35 @@ module spikes() {
     }
 }
 
-//triwing();
+module drill_guide() {
+
+    difference() {
+        // material
+        cylinder(r=d/2+4, h=100);
+
+        // leg
+        translate([0,0,-2])
+        cylinder(r=d/2, h=50);
+
+        // bend guide
+        translate([-d, -4/2, -1])
+        cube([2*d, 4, 40]);
+
+        translate([-d/2-5,0,40])
+        rotate([0,90,0])
+        cylinder(r=4/2+1, h=d+10);
+
+        // drill
+        translate([0,0,-1])
+        cylinder(r=12/2+0.2, h=102);
+    }
+
+}
+
+triwing();
 plate();
-//speaker();
-//spikes();
-//legs();
+speaker();
+spikes();
+legs();
+
+//drill_guide();
