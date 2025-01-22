@@ -42,30 +42,25 @@ G = nx.Graph()
 
 G.add_edges_from(computers)
 
+def is_lan_party(lan: set, combo):
+    for node_list in combo:
+        if not lan.issubset(node_list):
+            return False
+    return True
+
 lan_party = [1,2,3] # we know the largest lan party is longer than 3
 for node in G.nodes:
-
     neighbors = set(G.adj[node].keys())
-
     neighbors_neighbors = [ [neighbor] + list(G.adj[neighbor].keys()) for neighbor in neighbors ]
 
     largest_lan = len(lan_party)
     for i in range(largest_lan, len(neighbors)+1):
 
         combos = combinations(neighbors_neighbors, i)
-
         for combo in combos:
-
             lan = set([node] + [nodes[0] for nodes in combo])
 
-            is_lan_party = True
-            for node_list in combo:
-
-                if not lan.issubset(node_list):
-                    is_lan_party = False
-                    break
-            
-            if not is_lan_party:
+            if not is_lan_party(lan, combo):
                 continue
 
             if len(lan) >= largest_lan:
@@ -73,7 +68,4 @@ for node in G.nodes:
 
 party = list(lan_party)
 party.sort()
-
 print(','.join(party))
-
-# 2226 Too high

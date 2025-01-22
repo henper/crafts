@@ -17,7 +17,9 @@ echo("l = ", l);
 
 f = 100; // facets
 
+// rotation and translation of the base
 r = 8;
+t = 9;
 
 // speakers
 qw = 156;
@@ -28,7 +30,7 @@ qr = 27/2;
 // hole pattern
 fp =  85;
 bp =  95;
-fb = 147;
+fb = 149;
 
 hd = 11;
 
@@ -37,8 +39,9 @@ module plate() {
     difference() {
         union() {
             hull() {
+            //{
                 // screw-base
-                translate([0,0,l])
+                translate([0,t,l])
                 rotate([0,0,r]) {
                     // front
                     for (xlr = [-1,1])
@@ -56,15 +59,15 @@ module plate() {
                 // legs-support
                 for (i=[0:120:360]) {
                     rotate([s,0,i]) {
-                        translate([c,0,l+5])
-                        cylinder(r1=th/2+2, r2=th/2+5, 15);
+                        translate([c,0,l])
+                        cylinder(r1=th/2+2, r2=th/2+5, 17);
                     }
                 }
             }
         }
 
         // screw-holes
-        translate([0,0,l]) {
+        translate([0,t,l]) {
             rotate([0,0,r]) {
 
                 // front
@@ -129,7 +132,7 @@ module legs() {
 module speaker() {
     color("grey")
     rotate([0,0,r])
-    translate([qr-qw/2,-qd/2, l+qr+5])
+    translate([qr-qw/2,t-qd/2, l+qr+5])
     minkowski() {
         cube([qw-2*qr,qd/2,qh-qr*2]);
         rotate([-90,0,0])
