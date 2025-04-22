@@ -6,9 +6,9 @@ tt = 3;
 th = 15;
 
 // wooden posts
-d = 15+0.2;
-h = 600;
-s = 15;      // angle
+d = 15+0.1;
+h = 450;
+s = 20;      // angle
 c = d/2+tt;  // separation
 
 l = cos(s)*(h-h/g); // height of the legs
@@ -18,8 +18,12 @@ echo("l = ", l);
 f = 100; // facets
 
 // rotation and translation of the base
-r = 8;
+r = 10;
 t = 9;
+
+// wood screws
+sd = 3.5;
+sh = 7.0;
 
 // speakers
 qw = 156;
@@ -98,6 +102,19 @@ module plate() {
         cube([qw,qd,qh]);
 
         legs();
+
+        // legs-mounting
+        for (i=[0:120:360]) {
+            rotate([s,0,i]) {
+                translate([c,0,l+15])
+                cylinder(r1=sd/2, r2=sh/2, 4);
+            }
+
+            rotate([s,0,i]) {
+                translate([c,0,l+15+4])
+                cylinder(r=sh/2, 15);
+            }
+        }
     }
 }
 
@@ -125,6 +142,12 @@ module legs() {
         rotate([s,0,i]) {
             translate([c,0,-h/g])
             cylinder(r=d/2, h, $fn=f);
+        }
+
+        // mounting holes in the plate
+        rotate([s,0,i]) {
+            translate([c,0,-h/g])
+            cylinder(r=sd/2, h+8, $fn=f);
         }
     }
 }
@@ -180,8 +203,13 @@ module drill_guide() {
 
 triwing();
 plate();
-speaker();
+//speaker();
 spikes();
-legs();
+//legs();
 
 //drill_guide();
+
+// Total height
+total_height = l+h/g+qh+5;
+//color("green") translate([0,0,-h/g]) cylinder(r=5, h=total_height);
+echo(str("Total height = ", total_height));
