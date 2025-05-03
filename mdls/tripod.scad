@@ -7,8 +7,8 @@ th = 15;
 
 // wooden posts
 d = 15+0.1;
-h = 450;
-s = 20;      // angle
+h = 430;
+s = 25;      // angle
 c = d/2+tt;  // separation
 
 l = cos(s)*(h-h/g); // height of the legs
@@ -18,7 +18,7 @@ echo("l = ", l);
 f = 100; // facets
 
 // rotation and translation of the base
-r = 10;
+r = 8;
 t = 9;
 
 // wood screws
@@ -50,21 +50,21 @@ module plate() {
                     // front
                     for (xlr = [-1,1])
                         translate([xlr*fp/2, -fb/2, 0])
-                        cylinder(r=hd/2+2, 5);
+                        cylinder(r=hd/2+2, 5, $fn=f);
 
 
                     // back
                     for (xlr = [-1,1])
                         translate([xlr*bp/2, fb/2, 0])
-                        cylinder(r=hd/2+2, 5);
+                        cylinder(r=hd/2+2, 5, $fn=f);
 
                 }
 
                 // legs-support
                 for (i=[0:120:360]) {
                     rotate([s,0,i]) {
-                        translate([c,0,l])
-                        cylinder(r1=th/2+2, r2=th/2+5, 17);
+                        translate([c,0,l+10])
+                        cylinder(r1=th/2+2, r2=th/2+5, 21-10, $fn=f);
                     }
                 }
             }
@@ -78,9 +78,9 @@ module plate() {
                 for (xlr = [-1,1]) {
                     translate([xlr*fp/2, -fb/2, -50/2]) {
                         // shaft
-                        cylinder(r=4/2+0.5, 50);
+                        cylinder(r=4/2+0.5, 50, $fn=f);
                         // head
-                        cylinder(r=7/2+0.5, 28);
+                        cylinder(r=7/2+0.5, 28, $fn=f);
                     }
                 }
 
@@ -88,9 +88,9 @@ module plate() {
                 for (xlr = [-1,1]) {
                     translate([xlr*bp/2, fb/2, -50/2]) {
                         // shaft
-                        cylinder(r=4/2+0.5, 50);
+                        cylinder(r=4/2+0.5, 50, $fn=f);
                         // head
-                        cylinder(r=7/2+0.5, 28);
+                        cylinder(r=7/2+0.5, 28, $fn=f);
                     }
                 }
             }
@@ -107,12 +107,12 @@ module plate() {
         for (i=[0:120:360]) {
             rotate([s,0,i]) {
                 translate([c,0,l+15])
-                cylinder(r1=sd/2, r2=sh/2, 4);
+                cylinder(r1=sd/2, r2=sh/2, 4, $fn=f);
             }
 
             rotate([s,0,i]) {
-                translate([c,0,l+15+4])
-                cylinder(r=sh/2, 15);
+                translate([c,0,l+15+4-0.1])
+                cylinder(r=sh/2, 15, $fn=f);
             }
         }
     }
@@ -203,9 +203,9 @@ module drill_guide() {
 
 triwing();
 plate();
-//speaker();
+speaker();
 spikes();
-//legs();
+legs();
 
 //drill_guide();
 
