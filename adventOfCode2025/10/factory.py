@@ -1,6 +1,6 @@
 from itertools import combinations_with_replacement
 
-from input import machines
+from example import machines
 
 answer = 0
 
@@ -46,23 +46,33 @@ for machine in machines:
 
     clicks = 0
 
-    while result != joltage_requirements:
-        clicks += 1
+    new_cache = {(): result} # no click results in no joltages
 
+    while result != joltage_requirements:
+        cache = new_cache
+        new_cache = {}
+
+        clicks += 1
         clicked_combos = combinations_with_replacement(buttons, clicks)
         clicked_combos = list(clicked_combos) # comment me!
         for clicked in clicked_combos:
 
-            for click in clicked:
-                if type(click) == int:
-                    click = (click,)
-                for activation in click:
-                    result[activation] += 1
+            # fetch the result from the previously built cache
+            result = cache[clicked[:-1]].copy()
+
+
+            click = clicked[-1]
+            if type(click) == int:
+                click = (click,)
+            for activation in click:
+                result[activation] += 1
+
+            # store the result of the clicks in the cache for the next number of clicks
+            new_cache[clicked] = result
 
             if result == joltage_requirements:
                 break
 
-            result = [0] * len(joltage_requirements)
 
     answer += clicks
     print(clicks)
