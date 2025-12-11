@@ -1,4 +1,5 @@
 from itertools import combinations_with_replacement
+from numpy import array, all, any
 
 from example import machines
 
@@ -44,13 +45,19 @@ for machine in machines:
 
     result = [0] * len(joltage_requirements) # no joltage requirements would mean that no clicks are needed
 
-    clicks = 0
+    result = array(result)
+    joltage_requirements = array(joltage_requirements)
+    diff = joltage_requirements - result
 
     new_cache = {(): result} # no click results in no joltages
 
-    while result != joltage_requirements:
+
+    clicks = 0
+    while any(diff != 0):
         cache = new_cache
         new_cache = {}
+
+        print(f"cache length: {len(cache)}")
 
         clicks += 1
         clicked_combos = combinations_with_replacement(buttons, clicks)
@@ -58,8 +65,10 @@ for machine in machines:
         for clicked in clicked_combos:
 
             # fetch the result from the previously built cache
-            result = cache[clicked[:-1]].copy()
-
+            try:
+                result = cache[clicked[:-1]].copy()
+            except KeyError:
+                continue # this combo of clicks have exceeded the requirements
 
             click = clicked[-1]
             if type(click) == int:
@@ -68,9 +77,11 @@ for machine in machines:
                 result[activation] += 1
 
             # store the result of the clicks in the cache for the next number of clicks
-            new_cache[clicked] = result
+            diff = joltage_requirements - result
+            if all(diff >= 0):
+                new_cache[clicked] = result
 
-            if result == joltage_requirements:
+            if all(diff == 0):
                 break
 
 
@@ -78,4 +89,4 @@ for machine in machines:
     print(clicks)
     #print(clicked)
 
-print(answer)
+print(f'answer: {answer}')
