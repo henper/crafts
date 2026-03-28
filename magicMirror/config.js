@@ -75,6 +75,7 @@ let config = {
 		},
 		{
 			module: "weather",
+			appendLocationNameToHeader: false,
 			position: "top_right",
 			config: {
 				weatherProvider: "smhi",
@@ -86,8 +87,20 @@ let config = {
 		},
 		{
 			module: "weather",
+			appendLocationNameToHeader: false,
 			position: "top_right",
-			header: "Weather Forecast",
+			config: {
+				weatherProvider: "yr",
+				type: "hourly",
+				lat: 57.708234,
+				lon: 11.986944,
+				maxEntries: 12,
+			}
+		},
+		{
+			module: "weather",
+			appendLocationNameToHeader: false,
+			position: "top_right",
 			config: {
 				weatherProvider: "smhi",
 				type: "forecast",
@@ -96,11 +109,26 @@ let config = {
 			}
 		},
 		{
-			disabled: false,
 			module: "MMM-TemperatureDisplay",
 			config: {
 				bridgeIp: "192.168.88.254",
 				user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO"
+			}
+		},
+		{
+			module: "MMM-EUElectricityPrice",
+			position: "top_left",
+			header: "Elpris",
+			config: {
+				headText: '',
+				showCurrency: false,
+				showNowLine: true,
+				dataSource: 'SE3', // Find your area in at nordpool or link above
+				currency: 'SEK',  //valid currencies: 'NOK', 'SEK', 'DKK', 'PLN', 'EUR', 'BGN', 'RON'
+				showAverage: false,
+				//width: "200%",
+				resolution: 'quarter',
+				currentPriceText: 'Nu',
 			}
 		},
 		{
