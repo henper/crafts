@@ -27,7 +27,7 @@ var config = {
 	httpsPrivateKey: "", 	// HTTPS private key path, only require when useHttps is true
 	httpsCertificate: "", 	// HTTPS Certificate path, only require when useHttps is true
 
-	language: "en",
+	language: "sv",
 	logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
 	timeFormat: 24,
 	units: "metric",
@@ -42,6 +42,7 @@ var config = {
 			module: "alert",
 		},
 		{
+			disabled: "true",
 			module: "updatenotification",
 			position: "top_bar"
 		},
@@ -62,46 +63,50 @@ var config = {
 					},*/
 					{
 						symbol: "calendar-check",
-						url: "https://kalender.link/ical/best"
+						url: "https://www.webcal.guru/sv-SE/ladda_ner_kalendern?calendar_instance_id=86"
+						//url: "https://kalender.link/ical/best"
 					}
 				],
 				//selfSignedCert: true
 			}
 		},
 		{
+			disabled: true,
 			module: "MMM-Namnsdag",
 			position: "top_left",
 			header: "Namnsdag"
 		},
 		{
+			disabled: true,
 			module: "weather",
 			position: "top_right",
 			config: {
-				type: "current",
-				showIndoorTemperature: true,
-				/* Open Weather Map */
+				weatherProvider: "smhi",
+				lat: 57.708234,
+				lon: 11.986944,
+				//type: "current",
+				showIndoorTemperature: true
 				//weatherProvider: openweathermap,
-				location: "Göteborg",
-				locationID: "",
-				apiKey: "9cab403720f3d1dfd158dcbfc27c194b"
+				//location: "Göteborg",
+				//locationID: "",
+				//apiKey: "9cab403720f3d1dfd158dcbfc27c194b"
 			}
 		},
 		{
-			//disabled: true,
+			disabled: true,
 			module: 'mmm-weatherchart',
 			position: 'top_right', // this can be any of the regions
 			config: {
-				country: 'Sweden', // as determined above
-				area: 'Västra%20Götaland', // as determined above
-				city: 'Gothenburg', // as determined above
+				locationPath: "/en/content/2-2711537/meteogram.svg",
 				updateInterval: 60 * 60 * 1000, // update every hour
 				hideBorder: true, // whether or not a border with city name should be shown
 				negativeImage: true, // whether or not the default white image should be inverted
 				hoursToShow: 24, // Cut the image down to show less than the full 48 hour forecast. -1 to show everything.
-				//mmDirectory: "/home/pi/MagicMirror/" // required for caching; adjust if it differs
+				mmDirectory: "/home/henrik/MagicMirror/" // required for caching; adjust if it differs
 			}
 		},
 		{
+			disabled: true,
 			module: "MMM-TemperatureDisplay",
 			config: {
 				bridgeIp: "192.168.88.254",
@@ -120,7 +125,8 @@ var config = {
 				feeds: [
 					{
 						title: "Svenska Dagbladet",
-						url: "http://www.svd.se/?service=rss&type=latest"
+						url: "https://www.svd.se/feed/articles.rss"
+						//url: "http://www.svd.se/?service=rss&type=latest"
 					},
 					{
 						title: "Dagens Nyheter",
@@ -136,7 +142,7 @@ var config = {
 			}
 		},
 		{
-			//disabled: true,
+			disabled: true,
 			module: "MMM-Vasttrafik-PublicTransport",
 			position: "bottom_left",
 			header: "Västtrafik",
@@ -147,12 +153,12 @@ var config = {
 					{
 						id: "9021014007171000",
 						filterAttr: "track", //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
-						filterKey: "A"       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board.
+						filterKeys: ["A"]       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board.
 					},
 					{
 						id: "9021014007172000",
 						filterAttr: "track",
-						filterKey: "B"
+						filterKeys: ["B"]
 					},
 				],
 				appKey: "zELyDmhGqYlkX000OTR_SNTha7Ma",       // REQUIRED. see 1. Create application and obtain required client id and secret.
@@ -160,7 +166,7 @@ var config = {
 				debug: false,                 // Optional. Enable some extra output when debugging.
 				sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
 											// default is "track".
-				refreshRate: "30000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
+				refreshRate: "60000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
 				trafficSituations: true,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
 				board:
 				{
@@ -169,7 +175,7 @@ var config = {
 				showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
 				//showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
 				showDestinationName: false,   //Optional. Default is true, if set to false will hide the direction/stop column.
-				enableDepartureTimeColors: true, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
+				enableDepartureTimeColors: false, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
 				departureTimeColors:
 				[
 					{
@@ -196,6 +202,7 @@ var config = {
 			}
 		},
 		{
+			disabled: true,
 			module: 'MMM-SystemStats',
 			position: 'bottom_right', // This can be any of the regions.
 			// classes: 'small dimmed', // Add your own styling. OPTIONAL.
@@ -208,6 +215,14 @@ var config = {
 				view: 'textAndIcon',
 			},
 		},
+		{
+			disabled: true,
+			module: "mmm-nordic-electrical-spot-prices",
+			position: "top_right",
+			config: {
+				area: "SE3"
+			}
+		}
 	]
 };
 

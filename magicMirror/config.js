@@ -51,7 +51,7 @@ let config = {
 		},
 		{
 			module: "calendar",
-			header: "Kalender",
+			header: "Helgdagar",
 			position: "top_left",
 			config: {
 				calendars: [
@@ -81,6 +81,7 @@ let config = {
 				type: "current",
 				lat: 57.708234,
 				lon: 11.986944,
+				showIndoorTemperature: true
 			}
 		},
 		{
@@ -95,8 +96,16 @@ let config = {
 			}
 		},
 		{
+			disabled: false,
+			module: "MMM-TemperatureDisplay",
+			config: {
+				bridgeIp: "192.168.88.254",
+				user: "nUcg5selpK4M3EjTxkvAneq1G6hddvShFULC0eUO"
+			}
+		},
+		{
 			module: "newsfeed",
-			position: "bottom_bar",
+			position: "lower_third",
 			config: {
 				feeds: [
 					/*{
@@ -117,6 +126,66 @@ let config = {
 				showPublishDate: true,
 				broadcastNewsFeeds: true,
 				broadcastNewsUpdates: true
+			}
+		},
+		{
+			disabled: false,
+			module: "MMM-Vasttrafik-PublicTransport",
+			position: "bottom_left",
+			header: "Västtrafik",
+			config:
+			{
+				myStops: // REQUIRED. An array of stop id's. Your are required to have at least one stop.
+				[      // see 3. Get stops that you want to track.
+					{
+						id: "9021014007171000",
+						filterAttr: "track", //Optional. Default is null, if set 'filterKey' also needs to be set. Allowed value: "track", "direction", "line" or "type"
+						filterKeys: ["A"]       //Optional. Default is null, if set 'filterAttr' also needs to be set. Filter key is any value of the filtered attribute, see filtered board.
+					},
+					{
+						id: "9021014007172000",
+						filterAttr: "track",
+						filterKeys: ["B"]
+					},
+				],
+				appKey: "zELyDmhGqYlkX000OTR_SNTha7Ma",       // REQUIRED. see 1. Create application and obtain required client id and secret.
+				appSecret: "Lrqpm0K1JbqRwNSOMFo1HDI3L8Ma", // REQUIRED. see 1. Create application and obtain required client id and secret.
+				debug: false,                 // Optional. Enable some extra output when debugging.
+				sortBy: "track",               // Optional. Sort your departure board by either "track", "direction", "line" or "type"
+											// default is "track".
+				refreshRate: "60000",          // Optional. Refresh rate int milliseconds, default is 60 seconds.
+				trafficSituations: false,      // Optional. Default is false, you need a subscription to TrafficSituations v1 API please see Prerequisites 2.1
+				board:
+				{
+					destination: { maxPxWidth: 150 },      // Optional. Force max width for destination names.
+				},
+				showTrackNumbers: false,     //Optional. Default is true, if set to false will hide the track column.
+				//showStopHeader: false,       //Optional. Default is true, if set to false will hide the stop name header.
+				showDestinationName: false,   //Optional. Default is true, if set to false will hide the direction/stop column.
+				enableDepartureTimeColors: false, //Optional. Default is false, if set 'departureTimeColors' also needs to be set. See section "Departue time colors".
+				departureTimeColors:
+				[
+					{
+						max: 1,
+						min: 0,
+						color: "#660202"
+					},
+					{
+						max: 4,
+						min: 2,
+						color: "#FF0000"
+					},
+					{
+						max: 6,
+						min: 4,
+						color: "#FFF200"
+					},
+					{
+						max: 15,
+						min: 7,
+						color: "#52FF33"
+					}
+				]
 			}
 		},
 	]
